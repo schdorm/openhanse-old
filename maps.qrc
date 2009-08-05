@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+	<file>maps/stadtliste.ohc</file>
+    </qresource>
+</RCC>

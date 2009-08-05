@@ -1,0 +1,56 @@
+<RCC>
+    <qresource prefix="/" >
+ <!--       <file>img/maps/blau_25.png</file>-->
+
+<!--	<file>img/sonstige/wasser.png</file>
+	<file>img/sonstige/wasser1.png</file>
+	<file>img/sonstige/wasser2.png</file>
+	<file>img/sonstige/wasser4.png</file>
+	<file>img/sonstige/wasser03.png</file>-->
+
+<!--	<file>img/maps/coast01.gif</file>
+	<file>img/maps/coast02.gif</file>-->
+<!--	<file>coast03.png</file>
+	<file>coast04.png</file>
+	<file>coast05.png</file> -->
+<!--	<file>img/maps/coast06.png</file>
+	<file>img/maps/sea01.png</file>-->
+<!--	<file>sh03.png</file>
+	<file>sh04.png</file> -->
+<!--	<file>img/schiffe/sh06.gif</file>
+	<file>img/schiffe/sh07.gif</file>-->
+<!-- 	<file>img/schiffe/schiff_gerade_skaliert1.png</file> -->
+	<file>img/schiffe/schiff_gerade_skaliert2.png</file>
+
+
+	<file>img/objekte/wolke01.png</file>
+	<file>img/objekte/wolke04.png</file>
+
+	<file>img/objekte/zeiger1.png</file>
+	<file>img/objekte/zeiger2.png</file>
+	<file>img/objekte/ziffernblatt4.png</file>
+
+	<file>img/icons/steuerrad01.png</file>
+
+	<file>img/icons/kiste_icon_alpha_hell.png</file>
+
+	<file>img/icons/holzfass_icon.png</file>
+	<file>img/icons/fass03_weich_heller.png</file>
+
+
+	<file>img/icons/rotkreuz_alpha01.png</file>
+
+	<file>img/sonstige/rot.png</file>
+<!--	<file>img/objekte/stein01.png</file>
+
+	<file>img/stadtobjekte/grauerklotz.png</file>-->
+<!--	<file>img/testimg/gros.gif</file>-->
+
+<!--	<file>wolke02.png</file>
+-->
+<!--	<file>img/icons/holzfass_braun.png</file>
+-->
+<!--	<file>img/stadtobjekte/baum001.png</file>-->
+	<!-- <file>map001.xml</file> -->
+    </qresource>
+</RCC>

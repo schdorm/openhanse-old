@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/" >
+<!--        <file>img/sonstige/mapfarbdef.png</file>
+	<file>img/maps/coast06.png</file>
+	<file>img/maps/coast07.png</file>
+	<file>img/handlingmaps/coast07.png</file>
+	<file>img/maps/sea01.png</file>-->
+	<!--<file>img/maps/sea_gross.png</file>-->
+
+    </qresource>
+</RCC>
