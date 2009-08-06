@@ -122,7 +122,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				status=m_prop;
 				break;
 				}
-				if(reader.qualifiedName().toString() ==" cityname")
+				if(reader.qualifiedName().toString() =="cityname")
 				{
 				status=m_stadtname;
 				break;
