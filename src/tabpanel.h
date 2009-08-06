@@ -31,10 +31,10 @@
 
 #include "waren.h"
 
-class TabPanel : public QTabWidget
+class SeaTabPanel : public QTabWidget
 {
 Q_OBJECT
-public slots:
+// public slots:
 
 public:
 // TabPanel();

@@ -238,7 +238,7 @@ void gesamtbild::spielfensteraufbau()
 
 
 	qWarning() << "SFA1";
-	menupanel = new TabPanel();
+	menupanel = new SeaTabPanel();
 	menupanel->create();
 	qWarning() << "created";
 // 	menupanel->setParent(this);
@@ -274,9 +274,9 @@ void gesamtbild::spielfensteraufbau()
 	connect(hf,SIGNAL(handel()),this,SLOT(handel()));
 // 	connect(hf,SIGNAL(handel()),hf,SLOT(hide()));
 
-//  	connect(hf,SIGNAL(kannanlegen(bool)),anlegen,SLOT(setEnabled(bool)));
+	connect(hf, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
 
-	connect(hf,SIGNAL(Aktualisierung(int)),this,SLOT(produktion(int)));
+	connect(hf, SIGNAL(Aktualisierung(int)),this,SLOT(produktion(int)));
 
 	connect(hf, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
 
@@ -433,7 +433,9 @@ void gesamtbild::seemenu()
 
 void gesamtbild::landmenu()
 {
-menupanel->landmenu();
+// menupanel->landmenu();
+execCommand(QString("hide sidemenu"));		//lets the sidebar disappear, isn't needed for a landwalk.
+
 // 	tab[0]->hide();
 // 	tab[1]->hide();
 // 	tab[2]->hide();

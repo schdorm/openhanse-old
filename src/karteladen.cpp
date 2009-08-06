@@ -558,6 +558,15 @@ qWarning() << "Mapdir does not exist. Exiting.";
 
 	activeship.attribute.map = mapprops.mapname;
 	activeship.attribute.stadt = mapprops.stadtname;
+	
+	if(mapprops.maptyp == MapType::coast || mapprops.maptyp == MapType::coast_city)
+	{
+	emit sig_anlegbar(true);
+	}
+	if(mapprops.maptyp == MapType::sea)
+	{
+	emit sig_anlegbar(false);
+	}
 }
 
 

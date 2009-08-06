@@ -27,7 +27,7 @@ anbord=false;
 qWarning() << "angelegt";
 }
 
- void hauptfenster::ablegen()
+ void hauptfenster::einschiffen()
 {
 qWarning() << "abgelegt";
 anbord=true;

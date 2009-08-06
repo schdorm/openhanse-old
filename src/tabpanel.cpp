@@ -25,7 +25,7 @@
 #include <QDebug>
 
 
-void TabPanel::create()
+void SeaTabPanel::create()
 {
 	qWarning() << "Create";
 // 	QVBoxLayout tablayout[3];
@@ -168,7 +168,7 @@ void TabPanel::create()
 }
 
 
-void TabPanel::landmenu()
+void SeaTabPanel::landmenu()
 {
 steuerung->hide();
 ladung->hide();

@@ -190,9 +190,11 @@ connect(bewegung,SIGNAL(timeout()),this,SLOT(aktualisieren()));
 
 void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 {
+if(!pause)
+{
 // 	qWarning() << "geklickt";
 	const float scale = transform().m11();
-// 	if(anbord==false && pause==false)
+ 	if(!anbord)
 	{
 // 		qWarning() << "geklickt, keine Pause usw.";
 
@@ -270,7 +272,7 @@ void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 #endif
 		}
 	}
-	if(anbord==true && pause==false)
+	if(anbord==true)
 	{
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
@@ -347,6 +349,7 @@ void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 	}
 	tastatur=false;
 	}
+}
 }
 
 void hauptfenster::keyEventWeiterleitung(QKeyEvent *event)

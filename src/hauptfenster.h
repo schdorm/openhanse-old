@@ -154,7 +154,7 @@ public slots:
 	void schuss();
 	
 	void landgang();
-	void ablegen();
+	void einschiffen();
 
 	void slotpause();
 	void endePause();
@@ -216,7 +216,7 @@ bool pause;
 
 signals:
 void enterBuilding(int);
-void kannanlegen(bool);
+void sig_anlegbar(bool);
 // void nichtmehranlegen();
 void handel();
 void Aktualisierung(int);

@@ -95,7 +95,7 @@ Warenstruct lager2;
 
 hauptfenster *hf;
 handelsfenster *hwin;
-TabPanel *menupanel;
+SeaTabPanel *menupanel;
 konsole *konsolenwidget;
 
 QFrame *rahmen;
