@@ -96,7 +96,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
 		mapprops.stadtname = QString();
-		QString ofkt = QString();				//Funktion des Objektes
+		int ofkt = -1;				//Funktion des Objektes
 		QString otooltip = QString();				//name/tooltip des objekts
 		QString odatei = QString();				//name des Bildes des Objekts
 		
@@ -122,7 +122,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				status=m_prop;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="stadtname")
+				if(reader.qualifiedName().toString() ==" cityname")
 				{
 				status=m_stadtname;
 				break;
@@ -323,6 +323,26 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				}
 				case m_typ:
 				{
+					if(reader.text().toString().toInt() == 0)
+					{
+						mapprops.maptyp = MapType::sea;
+					}
+					if(reader.text().toString().toInt() == 1)
+					{
+						mapprops.maptyp = MapType::coast;
+					}
+					if(reader.text().toString().toInt() == 2)
+					{
+						mapprops.maptyp = MapType::land;
+					}
+					if(reader.text().toString().toInt() == 3)
+					{
+						mapprops.maptyp = MapType::coast_city;
+					}
+					if(reader.text().toString().toInt() == 4)
+					{
+						mapprops.maptyp = MapType::land_city;
+					}
 // 					if(reader.text().toString() == "sea")
 // 					{
 // 						mapprops.maptyp = sea;
@@ -343,7 +363,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 					break;
 				case o_fkt:
 				{
-					ofkt = reader.text().toString();
+					ofkt = reader.text().toString().toInt();
 					qWarning() << "\tObjektfkt" << ofkt;
 					break;
 				}
@@ -386,7 +406,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 			case QXmlStreamReader::EndElement:
 			{
 				qWarning() << "Ende :"<< reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() == "objekt" && !ofkt.isEmpty() && !odatei.isEmpty())
+				if(reader.qualifiedName().toString() == "objekt" && ofkt != - 1 && !odatei.isEmpty())
 	//jetzt zeichnen: habe alle Eigenschaften des Objektes erhalten?
 				{
 // 						if(!odatei.contains("img"))
@@ -403,7 +423,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 // 						int static i;
 						qWarning() << "Malen ....";
 // #ifdef _RELEASE_
-						bool gemalt = false;
+/*						bool gemalt = false;
 						if(ofkt == "Uhr")
 						{
 						uhr = true;
@@ -428,7 +448,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 
 
 						if(!gemalt)
-						{
+						{*/
 						QGraphicsPixmapItem *geb = szene->addPixmap((QPixmap(odatei)));
 						geb->setPos(oposx,oposy);
 						geb->setData(0,QVariant(ofkt));
@@ -441,24 +461,24 @@ qWarning() << "Mapdir does not exist. Exiting.";
 							geb->setToolTip(otooltip);
 						}
 
-                                                if(ofkt.toInt() >= 100 && ofkt.toInt() < 1000 )
+                                                if(ofkt >= 100 && ofkt < 1000 )
                                                 { 
 							landobjektliste << geb;
                                                 }
 
 
-						ofkt = QString();
+						ofkt = -1;
 						otooltip = QString();
 						odatei = QString();
 // 						geb->setZValue(0.1);
-						}
+// 						}
 					}
 					else
 					{
 					qWarning() << "Bild" << odatei << "nicht gefunden. (Objekt: "<< ofkt << otooltip << " ).";
 
 					odatei = QString();
-					ofkt = QString();
+					ofkt = -1;
 					otooltip = QString();
 					}
 				}

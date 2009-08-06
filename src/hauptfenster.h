@@ -46,7 +46,8 @@ namespace MapType
 		 sea,			// 001
 		 coast,			// 010 || -> | -> 110
 		 land,			// 011 || -> | -> 111
-		 city			// 100
+		 coast_city,			// 100
+		 land_city
 		};
 	}
 class hauptfenster : public QGraphicsView

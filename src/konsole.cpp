@@ -152,14 +152,14 @@ rfile.write(QByteArray().append(QString(hf->mapprops.maptyp)));
 // hf->mapprops.maptyp = MapType::coast | MapType::city;
 rfile.write(QByteArray().append(QString(" ")));
 qWarning() <<hf->mapprops.maptyp; 
-
+/*
 rfile.write(QByteArray().append(QString(MapType::coast | MapType::city)));
 rfile.write(QByteArray().append(QString(" ")));
 qWarning() << (MapType::coast | MapType::city); 
 
 rfile.write(QByteArray().append(QString(MapType::land | MapType::city)));
 rfile.write(QByteArray().append(QString(" ")));
- qWarning() << (MapType::land | MapType::city);
+ qWarning() << (MapType::land | MapType::city);*/
 
 rfile.write(QByteArray().append(QString(MapType::land)));
 rfile.write(QByteArray().append(QString(" ")));
