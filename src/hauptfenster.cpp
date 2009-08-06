@@ -753,11 +753,11 @@ if(windgeschwindigkeit > 0)
 	{
 		foreach(QGraphicsItem *wolkenit, wolkenliste)
 		{
-			qint8 rx = (rand() % 3)-1;
+			int rx = (rand() % 3)-1;
 			float xverschiebung=rx;
 			xverschiebung = xverschiebung /10;
 
-			qint8 ry = (rand() % 3)-1;
+			int ry = (rand() % 3)-1;
 			float yverschiebung = ry;
 			yverschiebung = yverschiebung/10;
 
@@ -1416,7 +1416,7 @@ if(schwierigkeit ==0)
 // 	if(auftreffwinkel < 0)
 // 	auftreffwinkel = -auftreffwinkel;
 
-	quint8 wirkendeWindgeschwindigkeit = quint8(ceil(activeship.attribute.prozentgesetzteSegel * windgeschwindigkeit * (1 + cos(auftreffwinkel))/2 ));
+	int wirkendeWindgeschwindigkeit = int(ceil(activeship.attribute.prozentgesetzteSegel * windgeschwindigkeit * (1 + cos(auftreffwinkel))/2 ));
 // qWarning() << wirkendeW
 
 #ifndef _RELEASE_

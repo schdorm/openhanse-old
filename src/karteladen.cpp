@@ -323,7 +323,10 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				}
 				case m_typ:
 				{
-					if(reader.text().toString().toInt() == 0)
+					mapprops.maptyp =
+					  static_cast<MapType::mtyp>( reader.text().toString().toInt() );
+					break;
+	/*				if(reader.text().toString().toInt() == 0)
 					{
 						mapprops.maptyp = MapType::sea;
 					}
@@ -342,7 +345,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 					if(reader.text().toString().toInt() == 4)
 					{
 						mapprops.maptyp = MapType::land_city;
-					}
+					}*/
 // 					if(reader.text().toString() == "sea")
 // 					{
 // 						mapprops.maptyp = sea;
@@ -470,7 +473,6 @@ qWarning() << "Mapdir does not exist. Exiting.";
 						ofkt = -1;
 						otooltip = QString();
 						odatei = QString();
-// 						geb->setZValue(0.1);
 // 						}
 					}
 					else
@@ -559,13 +561,16 @@ qWarning() << "Mapdir does not exist. Exiting.";
 	activeship.attribute.map = mapprops.mapname;
 	activeship.attribute.stadt = mapprops.stadtname;
 	
+	qWarning() << mapprops.maptyp;
 	if(mapprops.maptyp == MapType::coast || mapprops.maptyp == MapType::coast_city)
 	{
 	emit sig_anlegbar(true);
+// 	qWarning() << "anlegbar";
 	}
-	if(mapprops.maptyp == MapType::sea)
+	else if(mapprops.maptyp == MapType::sea)
 	{
 	emit sig_anlegbar(false);
+// 	qWarning() << "nicht anlegbar";
 	}
 }
 
