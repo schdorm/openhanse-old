@@ -41,6 +41,17 @@ konsole::konsole()
 }
 
 
+void konsole::debug(QString msg)
+{
+qWarning() << msg;
+output->appendPlainText(msg);
+QFile dbg("debug.log");
+dbg.open(QIODevice::Append|QIODevice::Text);
+dbg.write(msg.toAscii());
+dbg.write("\n");
+dbg.close();
+}
+
 // void konsole::setConsoleBuffer(QString bufferstring)
 // {
 // consolebuffer = bufferstring;

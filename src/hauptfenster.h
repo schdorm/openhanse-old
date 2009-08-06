@@ -31,6 +31,8 @@
 
 #include <QtGui/QCheckBox>
 
+#include "konsole.h"
+
 #include "schiff.h"
 // #include "gebaude.h"
 // #include "stadtklasse.h"
@@ -142,9 +144,12 @@ QString mapwest;
 int maptyp;
 }mapprops;
 
+
 QGraphicsPixmapItem *testschiff ;
 QImage collimg[3];
 // QList <QGraphicsItem *> hafenobjliste;
+
+konsole *konsolenwidget;
 
 public slots:
 

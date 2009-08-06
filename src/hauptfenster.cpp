@@ -182,6 +182,7 @@ hauptfenster::hauptfenster()
 
 void hauptfenster::starttimer()
 {
+konsolenwidget->debug(QString("void hauptfenster::starttimer()"));
 bewegung= new QTimer(this);
 
 bewegung->start(AKTUALISIERUNGSINTERVALL);
@@ -190,6 +191,8 @@ connect(bewegung,SIGNAL(timeout()),this,SLOT(aktualisieren()));
 
 void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 {
+konsolenwidget->debug(QString("void hauptfenster::mousePressEvent(QMouseEvent *event) "));
+
 if(!pause)
 {
 // 	qWarning() << "geklickt";
@@ -360,6 +363,8 @@ keyPressEvent(event);
 
 void hauptfenster::keyPressEvent(QKeyEvent *event)
 {
+konsolenwidget->debug(QString("void hauptfenster::keyPressEvent(QKeyEvent *event) ").append(event->text()));
+
 if(event->key() == Qt::Key_W && activeship.attribute.sollprozentgesetzteSegel < 1)
 {
 activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel + 0.2;
@@ -570,7 +575,8 @@ sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(activeship.attribute.s
 	{
 	qWarning() << "Open Console!";
 
-	emit sig_konsole();
+	konsolenwidget->show();
+// 	emit sig_konsole();
 //  	QWidget *consoleframe = new QWidget (nativeParentWidget(),Qt::Popup);
 // 	konsole *konsolepanel = new konsole();
 // 	konsolepanel->setParent(consoleframe);
@@ -602,6 +608,8 @@ sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(activeship.attribute.s
 
 void hauptfenster::slotpause()
 {
+konsolenwidget->debug(QString("void hauptfenster::slotpause()"));
+
 		if(!pause)
 		{
 			bewegung->stop();
@@ -623,6 +631,7 @@ void hauptfenster::slotpause()
 
 void hauptfenster::endePause()
 {
+konsolenwidget->debug(QString("void hauptfenster::endePause()"));
 		if(!bewegung->isActive())
 		{
 			bewegung->start(AKTUALISIERUNGSINTERVALL);
@@ -632,6 +641,7 @@ void hauptfenster::endePause()
 
 void hauptfenster::startPause()
 {
+konsolenwidget->debug(QString("void hauptfenster::startPause()"));
 		if(bewegung->isActive())
 		{
 			bewegung->stop();
@@ -642,6 +652,7 @@ void hauptfenster::startPause()
 
 void hauptfenster::segelsetzen(int i)
 {
+konsolenwidget->debug(QString("void hauptfenster::segelsetzen(int i) ").append(i));
 float n = i;
 activeship.attribute.sollprozentgesetzteSegel = n/5;
 #ifndef _RELEASE_
@@ -1000,180 +1011,6 @@ bewegungsbeschreibung();
 // 		}
 // 	}
 }
-/*
-// qWarning() << landgi->pixmap().height();
-if(testschiff->collidesWithItem(landgi,Qt::IntersectsItemBoundingRect))
-{
-// QImage collimg = landgi->pixmap().toImage();
-// const int schiffhohe = activeship.schiffbreite;
-// const int schifflange = activeship.schifflange;
-// int eolx = (testschiff->x() - landgi->x()), eoly = testschiff->y() - landgi->y();
-// 
-// int eorx = eolx + (cos(activeship.attribute.ausrichtung) * schifflange), eory = eoly - (sin(activeship.attribute.ausrichtung) * schifflange);
-// 
-// int eulx = eolx + (sin(activeship.attribute.ausrichtung) * schiffhohe), euly = eoly + (cos(activeship.attribute.ausrichtung) * schiffhohe);
-// 
-// int eurx = eulx + eorx - eolx, eury = euly + eory - eoly;
-
- found = true;
-// it = landobjektliste.end();
-break;
-}
-}
-if(found)
-{
-// qWarning() << "Land";
-QImage collimg = landgi->pixmap().toImage();
-
-const int schiffhohe = activeship.schiffbreite;
-const int schifflange = activeship.schifflange;
-//// Ecke Oben Links X-Wert , Ecke Oben Links Y-Wert
-// int eolx = (testschiff->x() +  (cos(activeship.attribute.ausrichtung) * schifflange)/2 + (sin(activeship.attribute.ausrichtung) * schiffhohe)/2 - landgi->x()),
-// eoly = testschiff->y() + (cos(activeship.attribute.ausrichtung) * schiffhohe)/2 + (sin(activeship.attribute.ausrichtung) * schifflange)/2 - landgi->y();
-// Pos der "Mitte des Schiffes"
-
-// activeship.attribute.xposm = testschiff->x() +  (cos(activeship.attribute.ausrichtung) * schifflange)/2 + (sin(activeship.attribute.ausrichtung) * schiffhohe)/2;
-// activeship.attribute.yposm = testschiff->y() + (cos(activeship.attribute.ausrichtung) * schiffhohe)/2 + (sin(activeship.attribute.ausrichtung) * schifflange)/2;
-
-
-// int eorx = eolx + (cos(activeship.attribute.ausrichtung) * schifflange), eory = eoly - (sin(activeship.attribute.ausrichtung) * schifflange);
-
-// int eulx = eolx + (sin(activeship.attribute.ausrichtung) * schiffhohe), euly = eoly + (cos(activeship.attribute.ausrichtung) * schiffhohe);
-
-// int eurx = eulx + eorx - eolx, eury = euly + eory - eoly;
-// QPoint ecke_obenlinks, ecke_obenrechts, ecke_untenlinks, ecke_untenrechts;
-
-// QPoint ecke_obenlinks;
-// QColor f_eol = QColor(), f_eor = QColor(), f_eul = QColor(), f_eur = QColor();
-float bremsfaktor = 0;
-if(eolx > 0 && eolx < collimg.width() && eoly >= 0 && eoly < collimg.height())
-{
-// ecke_obenlinks = QPoint(qreal(testschiff->x() - landgi->x()),qreal(testschiff->y() - landgi->y()));
-// ecke_obenlinks = QPoint (eolx, eoly);
-// f_eol = QColor(collimg.pixel(eolx, eoly));
-// bremsfaktor = f_eol.alphaF();
-bremsfaktor = qAlpha(collimg.pixel(eolx, eoly));
-// qWarning() << bremsfaktor << "eol" << f_eol.alphaF() << QPoint(eolx,eoly);
-}
-
-//i
-f(eorx > 0 && eorx < collimg.width() && eory >= 0 && eory < collimg.height())
-{
-// ecke_obenlinks = QPoint(qreal(testschiff->x() - landgi->x()),qreal(testschiff->y() - landgi->y()));
-// ecke_obenrechts = QPoint (eorx, eory);
-// f_eor = QColor(collimg.pixel(eorx, eory));
-if(bremsfaktor < qAlpha(collimg.pixel(eorx, eory)))
-{
-// bremsfaktor = f_eor.alphaF();
-bremsfaktor = qAlpha(collimg.pixel(eorx, eory));
-}
-// qWarning() << bremsfaktor << "eor" << f_eor.alphaF() << f_eor << QPoint(eorx,eory) << qAlpha(collimg.pixel(eorx, eory));
-
-}
-
-if(eulx > 0 && eulx < collimg.width() && euly >= 0 && euly < collimg.height())
-{
-// ecke_obenlinks = QPoint(qreal(testschiff->x() - landgi->x()),qreal(testschiff->y() - landgi->y()));
-// ecke_obenlinks = QPoint (eolx, eoly);
-// f_eul = QColor(collimg.pixel(eulx, euly));
-if(bremsfaktor < qAlpha(collimg.pixel(eulx, euly)))
-{
-// bremsfaktor = f_eul.alphaF();
-bremsfaktor = qAlpha(collimg.pixel(eulx, euly));
-}
-// qWarning() << bremsfaktor << "eul" << f_eul.alphaF() << f_eul << QPoint(eulx,euly) << qAlpha(collimg.pixel(eulx, euly));
-
-}
-
-if(eurx > 0 && eurx < collimg.width() && eury >= 0 && eury < collimg.height())
-{
-// ecke_obenlinks = QPoint(qreal(testschiff->x() - landgi->x()),qreal(testschiff->y() - landgi->y()));
-// ecke_untenlinks = QPoint (eolx, eoly);
-// f_eur = QColor(collimg.pixel(eurx, eury));
-if(bremsfaktor < qAlpha(collimg.pixel(eurx, eury)))
-{bremsfaktor = qAlpha(collimg.pixel(eurx, eury));
-}
-// qWarning() << bremsfaktor << "eur"<<  f_eur.alphaF() << f_eul << QPoint(eurx,eury) << qAlpha(collimg.pixel(eurx, eury));
-
-}*/
-/*
-bremsfaktor = bremsfaktor/255;
-qWarning() << bremsfaktor;
-bremsfaktor = sqrt(sqrt(sqrt(bremsfaktor)));
-qWarning() << bremsfaktor;
-
-// qWarning() << bremsfaktor << "gebremst; post; hohe" << collimg.height() << "Breite" << collimg.width() << QPoint(eolx,eoly) << landgi->y() << testschiff->y();
-
-activeship.attribute.geschwindigkeit = activeship.attribute.geschwindigkeit * (1 - bremsfaktor);
-
-ecke_obenrechts = QPoint(qreal((testschiff->x() + cos(activeship.attribute.ausrichtung) * schifflange) - landgi->x()), qreal((testschiff->y() - sin(activeship.attribute.ausrichtung) * schifflange) - landgi->y()));
-
-ecke_untenlinks = QPoint(qreal((testschiff->x() + sin(activeship.attribute.ausrichtung) * schiffhohe) - landgi->x()), qreal((testschiff->y() + cos(activeship.attribute.ausrichtung) * schiffhohe) - landgi->y()));
-
-ecke_untenrechts = QPoint(qreal(ecke_untenlinks.x()+ ( ecke_obenrechts.x() - ecke_obenlinks.x())- landgi->x()), qreal((ecke_untenlinks.y() + ( ecke_obenrechts.y() - ecke_obenlinks.y())) - landgi->y()));*/
-
-// QImage collimg = landgi->pixmap().toImage();
-
-//////////Punkte innerhalb des kollidierenden Objekts ...
-// QColor f_eor = QColor(collimg.pixel(ecke_obenrechts));
-// QColor f_eul = QColor(collimg.pixel(ecke_untenlinks));
-// QColor f_eur = QColor(collimg.pixel(ecke_untenrechts));
-
-
-/*if(maphandlingimg.pixel(ecke_obenlinks) == strand_weich || maphandlingimg.pixel(ecke_obenrechts) == strand_weich || maphandlingimg.pixel(ecke_untenlinks) == strand_weich || maphandlingimg.pixel(ecke_untenrechts) == strand_weich)
-{
-activeship.attribute.geschwindigkeit -= int((activeship.attribute.geschwindigkeit/3));
-#ifndef _RELEASE_
-qWarning() << "leichter Sand";
-#endif
-activeship.attribute.steuergeschwindigkeit = 2;
-}
-
-if(maphandlingimg.pixel(ecke_obenlinks) == strand_hart || maphandlingimg.pixel(ecke_obenrechts) == strand_hart || maphandlingimg.pixel(ecke_untenlinks) == strand_hart || maphandlingimg.pixel(ecke_untenrechts) == strand_hart)
-{
-#ifndef _RELEASE_
-qWarning() << "harter Sand";
-#endif
-activeship.attribute.geschwindigkeit -= int((activeship.attribute.geschwindigkeit/2));
-activeship.attribute.steuergeschwindigkeit = 4;
-}
-
-if(maphandlingimg.pixel(ecke_obenlinks) == nschiffbar || maphandlingimg.pixel(ecke_obenrechts) == nschiffbar || maphandlingimg.pixel(ecke_untenlinks) == nschiffbar || maphandlingimg.pixel(ecke_untenrechts) == nschiffbar)
-{
-#ifndef _RELEASE_
-qWarning() << "Gestrandet";
-#endif
-landgang();
-}
-
-if((maphandlingimg.pixel(ecke_obenlinks) == anlegestelle || maphandlingimg.pixel(ecke_obenlinks) == schiffbar) && (maphandlingimg.pixel(ecke_obenrechts) == anlegestelle || maphandlingimg.pixel(ecke_obenrechts) == schiffbar) && (maphandlingimg.pixel(ecke_untenlinks) == anlegestelle || maphandlingimg.pixel(ecke_untenlinks) == schiffbar) && (maphandlingimg.pixel(ecke_untenrechts) == anlegestelle || maphandlingimg.pixel(ecke_untenrechts) == schiffbar) && activeship.attribute.steuergeschwindigkeit != 1)
-{
-activeship.attribute.steuergeschwindigkeit = 1;
-}
-
-if(maphandlingimg.pixel(ecke_obenlinks) == anlegestelle && maphandlingimg.pixel(ecke_obenrechts) == anlegestelle && maphandlingimg.pixel(ecke_untenlinks) == anlegestelle && maphandlingimg.pixel(ecke_untenrechts) == anlegestelle && anlegbar == false && activeship.attribute.geschwindigkeit<2)
-{
-anlegbar = true;
-emit kannanlegen(anlegbar);
-
-#ifndef _RELEASE_
-qWarning() << "anlegen moeglich";
-#endif
-
-}
-if((maphandlingimg.pixel(ecke_obenlinks) != anlegestelle || maphandlingimg.pixel(ecke_obenrechts) != anlegestelle || maphandlingimg.pixel(ecke_untenlinks) != anlegestelle || maphandlingimg.pixel(ecke_untenrechts) != anlegestelle ) && anlegbar == true)
-{
-#ifndef _RELEASE_
-qWarning() << "anlegen unmoeglich";
-#endif
-anlegbar = false;
-emit kannanlegen(anlegbar);
-}*/
-
-
-// }}
-// }}
-
 
 
 // 	if(activeship.attribute.geschwindigkeit==0)
@@ -1200,7 +1037,7 @@ emit kannanlegen(anlegbar);
  		else
  		testschiff->setPos(mapprops.breite - 120,testschiff->y());
 		}
-	if(testschiff->x() <120 )
+	else if(testschiff->x() <120 )
 		{
 		qWarning() << "Mapwechsel zu West" << mapprops.mapwest;
 		if(!mapprops.mapwest.isEmpty())
@@ -1248,7 +1085,7 @@ emit kannanlegen(anlegbar);
 		testschiff->setPos(testschiff->x(), 120);
 		}
 
-	if(testschiff->y() > mapprops.hoehe - 100)
+	else if(testschiff->y() > mapprops.hoehe - 100)
 		{
 		qWarning()<< "Mapwechsel zu Sued" << mapprops.mapnord ;
 		if(!mapprops.mapsued.isEmpty())
@@ -1302,6 +1139,7 @@ if(durchlauf%10==0)
 
 void hauptfenster::windsetzen()
 {
+konsolenwidget->debug(QString("void hauptfenster::windsetzen()"));
 
 	int aenderung = ((rand()%3)-1);
 	float faenderung = (rand()%23);
@@ -1336,6 +1174,8 @@ void hauptfenster::windsetzen()
 
 void hauptfenster::bewegungsbeschreibung()
 {
+// konsolenwidget->debug(QString("void hauptfenster::bewegungsbeschreibung()"));
+
 // static int sollgeschwindigkeit_durchlauf, sollruderrichtung_durchlauf;	//Zaehlvariable fuer Ruder bzw. Geschwindigkeit -> Schiff ist traege und wird nur langsam schneller / lenkt langsam ----> jetzt Klassenvariable
 // qWarning() << "bewegungsbeschreibung" << sollgeschwindigkeit_durchlauf++;
 // sollgeschwindigkeit_durchlauf++;	//warten .... (Traegheit)
@@ -1555,16 +1395,16 @@ emit SIGgeschwindigkeit(activeship.attribute.geschwindigkeit);
 bool hauptfenster::schiffskollision(QGraphicsItem *land)
 {
 // int x = testschiff->x();
-if(activeship.attribute.xposm > land->x() && activeship.attribute.yposm > land->y() && activeship.attribute.xposm < land->x() + land->boundingRect().width() && activeship.attribute.yposm < land->y() + land->boundingRect().height() )
-{
-qWarning() << "Kollision";
-return true;
-}
-else return false;
-
-
+	if(activeship.attribute.xposm > land->x() && activeship.attribute.yposm > land->y() && activeship.attribute.xposm < land->x() + land->boundingRect().width() && activeship.attribute.yposm < land->y() + land->boundingRect().height() )
+	{
+		qWarning() << "Kollision";
+	      return true;
+	}
+	else return false;
 }
 
 void hauptfenster::schuss()
 {
+konsolenwidget->debug(QString("void hauptfenster::schuss()"));
+
 }

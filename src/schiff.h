@@ -21,6 +21,7 @@
 #define _schiffsklasse_h
 
 #include "waren.h"
+#include <QtGui/QGraphicsItem>
 
 class schiffsklasse 
 {
@@ -33,11 +34,7 @@ enum schiffstypen
 	Kogge,
 	Holk
 	};
-/*struct Warenstruct{
-quint32 taler;							//Geld auf dem Schiff
-quint16 ware [30];						//Waren auf dem Schiff
-quint16 gesamtladung;
-};*/
+
 
 struct desc
 {
@@ -45,7 +42,6 @@ int xpos, xposm;
 int ypos, yposm;
 QString map;
 QString stadt;
-// int zielx, ziely;
 
 ////////////////Steuerung: ////////////////////////////
 qint16 geschwindigkeit, sollgeschwindigkeit;		//aktuelle Geschwindigkeit -> Sollgeschwindigkeit bei Maussteuerung
@@ -60,14 +56,15 @@ float steuerruderausrichtung, sollsteuerruderausrichtung;				//aktueller Winkel 
 };
 
 public:
+QGraphicsItem *graphicsitem;
 desc attribute;
 Warenstruct Ladung;
 
 QString schiffsname;
 quint16 id;
 schiffstypen schiffstyp;
-quint8 zustand;
-quint8 manvzustand;		//Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
+int zustand;
+int manvzustand;		//Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
 int besatzung;
 // quint16 ladekapazitaet;
 

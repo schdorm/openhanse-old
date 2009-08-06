@@ -36,17 +36,22 @@
 
 //  #include "udbutton.h"
 
+#include <QtCore/QDateTime>
+
 gesamtbild::gesamtbild()
 {
 	QDir dir = QDir().current();
-
-// 	QFile f("/tmp/errors.log");
-// 	f.open(QIODevice::WriteOnly);
-// 	QTextStream errorstream(&f);
-// 	errorstream << dir.path();
-// 	errorstream << "\n";
-// 	f.close();
-
+{
+	QDateTime dt = QDateTime().currentDateTime();
+	QFile("debug.log").rename("debug.log~");
+	QFile dbf("debug.log");
+	dbf.open(QIODevice::WriteOnly);
+	QTextStream errorstream(&dbf);
+	errorstream << dir.path();
+	errorstream << "\nStarting Log on ";
+	errorstream << dt.toString(QString("ddd, MMM, dd., yyyy, hh:mm:ss ")) << "\n";
+	dbf.close();
+}
 	qWarning() << dir.path();
 	if(dir.cd("maps/"))
 	{

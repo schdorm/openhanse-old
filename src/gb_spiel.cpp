@@ -307,6 +307,7 @@ void gesamtbild::spielfensteraufbau()
 	connect(hf, SIGNAL(sig_konsole()), konsolenwidget, SLOT(show()));
 // 	connect(konsolenwidget, SIGNAL(sig_loadMap(QString)), hf, SLOT(karteladen(QString)));
 	connect(konsolenwidget, SIGNAL(sig_command(QString)), this, SLOT(execCommand(QString)));
+	hf->konsolenwidget = konsolenwidget;
 }
 
 

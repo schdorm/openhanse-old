@@ -33,6 +33,7 @@ Q_OBJECT
 public:
 
 konsole();
+void debug(QString);
 
 public slots:
 void execCommand();

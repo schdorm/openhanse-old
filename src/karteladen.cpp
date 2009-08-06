@@ -590,7 +590,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 // 
 // }
 // qWarning()<< "MLoad: WL: Eintraege" << wolkenliste.size();
-qWarning() << "Wolken malen";
+///qWarning() << "Wolken malen";
 /*	int wolkenzahl = rand()%25;
 // 	int wolkenzahl=10;
 	for(int i=0;i<wolkenzahl;i++)
