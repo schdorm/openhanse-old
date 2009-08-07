@@ -54,6 +54,18 @@ namespace MapType
 		 land_city
 		};
 	}
+	
+namespace LandingProcess{
+	enum landing_process_states
+	{
+		NotActive,
+		WaitingForDestination,
+		ActiveLanding,
+		AtLand
+	};
+}
+	
+
 class hauptfenster : public QGraphicsView
 {
 Q_OBJECT
@@ -66,6 +78,9 @@ public:
 	void windsetzen();
 	void bewegungsbeschreibung();
 	bool schiffskollision(QGraphicsItem *);
+	
+	void landing();
+	
 
 	void keyEventWeiterleitung(QKeyEvent *event);
 
@@ -146,6 +161,7 @@ int maptyp;
 
 QGraphicsPixmapItem *testschiff ;
 QImage collimg[3];
+// QList<QGraphicsPixmapItem*> schi
 // QList <QGraphicsItem *> hafenobjliste;
 
 konsole *konsolenwidget;
@@ -213,6 +229,8 @@ QCheckBox *fokussieren;
 #endif
 
 bool pause;
+LandingProcess::landing_process_states landingstate;
+QLineF landing_line;
 
 // const static double pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628;
 		//PI eben

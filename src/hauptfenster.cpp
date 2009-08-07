@@ -199,15 +199,30 @@ void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 {
 konsolenwidget->debug(QString("void hauptfenster::mousePressEvent(QMouseEvent *event) "));
 
+const float scale = transform().m11();
+QPointF clickpoint = QPointF((event->x() + horizontalScrollBar()->value())/scale,
+(event->y() + verticalScrollBar()->value())/scale);
 if(!pause)
 {
-// 	qWarning() << "geklickt";
-	const float scale = transform().m11();
- 	if(!anbord)
+	if(landingstate == LandingProcess::WaitingForDestination)
 	{
-// 		qWarning() << "geklickt, keine Pause usw.";
-
-		QGraphicsItem *ort = scene()->itemAt((event->x() + horizontalScrollBar()->value())/scale, (event->y() + verticalScrollBar()->value())/scale);
+	QGraphicsItem *it;
+	QList <QGraphicsItem *> qgilistAP = szene->items(clickpoint);
+	foreach(it, qgilistAP)
+	{
+		if(it->data(0).toInt() >= 100 && it->data(0).toInt() < 500 )
+		{
+		landing_line = QLineF(QPointF(testschiff->x() + testschiff->boundingRect().width()/2, testschiff->y() + testschiff->boundingRect().height()/2), clickpoint);
+		landingstate = LandingProcess::ActiveLanding;
+		return;
+		}
+	}
+	
+	
+	}
+ 	if(!anbord && landingstate == LandingProcess::AtLand)
+	{
+		QGraphicsItem *ort = scene()->itemAt(clickpoint);
 		if(ort==0)
 		{
 #ifndef _RELEASE_
@@ -281,7 +296,7 @@ if(!pause)
 #endif
 		}
 	}
-	if(anbord==true)
+	else if(anbord)
 	{
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
@@ -374,6 +389,8 @@ switch (event->key())
 {
 	case Qt::Key_W:
 	{
+		if(anbord)
+		{
 		if(activeship.attribute.sollprozentgesetzteSegel < 1)
 		{
 			activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel + 0.2;
@@ -384,9 +401,12 @@ switch (event->key())
 
 		}
 		break;
+		}
 	}
 	case Qt::Key_S: 
 	{
+		if(anbord)
+		{
 		if(event->modifiers() == Qt::NoModifier && activeship.attribute.sollprozentgesetzteSegel > 0)
 		{
 			activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel - 0.2;
@@ -404,6 +424,7 @@ switch (event->key())
 		else if(event->modifiers() == Qt::ControlModifier)
 		{
 		emit savesig();
+		}
 		}
 		break;
 	}
@@ -458,56 +479,48 @@ switch (event->key())
 	}
 	case Qt::Key_Left:
 	{
+		if(anbord)
+		{
 		activeship.attribute.ausrichtung += 0.2;
 		if(activeship.attribute.ausrichtung > 2 * M_PI)
 		{
 			activeship.attribute.ausrichtung = 0.1;
 		}
+		}
 		break;
 	}
 	case Qt::Key_Right:
 	{
+		if(anbord)
+		{
 		activeship.attribute.ausrichtung -= 0.2;
 		if(activeship.attribute.ausrichtung < 0 )
 		{
 			activeship.attribute.ausrichtung = 2 * M_PI - 0.1;
 		}
+		}
 		break;
 	}
 	case Qt::Key_Up:
 	{
+		if(anbord)
 		activeship.attribute.geschwindigkeit ++;
 		break;
 	}
 
 	case Qt::Key_Down:
 	{
+		if(anbord)
 		activeship.attribute.geschwindigkeit--;
 		break;
 	}
 #endif
 }
-#ifndef _RELEASE_
 
-	if(event->text() == "M" )
-	{
-	activeship.Ladung.taler +=1000;
-	}
-// 	else if(event->text() == "B" ||event->key() == Qt::Key_Up )
-// 	{
-// 	activeship.attribute.geschwindigkeit ++;
-// 	}
-// 
-// 	if(event->text() == "b" || event->key() == Qt::Key_Down)
-// 	{
-// 	activeship.attribute.geschwindigkeit--;
-// 	}
-
-
-#endif
 	
 	
-
+if(anbord)
+{
 if(event->text() == "a" && activeship.attribute.sollsteuerruderausrichtung < 0.004)
 {
 	activeship.attribute.sollsteuerruderausrichtung = activeship.attribute.sollsteuerruderausrichtung + 0.0002;
@@ -560,35 +573,43 @@ else if(event->text() == "D" && activeship.attribute.segelausrichtung >= -1.5)
 #endif
 
 }
-else if(event->text() =="Q" || (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier))
-	{
-	close();
-	deleteLater();
-	}
-
-
+#ifndef _RELEASE_
+else if(event->text() == "M" )
+{
+	activeship.Ladung.taler +=1000;
+}
+#endif
 if(activeship.attribute.segelausrichtung <0.01 && activeship.attribute.segelausrichtung > -0.01)
-{activeship.attribute.segelausrichtung =0;
+{
+	activeship.attribute.segelausrichtung =0;
 }
 
 if(activeship.attribute.sollsteuerruderausrichtung < 0.0001 && activeship.attribute.sollsteuerruderausrichtung > -0.0001)
 {
 	activeship.attribute.sollsteuerruderausrichtung=0;
 }
+
 if(activeship.attribute.sollsteuerruderausrichtung < -0.05)
-activeship.attribute.sollsteuerruderausrichtung = -0.2;
+{
+	activeship.attribute.sollsteuerruderausrichtung = -0.2;
+}
 
 if(activeship.attribute.sollsteuerruderausrichtung > 0.05)
-activeship.attribute.sollsteuerruderausrichtung = 0.2;
-
+{
+	activeship.attribute.sollsteuerruderausrichtung = 0.2;
+}
 #ifndef _RELEASE_
 
-// qWarning () << activeship.attribute.sollgeschwindigkeit << activeship.attribute.steuerruderausrichtung;
 sollsegel->setText(QString("SollSegelFl: %1").arg(activeship.attribute.sollprozentgesetzteSegel));
 sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(activeship.attribute.sollsteuerruderausrichtung));
 #endif
+}
 
-
+if(event->text() =="Q" || (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier))
+{
+	close();
+	deleteLater();
+}
 
 }
 
@@ -774,7 +795,7 @@ if(anbord)
 // if(activeship.attribute.geschwindigkeit > 0 || activeship.attribute.sollprozentgesetzteSegel > 0 || activeship.attribute.prozentgesetzteSegel > 0 || windgeschwindigkeit > 0)
 {
 // qWarning() << "Vor Bewegungsbeschreibung";
-bewegungsbeschreibung();
+	bewegungsbeschreibung();
 // qWarning() << "Nach Bewegungsbeschreibung";
 
 

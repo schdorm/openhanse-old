@@ -18,7 +18,11 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "hauptfenster.h"
+
 #include <QtCore/QtDebug>
+
+#include <math.h>
+
 void hauptfenster::landgang()
 {
 activeship.attribute.geschwindigkeit = 0;
@@ -31,4 +35,32 @@ qWarning() << "angelegt";
 {
 qWarning() << "abgelegt";
 anbord=true;
+}
+
+
+void hauptfenster::landing()
+{
+anbord = false;
+// bool directLanding;
+QGraphicsItem *it;
+foreach(it, landobjektliste)
+{
+	if(schiffskollision(it))
+	{
+		landingstate = LandingProcess::AtLand;
+		return;
+	}
+}
+// if(directLanding)
+// {
+// }
+// else
+// {
+landingstate = LandingProcess::WaitingForDestination;
+// }
+activeship.graphicsitem = testschiff;
+testschiff = szene->addPixmap(QPixmap(":img/schiffe/sh08_braun.png"));
+testschiff->setPos(activeship.graphicsitem->x() + (0.2 + ((cos(activeship.attribute.ausrichtung) + 1)/2 ))* activeship.graphicsitem->boundingRect().width(), activeship.graphicsitem->y() + (0.2 + (sin(activeship.attribute.ausrichtung) + 1)/2) 	* activeship.graphicsitem->boundingRect().height());
+QTransform t = activeship.graphicsitem->transform();
+testschiff->setTransform(t);
 }

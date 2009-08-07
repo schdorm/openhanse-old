@@ -440,6 +440,7 @@ void gesamtbild::landmenu()
 // menupanel->landmenu();
 execCommand(QString("hide sidemenu"));		//lets the sidebar disappear, isn't needed for a landwalk.
 
+hf->landing();
 // 	tab[0]->hide();
 // 	tab[1]->hide();
 // 	tab[2]->hide();
