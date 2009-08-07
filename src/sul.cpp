@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "gesamtbild.h"
+#include "zeit.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QDir>
@@ -137,17 +138,18 @@ void gesamtbild::speichern()
 	savestream << _oh_version << "\n";
 	savestream << hf->durchlauf << "\n";
 	savestream << hf->schwierigkeit << "\n";
-	savestream << hf->minute << "\n";
-	savestream << hf->stunde << "\n";
-	savestream << hf->tag << "\n";		//5. Zeile
-	savestream << hf->jahr << "\n";
-	savestream << hf->tageslaenge << "\n";
+	savestream << hfgametime->retMinute() << "\n";
+	savestream << hfgametime->retHour() << "\n";
+	savestream << hfgametime->retDay() << "\n";		//5. Zeile
+	savestream << hfgametime->retMonth() << "\n";
+	savestream << hfgametime->retYear() << "\n";
+	savestream << hfgametime->retDayLength() << "\n";
 
 	savestream << hf->windgeschwindigkeit << "\n";
 	savestream << hf->windrichtung << "\n";
 // 	savestream << hf->activeship.id << "\n";
 
-	savestream << hf->anbord << "\n";	// 10. Zeile
+	savestream << hf->anbord << "\n";	// 10. Zeile + 1
 	savestream << hf->mapprops.stadtname << "\n";
 	savestream << hf->mapprops.mapname << "\n";
 // 	savestream << hf->mapprops.hintergrund << "\n";
@@ -265,11 +267,12 @@ QTextStream loadstream(&loadfile);
 	{
 	hf->durchlauf = loadstream.readLine().toInt();	/*qWarning()<< "Durchlauf"<<hf->durchlauf;*/
 	hf->schwierigkeit = loadstream.readLine().toInt();
-	hf->minute = loadstream.readLine().toFloat();
-	hf->stunde = loadstream.readLine().toInt();
-	hf->tag = loadstream.readLine().toInt();	//5. Zeile
-	hf->jahr = loadstream.readLine().toInt();
-	hf->tageslaenge = loadstream.readLine().toInt();
+	hfgametime->setMinute(loadstream.readLine().toFloat());
+	hfgametime->setHour(loadstream.readLine().toInt());
+	hfgametime->setDay(loadstream.readLine().toInt());	//5. Zeile
+	hfgametime->setMonth(loadstream.readLine().toInt());
+	hfgametime->setYear(loadstream.readLine().toInt());
+	hfgametime->setDayLength(loadstream.readLine().toInt());
 	hf->windgeschwindigkeit = loadstream.readLine().toInt();
 // qWarning() << "WV"<<hf->windgeschwindigkeit;
 
@@ -278,7 +281,7 @@ QTextStream loadstream(&loadfile);
 // 	= loadstream.readLine();
 // 	hf->activeship.id = loadstream.readLine().toInt();
 
-	QString anbord = loadstream.readLine();		// 10. Zeile
+	QString anbord = loadstream.readLine();		// 10. Zeile + 1
 	if(anbord == "0")
 	{
 		hf->anbord = false;

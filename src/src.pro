@@ -8,7 +8,8 @@ SOURCES += main.cpp \
  sul.cpp \
  produktion.cpp \
  tabpanel.cpp \
- konsole.cpp
+ konsole.cpp \
+ zeit.cpp
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \
@@ -27,7 +28,8 @@ HEADERS += schiff.h \
  waren.h \
  kontorklasse.h \
  tabpanel.h \
- konsole.h
+ konsole.h \
+ zeit.h
 
 
 

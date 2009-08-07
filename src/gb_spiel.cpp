@@ -199,6 +199,8 @@ void gesamtbild::spiel()
 	spielfensteraufbau();
 	qWarning() << "Spielfenster aufgebaut";
 
+	hfgametime = &(hf->spielzeit);
+	konsolenwidget->debug("timepointer set");
 	hf->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
 
@@ -319,7 +321,7 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 			QDialog *zeitw = new QDialog(this);
 			QVBoxLayout layout(zeitw);
-			QLabel *anzeige = new QLabel(tr("Zeit: Tag %1,").arg(hf->tag).append(QString("%1 Uhr").arg(hf->stunde)), zeitw);
+			QLabel *anzeige = new QLabel(tr("Zeit: Tag %1,").arg(hfgametime->retDay()).append(QString("%1 Uhr").arg(hfgametime->retHour())), zeitw);
 
 // 			anzeige->setText(anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute)));hf->stunde
 // 			qWarning() << anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute));

@@ -34,6 +34,8 @@
 #include "konsole.h"
 
 #include "schiff.h"
+
+#include "zeit.h"
 // #include "gebaude.h"
 // #include "stadtklasse.h"
 
@@ -67,7 +69,7 @@ public:
 
 	void keyEventWeiterleitung(QKeyEvent *event);
 
-
+zeit spielzeit;
 schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
 int schwierigkeit;
 bool tastatur;
@@ -77,10 +79,7 @@ bool anbord;
 // bool uhra;
 
 bool uhr;
-float minute;
-int stunde;
-int tag;
-int jahr;
+
 
 int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
 
@@ -171,6 +170,7 @@ public slots:
 private:
 
 QImage maphandlingimg;
+int zoomlvl;
 
 // qint8 aszene;
 // Gebaude *gebaude[50];

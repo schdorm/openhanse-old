@@ -27,6 +27,7 @@
 #include <QtGui/QFrame>
 
 #include "waren.h"
+#include "zeit.h"
 
 #include "stadtklasse.h"
 #include "kontorklasse.h"
@@ -86,6 +87,8 @@ private:
 bool spielbool;
 bool aktiv;
 qint8 schwierigkeitsgrad;
+
+zeit *hfgametime;
 
 stadtklasse stadt;
 kontorklasse kontor;

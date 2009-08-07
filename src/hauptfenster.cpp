@@ -78,10 +78,16 @@ hauptfenster::hauptfenster()
 	anbord=true;
 	pause = false;
 // 	uhra=false;
-	tageslaenge = 2000;
-	tag = 0;
-	stunde = 0;
-	minute = 0;
+// 	tageslaenge = 2000;
+// 	tag = 0;
+// 	stunde = 0;
+// 	minute = 0;
+	spielzeit.setYear(1350);
+	spielzeit.setMonth(4);
+	spielzeit.setDay(1);
+	spielzeit.setHour(12);
+	spielzeit.setMinute(0);
+	spielzeit.setDayLength(2000);
 
 	int randint = rand()%7;
 	windrichtung = randint;
@@ -251,7 +257,7 @@ if(!pause)
 				emit enterBuilding(object_type_tavern);
 			}
 
-			if(ort->toolTip() == "Uhr" || ort->toolTip() == "grosser Zeiger" || ort->toolTip() == "kleiner Zeiger")
+/*			if(ort->toolTip() == "Uhr" || ort->toolTip() == "grosser Zeiger" || ort->toolTip() == "kleiner Zeiger")
 			{
 #ifndef _RELEASE_
 			qWarning() << "Zeit" << tag << stunde << minute;
@@ -268,7 +274,7 @@ if(!pause)
 // 			zeitw.raise();
 // 			connect(&ok, SIGNAL(clicked()),this,SLOT(slotpause()));
 // 			connect(&ok, SIGNAL(clicked()),&zeitw,SLOT(close()));
-			}
+			}*/
 
 #ifndef _RELEASE_
 			 qWarning() << testschiff->pos() << event->posF() << (testschiff->x() - event->x()) << " \t" << testschiff->y() - event->y() << "\nVBar-Value:" <<verticalScrollBar()->value();
@@ -364,38 +370,143 @@ keyPressEvent(event);
 void hauptfenster::keyPressEvent(QKeyEvent *event)
 {
 konsolenwidget->debug(QString("void hauptfenster::keyPressEvent(QKeyEvent *event) ").append(event->text()));
-
-if(event->key() == Qt::Key_W && activeship.attribute.sollprozentgesetzteSegel < 1)
+switch (event->key())
 {
-activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel + 0.2;
-
-#ifndef _RELEASE_
-qWarning() << "Segel gesetzt:" << activeship.attribute.sollprozentgesetzteSegel;
-#endif
-
-}
-if(event->key() == Qt::Key_S  ) //&& 
-{
-
-if(event->modifiers() == Qt::NoModifier && activeship.attribute.sollprozentgesetzteSegel > 0)
+	case Qt::Key_W:
 	{
-		activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel - 0.2;
+		if(activeship.attribute.sollprozentgesetzteSegel < 1)
+		{
+			activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel + 0.2;
 
 #ifndef _RELEASE_
-		qWarning() << "Segel gerefft:" << activeship.attribute.sollprozentgesetzteSegel;
+			qWarning() << "Segel gesetzt:" << activeship.attribute.sollprozentgesetzteSegel;
 #endif
 
-		if(activeship.attribute.sollprozentgesetzteSegel<0.2)
-		{
-			activeship.attribute.sollprozentgesetzteSegel=0;
 		}
+		break;
+	}
+	case Qt::Key_S: 
+	{
+		if(event->modifiers() == Qt::NoModifier && activeship.attribute.sollprozentgesetzteSegel > 0)
+		{
+			activeship.attribute.sollprozentgesetzteSegel = activeship.attribute.sollprozentgesetzteSegel - 0.2;
+
+#ifndef _RELEASE_
+			qWarning() << "Segel gerefft:" << activeship.attribute.sollprozentgesetzteSegel;
+#endif
+
+			if(activeship.attribute.sollprozentgesetzteSegel<0.2)
+			{
+				activeship.attribute.sollprozentgesetzteSegel=0;
+			}
+		}
+
+		else if(event->modifiers() == Qt::ControlModifier)
+		{
+		emit savesig();
+		}
+		break;
+	}
+	
+	case Qt::Key_P:
+	{
+#ifndef _RELEASE_
+		qWarning() << "Pause" << pause;
+#endif
+		slotpause();
+		break;
+	}
+// 		static int zoomlvl;
+	case Qt::Key_Minus:		/*&& zoomlvl <2)*/
+	{
+		scale(0.8,0.8);
+		zoomlvl++;
+		break;
+	}
+	case Qt::Key_Plus:		/*&& zoomlvl >0)*/
+	{
+		scale(1.25,1.25);
+		zoomlvl--;
+		break;
+	}
+	
+	case Qt::Key_AsciiCircum:
+	{
+		qWarning() << "Open Console!";
+
+		konsolenwidget->show();
+		break;
+	}
+	case Qt::Key_Escape:
+	{
+		emit menusig();
+		qWarning() << "Menusig";
+		break;
+	}
+	
+	
+#ifndef _RELEASE_
+	case Qt::Key_L:
+	{
+		windgeschwindigkeit++;
+		break;
+	}
+	case Qt::Key_K:
+	{
+		windgeschwindigkeit--;
+		break;
+	}
+	case Qt::Key_Left:
+	{
+		activeship.attribute.ausrichtung += 0.2;
+		if(activeship.attribute.ausrichtung > 2 * M_PI)
+		{
+			activeship.attribute.ausrichtung = 0.1;
+		}
+		break;
+	}
+	case Qt::Key_Right:
+	{
+		activeship.attribute.ausrichtung -= 0.2;
+		if(activeship.attribute.ausrichtung < 0 )
+		{
+			activeship.attribute.ausrichtung = 2 * M_PI - 0.1;
+		}
+		break;
+	}
+	case Qt::Key_Up:
+	{
+		activeship.attribute.geschwindigkeit ++;
+		break;
 	}
 
-if(event->modifiers() == Qt::ControlModifier)
-{
-emit savesig();
+	case Qt::Key_Down:
+	{
+		activeship.attribute.geschwindigkeit--;
+		break;
+	}
+#endif
 }
-}
+#ifndef _RELEASE_
+
+	if(event->text() == "M" )
+	{
+	activeship.Ladung.taler +=1000;
+	}
+// 	else if(event->text() == "B" ||event->key() == Qt::Key_Up )
+// 	{
+// 	activeship.attribute.geschwindigkeit ++;
+// 	}
+// 
+// 	if(event->text() == "b" || event->key() == Qt::Key_Down)
+// 	{
+// 	activeship.attribute.geschwindigkeit--;
+// 	}
+
+
+#endif
+	
+	
 
 if(event->text() == "a" && activeship.attribute.sollsteuerruderausrichtung < 0.004)
 {
@@ -412,7 +523,7 @@ if(event->text() == "a" && activeship.attribute.sollsteuerruderausrichtung < 0.0
 // 	qWarning () << activeship.attribute.sollsteuerruderausrichtung;
 }
 
-if(event->text() == "d" && activeship.attribute.sollsteuerruderausrichtung > -0.004)
+else if(event->text() == "d" && activeship.attribute.sollsteuerruderausrichtung > -0.004)
 {
 	activeship.attribute.sollsteuerruderausrichtung = activeship.attribute.sollsteuerruderausrichtung - 0.0002;
 // 	activeship.attribute.sollausrichtung = activeship.attribute.ausrichtung;
@@ -424,7 +535,7 @@ if(event->text() == "d" && activeship.attribute.sollsteuerruderausrichtung > -0.
 
 }
 
-if(event->text() == "A" && activeship.attribute.segelausrichtung <= 1.5)
+else if(event->text() == "A" && activeship.attribute.segelausrichtung <= 1.5)
 {
 	activeship.attribute.segelausrichtung = activeship.attribute.segelausrichtung + 0.02;
 // 	activeship.attribute.sollausrichtung = activeship.attribute.ausrichtung;
@@ -437,7 +548,7 @@ if(event->text() == "A" && activeship.attribute.segelausrichtung <= 1.5)
 
 }
 
-if(event->text() == "D" && activeship.attribute.segelausrichtung >= -1.5)
+else if(event->text() == "D" && activeship.attribute.segelausrichtung >= -1.5)
 {
 	activeship.attribute.segelausrichtung = activeship.attribute.segelausrichtung - 0.02;
 // 	activeship.attribute.sollausrichtung = activeship.attribute.ausrichtung;
@@ -449,7 +560,11 @@ if(event->text() == "D" && activeship.attribute.segelausrichtung >= -1.5)
 #endif
 
 }
-
+else if(event->text() =="Q" || (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier))
+	{
+	close();
+	deleteLater();
+	}
 
 
 if(activeship.attribute.segelausrichtung <0.01 && activeship.attribute.segelausrichtung > -0.01)
@@ -473,135 +588,8 @@ sollsegel->setText(QString("SollSegelFl: %1").arg(activeship.attribute.sollproze
 sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(activeship.attribute.sollsteuerruderausrichtung));
 #endif
 
-	if(event->key() == Qt::Key_P)
-	{
-
-#ifndef _RELEASE_
-	qWarning() << "Pause" << pause;
-#endif
-	slotpause();
-// 		static bool pause;
-// 		if(!pause)
-// 		{
-// 			bewegung->stop();
-// 		}
-// 		if(pause)
-// 		{
-// 			bewegung->start(AKTUALISIERUNGSINTERVALL);
-// 		}
-// 
-// 		if(bewegung->isActive())
-// 		{
-// 			pause=false;
-// 		}
-// 		if(!bewegung->isActive())
-// 		{
-// 			pause=true;
-// 		}
-
-	}
-#ifndef _RELEASE_
-	if(event->key() == Qt::Key_L)
-	{
-		windgeschwindigkeit++;
-	}
-	if(event->key() == Qt::Key_K)
-	{
-		windgeschwindigkeit--;
-	}
-	if(event->key() == Qt::Key_Left)
-	{
-		activeship.attribute.ausrichtung += 0.2;
-		if(activeship.attribute.ausrichtung > 2 * M_PI)
-		{
-		activeship.attribute.ausrichtung = 0.1;
-		}
-	}
-	if(event->key() == Qt::Key_Right)
-	{
-	activeship.attribute.ausrichtung -= 0.2;
-		if(activeship.attribute.ausrichtung < 0 )
-		{
-		activeship.attribute.ausrichtung = 2 * M_PI - 0.1;
-		}
-	}
-
-	if(event->text() == "M" )
-	{
-	activeship.Ladung.taler +=1000;
-	}
-	if(event->text() == "B" ||event->key() == Qt::Key_Up )
-	{
-	activeship.attribute.geschwindigkeit +=20;
-	}
-
-	if(event->text() == "b" || event->key() == Qt::Key_Down)
-	{
-	activeship.attribute.geschwindigkeit--;
-	}
 
 
-#endif
-	if(event->text() =="Q" || (event->key() == Qt::Key_Q && event->modifiers() == Qt::ControlModifier))
-	{
-	close();
-	deleteLater();
-	}
-
-
-	if(event->key() == Qt::Key_Escape)
-	{
-	emit menusig();
-// 	qWarning() << "Menusig";
-	}
-
-
-
-	static int zoomlvl;
-	if(event->key() == Qt::Key_Minus /*&& zoomlvl <2*/)
-	{
-// 		scale(0.5,0.5);
-		scale(0.8,0.8);
-		zoomlvl++;
-	}
-	if(event->key() == Qt::Key_Plus /*&& zoomlvl >0*/)
-	{
-// 		scale(2,2);
-		scale(1.25,1.25);
-		zoomlvl--;
-	}
-	
-	if(event->key() == Qt::Key_AsciiCircum)
-	{
-	qWarning() << "Open Console!";
-
-	konsolenwidget->show();
-// 	emit sig_konsole();
-//  	QWidget *consoleframe = new QWidget (nativeParentWidget(),Qt::Popup);
-// 	konsole *konsolepanel = new konsole();
-// 	konsolepanel->setParent(consoleframe);
-// 	consoleframe->resize(nativeParentWidget()->width(), height()-200);
-// 	konsolepanel->resize(nativeParentWidget()->width(), height());
-
-// 	QPlainTextEdit *console = new QPlainTextEdit(consoleframe);
-// 	console->resize(nativeParentWidget()->width(), height()-200);
-// // 	console->setPlainText(QString("Hello World!"));
-// 	console->move(0,0);
-// 	console->setReadOnly(true);
-// 	
-// 	QLineEdit *commandline = new QLineEdit(consoleframe);
-// // 	commandline
-// 	
-// 	QVBoxLayout clayout(consoleframe);
-// 	clayout.addWidget(console);
-// 	clayout.addWidget(commandline);
-// 	
-// 	consoleframe->show();
-// 	connect(commandline, SIGNAL(textEdited(QString)), this, SLOT(setConsoleBuffer(QString)));
-// 	
-// 	connect(commandline, SIGNAL(returnPressed()), this, SLOT(execConsoleCommand()));
-// 	connect(commandline, SIGNAL(returnPressed()), commandline, SLOT(clear()));
-	}
 }
 
 
@@ -669,62 +657,9 @@ durchlauf++;
 // if(durchlauf % (tageslaenge/1440))
 
 // if(false)
-// if(durchlauf%2 == 0 && uhra)
-{
+// if(durchlauf%2 == 0 && uhra)u(fi                          
 
-minute += tageslaenge/1440;
-if(minute>=60)
-{
-minute = 0;
-stunde ++;
-}
-// stunde += tageslaenge/24;
-
-if(stunde >=24)
-{
-tag++;
-stunde=0;
-}
-
-// QList <QGraphicsItem*> sliste = szene[aszene]->items();
-if(uhr){
-QList <QGraphicsItem*> sliste = szene->items();
-
-for(QList <QGraphicsItem*>::iterator it = sliste.begin(); it < sliste.end(); ++it)
-{
-QGraphicsItem *handler = *it;
-if(handler->toolTip() == "grosser Zeiger")
-{
-// 	static int minute; minute ++;
-	handler->resetTransform();
-	QTransform t;
-	const int w = ((handler->boundingRect().width()/2));
-	const int h = int(handler->boundingRect().height()-1.8);
-
-	t.translate( w, h );
-	t.rotateRadians(minute * M_PI / 30);
-	t.translate( -w, -h );
-	handler->setTransform( t );
-	*it = handler;
-}
-if(handler->toolTip() == "kleiner Zeiger")
-{
-// 	static int minute;
-
-	handler->resetTransform();
-	QTransform t;
-	const int w = int((handler->boundingRect().width()/2));
-	const int h = int(handler->boundingRect().height()-1.8);
-
-	t.translate( w, h );
-	t.rotateRadians((minute/60 + stunde)* M_PI /6);
-// 	t.rotateRadians(minute * M_PI / 150);
-	t.translate( -w, -h );
-	handler->setTransform( t );
-	*it = handler;
-}
-}
-}}
+spielzeit.refreshTime();
 
 
 // qWarning() << "Aktualisieren";
