@@ -200,7 +200,8 @@ void gesamtbild::spiel()
 	qWarning() << "Spielfenster aufgebaut";
 
 	hfgametime = &(hf->spielzeit);
-	konsolenwidget->debug("timepointer set");
+	konsolenwidget->hfgametime = hfgametime;
+	konsolenwidget->debug("Timepointer set");
 	hf->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
 
@@ -278,7 +279,7 @@ void gesamtbild::spielfensteraufbau()
 
 	connect(hf, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
 
-	connect(hf, SIGNAL(Aktualisierung(int)),this,SLOT(produktion(int)));
+	connect(hf, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
 
 	connect(hf, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
 

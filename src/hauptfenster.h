@@ -224,7 +224,7 @@ void enterBuilding(int);
 void sig_anlegbar(bool);
 // void nichtmehranlegen();
 void handel();
-void Aktualisierung(int);
+void sig_newDay(int);
 void SIGgeschwindigkeit(int);
 void zeitsig();
 void savesig();

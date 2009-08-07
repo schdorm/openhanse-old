@@ -26,7 +26,7 @@ class zeit
 {
 
 int day_length;
-float minute;
+double minute;
 int hour;
 int day;
 int month;
@@ -41,15 +41,15 @@ zeit();
 void setClockHands(QGraphicsPixmapItem*, QGraphicsPixmapItem*);
 
 void refreshClock();
-void refreshTime();
+bool refreshTime();
 
-void setMinute(float);
+void setMinute(double);
 void setHour(int);
 void setDay(int);
 void setMonth(int);
 void setYear(int);
 
-float retMinute();
+double retMinute();
 int retHour();
 int retDay();
 int retMonth();

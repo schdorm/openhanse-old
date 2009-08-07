@@ -31,7 +31,7 @@ hour = 12;
 minute = 0;
 }
 
-float zeit::retMinute()
+double zeit::retMinute()
 {
 	return minute;
 }
@@ -67,7 +67,7 @@ void zeit::setDayLength(int dlparam)
 	day_length = dlparam;
 }
 
-void zeit::setMinute(float min)
+void zeit::setMinute(double min)
 {
 	minute = min;
 }
@@ -92,8 +92,13 @@ void zeit::setYear(int yearparam)
 	year = yearparam;
 }
 
-void zeit::refreshTime()
+bool zeit::refreshTime()		//bool -> new Day ?
 {
+
+if(existingClock)
+{
+	refreshClock();
+}
 
 minute += day_length/1440;
 if(minute>=60)
@@ -104,6 +109,7 @@ if(minute>=60)
 	{
 		day++;
 		hour = 0;
+		
 		if((day > 31 && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)) ||
 		(day > 30 && ( month == 4 || month == 6 || month == 9 || month == 11)) ||
 		(month == 2 && ((day > 28 && (year%4 != 0 || year%100 == 0)) || (day > 29 && year%4 == 0))))
@@ -111,9 +117,12 @@ if(minute>=60)
 			day = 1;
 			month++;
 		}
+		
+		return true;		//new day is rising
 	}
 }
 
+return false;				// still the old day ...
 }
 
 void zeit::refreshClock()

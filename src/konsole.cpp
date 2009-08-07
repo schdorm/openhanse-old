@@ -28,6 +28,7 @@
 
 konsole::konsole()
 {
+// 	lc_iterator = (lastcommands);
 	output = new QPlainTextEdit(this);
 	output->setReadOnly(true);
 	input = new QLineEdit(this);
@@ -38,6 +39,35 @@ konsole::konsole()
 	connect(input, SIGNAL(returnPressed()), this, SLOT(execCommand()));
 	connect(input, SIGNAL(returnPressed()), input, SLOT(clear()));
 
+}
+
+void konsole::keyPressEvent(QKeyEvent *event)
+{
+// qWarning() << event->key() << Qt::Key_Up << row << lastcommands.size();
+
+if(event->key() == Qt::Key_Up && row - 1 >= 0 && row <= lastcommands.size())
+{
+row--;
+input->setText(lastcommands.at(row));
+// qWarning() << "" << row;
+}
+else if(event->key() == Qt::Key_Down )
+{
+if(row + 1< lastcommands.size())
+{
+row++;
+input->setText(lastcommands.at(row));
+}
+else
+{
+row = lastcommands.size();
+input->setText(QString());
+}
+}
+else if(event->key() == Qt::Key_Escape)
+{
+hide();
+}
 }
 
 
@@ -61,6 +91,12 @@ void konsole::execCommand()
 {
 bool executed = false;
 QString inputstring = input->text();
+if(!inputstring.isEmpty())
+{
+lastcommands << inputstring;
+// lc_iterator.toBack();
+row = lastcommands.size();
+}
 output->appendPlainText(QString(inputstring).prepend("> "));
 if(inputstring.startsWith("load "))
 {executed = true;
@@ -118,6 +154,15 @@ return;
 if(inputstring == "test a")
 {
 emit sig_command(inputstring);
+return;
+}
+
+if(inputstring == QString("gametime"))
+{
+// output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(hfgametime->retDay()), QChar(hfgametime->retMonth()), QChar(hfgametime->retYear()), QChar(hfgametime->retHour()), QChar(int(hfgametime->retMinute()))));
+output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(hfgametime->retDay()), QString("%1").arg(hfgametime->retMonth()), QString("%1").arg(hfgametime->retYear()), QString("%1").arg(hfgametime->retHour()), QString("%1").arg(hfgametime->retMinute())));
+
+qWarning() << QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(hfgametime->retDay()), QString("%1").arg(hfgametime->retMonth()), QString("%1").arg(hfgametime->retYear()), QString("%1").arg(hfgametime->retHour()), QString("%1").arg(hfgametime->retMinute()));
 return;
 }
 

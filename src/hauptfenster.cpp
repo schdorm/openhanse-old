@@ -659,8 +659,6 @@ durchlauf++;
 // if(false)
 // if(durchlauf%2 == 0 && uhra)u(fi                          
 
-spielzeit.refreshTime();
-
 
 // qWarning() << "Aktualisieren";
 // static int durchlauf;	//Zaehlvariable fuer Ruder bzw. Geschwindigkeit -> Schiff ist traege und wird nur langsam schneller / lenkt langsam ----> jetzt Klassenvariable
@@ -674,9 +672,9 @@ if(durchlauf > 2000000000)	// 4 000 000 000
 durchlauf=0;
 }
 
-if(durchlauf % tageslaenge == 0)
+if(spielzeit.refreshTime())
 {
-emit Aktualisierung(durchlauf);
+emit sig_newDay(durchlauf);
 // qWarning() << "Aktualisierungssignal gesendet";
 }
 
@@ -1074,7 +1072,7 @@ if(durchlauf%10==0)
 
 void hauptfenster::windsetzen()
 {
-konsolenwidget->debug(QString("void hauptfenster::windsetzen()"));
+// konsolenwidget->debug(QString("void hauptfenster::windsetzen()"));
 
 	int aenderung = ((rand()%3)-1);
 	float faenderung = (rand()%23);

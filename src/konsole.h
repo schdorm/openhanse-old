@@ -24,14 +24,15 @@
 #include <QtGui/QWidget>
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QLineEdit>
+#include <QStringList>
 
-
+#include "zeit.h"
 
 class konsole : public QWidget
 {
 Q_OBJECT
 public:
-
+zeit *hfgametime;
 konsole();
 void debug(QString);
 
@@ -42,10 +43,15 @@ signals:
 void sig_command(QString);
 
 private:
-
 QPlainTextEdit *output;
 QLineEdit *input;
 
+QStringList lastcommands;
+// QStringListIterator lc_iterator(QStringList);
+int row;
+
+protected:
+void keyPressEvent(QKeyEvent *);
 };
 
 #endif
