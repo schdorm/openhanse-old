@@ -80,7 +80,7 @@ public:
 	bool schiffskollision(QGraphicsItem *);
 	
 	void landing();
-	
+	void activeLanding();
 
 	void keyEventWeiterleitung(QKeyEvent *event);
 
@@ -229,8 +229,14 @@ QCheckBox *fokussieren;
 #endif
 
 bool pause;
+struct landingstructure{
 LandingProcess::landing_process_states landingstate;
 QLineF landing_line;
+bool correctOrientation;
+double l_orientation;
+double orientation;
+double vx, vy;
+}landingstruct;
 
 // const static double pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628;
 		//PI eben

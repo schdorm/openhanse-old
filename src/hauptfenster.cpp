@@ -204,7 +204,7 @@ QPointF clickpoint = QPointF((event->x() + horizontalScrollBar()->value())/scale
 (event->y() + verticalScrollBar()->value())/scale);
 if(!pause)
 {
-	if(landingstate == LandingProcess::WaitingForDestination)
+	if(landingstruct.landingstate == LandingProcess::WaitingForDestination)
 	{
 	QGraphicsItem *it;
 	QList <QGraphicsItem *> qgilistAP = szene->items(clickpoint);
@@ -212,15 +212,28 @@ if(!pause)
 	{
 		if(it->data(0).toInt() >= 100 && it->data(0).toInt() < 500 )
 		{
-		landing_line = QLineF(QPointF(testschiff->x() + testschiff->boundingRect().width()/2, testschiff->y() + testschiff->boundingRect().height()/2), clickpoint);
-		landingstate = LandingProcess::ActiveLanding;
+		landingstruct.landing_line = QLineF(QPointF(testschiff->x() + testschiff->boundingRect().width()/2, testschiff->y() + testschiff->boundingRect().height()/2), clickpoint);
+		landingstruct.landingstate = LandingProcess::ActiveLanding;
+		landingstruct.vx = landingstruct.landing_line.dx() / landingstruct.landing_line.length();
+		landingstruct.vy = landingstruct.landing_line.dy() / landingstruct.landing_line.length();
+		landingstruct.l_orientation = (landingstruct.landing_line.angle() - 90) ;
+		if (landingstruct.l_orientation < 0)
+		{
+		landingstruct.l_orientation += 360;
+		}
+		landingstruct.l_orientation = landingstruct.l_orientation *  M_PI / 180;
+		konsolenwidget->debug(QString("landing_line_orientation: %1 ").arg(landingstruct.l_orientation));
+		konsolenwidget->debug(QString("landing_line_angle: %1 ").arg(landingstruct.landing_line.angle()));
+		konsolenwidget->debug(QString("landing orientation: %1 ").arg(landingstruct.orientation));
+		qWarning() << landingstruct.vx << landingstruct.landing_line.dx() << landingstruct.vy << landingstruct.landing_line.dy() << landingstruct.landing_line.length();
+		landingstruct.correctOrientation = false;
 		return;
 		}
 	}
 	
 	
 	}
- 	if(!anbord && landingstate == LandingProcess::AtLand)
+ 	if(!anbord && landingstruct.landingstate == LandingProcess::AtLand)
 	{
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
 		if(ort==0)
@@ -789,6 +802,12 @@ if(windgeschwindigkeit > 0)
 ///////SCHIFF////////////////////////////////////////
 //falls v>0 / geplant: v>0
 // qWarning() << "IfAnbord";
+if(landingstruct.landingstate == LandingProcess::ActiveLanding)
+{
+activeLanding();
+}
+
+
 if(anbord)
 {
 // qWarning() << "Beginn Schiffszeug";
