@@ -78,6 +78,7 @@ public:
 	void windsetzen();
 	void bewegungsbeschreibung();
 	bool schiffskollision(QGraphicsItem *);
+	bool isLand(QGraphicsItem *);
 	
 	void landing();
 	void activeLanding();
@@ -133,7 +134,6 @@ object_type_namespacexyz
 
 
 
-QList <QGraphicsPixmapItem*> landobjektliste;
 // QList <mapfarbdefstruct> farbdefliste;
 struct schuss{
 QGraphicsPixmapItem *kugel;
@@ -163,6 +163,7 @@ QGraphicsPixmapItem *testschiff ;
 QImage collimg[3];
 // QList<QGraphicsPixmapItem*> schi
 // QList <QGraphicsItem *> hafenobjliste;
+QList <QGraphicsPixmapItem*> landobjektliste;
 
 konsole *konsolenwidget;
 

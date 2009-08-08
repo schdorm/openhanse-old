@@ -1376,6 +1376,18 @@ bool hauptfenster::schiffskollision(QGraphicsItem *land)
 	else return false;
 }
 
+bool hauptfenster::isLand(QGraphicsItem *checkqgi)
+{
+	if(checkqgi->data(0).toInt() >= 100 && checkqgi->data(0).toInt() < 1000)
+	{
+		qWarning() << "Land";
+	      return true;
+	}
+	else return false;
+}
+
+
+
 void hauptfenster::schuss()
 {
 konsolenwidget->debug(QString("void hauptfenster::schuss()"));

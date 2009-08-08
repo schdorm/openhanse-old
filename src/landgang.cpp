@@ -63,13 +63,15 @@ testschiff = szene->addPixmap(QPixmap(":img/schiffe/sh08_braun.png"));
 testschiff->setPos(activeship.graphicsitem->x() + (0.5 + ((cos(activeship.attribute.ausrichtung) + 1)/2 ))* activeship.graphicsitem->boundingRect().width(), activeship.graphicsitem->y() + (0.5 + (sin(activeship.attribute.ausrichtung) + 1)/2) 	* activeship.graphicsitem->boundingRect().height());
 QTransform t = activeship.graphicsitem->transform();
 testschiff->setTransform(t);
+testschiff->setZValue(1);
 landingstruct.orientation = activeship.attribute.ausrichtung;
 }
 
 void hauptfenster::activeLanding()
 {
+const int const_landungstransparenz = 80;
 centerOn(testschiff);
-const int i = 1;		//Zufaelliger Einfluss .... 
+const int i = 3;		//Zufaelliger Einfluss .... 
 if(!landingstruct.correctOrientation)
 {
 	if((landingstruct.orientation - landingstruct.l_orientation < 0.03 && landingstruct.orientation - landingstruct.l_orientation > -0.03) || (landingstruct.orientation - landingstruct.l_orientation - 2 * M_PI < 0.03 && landingstruct.orientation - landingstruct.l_orientation - 2 * M_PI > -0.03) || (landingstruct.orientation - landingstruct.l_orientation + 2 * M_PI < 0.03 && landingstruct.orientation - landingstruct.l_orientation + 2 * M_PI > -0.03) )
@@ -130,6 +132,43 @@ return;
 else
 {
 		testschiff->moveBy(i * landingstruct.vx, i * landingstruct.vy);
+		static int durchlauf;
+		durchlauf ++;
+		if(durchlauf%15 == 0)
+		{
+		
+		QList <QGraphicsItem*>collList =  testschiff->collidingItems();
+		if(!collList.isEmpty())
+		{
+		qWarning() << "debug A";
+			QGraphicsPixmapItem *giit;		//GraphicsItemITerator
+			activeship.attribute.xposm = testschiff->x() + testschiff->boundingRect().width()/2;
+			activeship.attribute.yposm = testschiff->y() + testschiff->boundingRect().height()/2;
+			foreach(giit, landobjektliste)
+			{
+				if(schiffskollision(giit))
+				{
+				qWarning() << "Debug B";
+				  int xms = testschiff->x() - giit->x(),	// X Mitte Schiff
+				  yms = testschiff->y() - giit->y();	// Y ~
+// 				  QImage colldimg = QImage((static_cast<QGraphicsPixmapItem*>(giit)).pixmap());
+				  QImage colldimg = QImage(giit->pixmap().toImage());
+
+				  if(xms > 0 && xms < colldimg.width() && yms >= 0 && yms < colldimg.height())
+				    {
+					float tempfloat = qAlpha(colldimg.pixel(xms, yms));
+					qWarning() << tempfloat;
+
+					if(tempfloat > const_landungstransparenz)
+					{
+// 						bremsfaktor = tempfloat;
+						landingstruct.landingstate = LandingProcess::AtLand;
+					}
+				    }
+				}
+			}
+		}
+		}
 }
 
 }

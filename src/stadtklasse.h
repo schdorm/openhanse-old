@@ -38,6 +38,7 @@ public:
 Warenstruct stadtwaren;
 QString stadtname;
 int stadtbewohner;
+bool hasOffice;		//Kontor/Office built in this town.
 
 int hproduktion[5];
 int mproduktion[5];
