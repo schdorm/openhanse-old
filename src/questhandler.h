@@ -18,46 +18,28 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _kontorklasse_h
-#define _kontorklasse_h
+#ifndef _questhandler_h
+#define _questhandler_h
 
-#include "waren.h"
-class kontorklasse
+#include <QtCore/QMap>
+#include "questclass.h"
+
+class QuestHandler //: public QObject 
 {
+// Q_OBJECT
 public:
-int id;
-int stadtid;
-QString stadt;
+	void indexQuestFile(QString);
 
-Warenstruct Lager;
-Warenstruct Produktion;
-///
+// public slots:
 
-void init(const QString ort)
-{
-	static int idzaehler;
-	id=idzaehler;
-	idzaehler++;
-	stadt = ort;
+// signals:
 
-	for(int i=0; i< const_warenanzahl; i++)
-	{
-		Lager.ware[i] = 0;
-		Produktion.ware[i] = 0;
-	}
+private:
+QMap<QString, int> questIndexList;
+QList<quest> activeTasks;
 
-	Lager.kapazitaet = 800;
-	Lager.fuellung = 0;
-	Lager.taler = 0;
-	Lager.mengenbilanz = 0;
-	Produktion.taler = 0;
-}
+// protected:
 
 };
-
-
-
-
-
 
 #endif

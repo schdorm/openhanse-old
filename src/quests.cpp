@@ -18,46 +18,62 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _kontorklasse_h
-#define _kontorklasse_h
 
-#include "waren.h"
-class kontorklasse
+#include "questclass.h"
+//  #include "hauptfenster.h"
+#include "questhandler.h"
+ 
+ #include <QtDebug>
+ #include <QtCore/QFile>
+ #include <QtCore/QXmlStreamReader>
+
+ 
+void QuestHandler::indexQuestFile(QString questfile_name)
 {
-public:
-int id;
-int stadtid;
-QString stadt;
 
-Warenstruct Lager;
-Warenstruct Produktion;
-///
+  if(!questIndexList.contains(questfile_name))
+  {
+  int count = 0;
+    QFile indexingfile(questfile_name);
+    if(indexingfile.open(QIODevice::ReadOnly))
+    {
 
-void init(const QString ort)
-{
-	static int idzaehler;
-	id=idzaehler;
-	idzaehler++;
-	stadt = ort;
+	
 
-	for(int i=0; i< const_warenanzahl; i++)
+	QXmlStreamReader indexer(&indexingfile);
+	while(!indexer.atEnd())
 	{
-		Lager.ware[i] = 0;
-		Produktion.ware[i] = 0;
+		indexer.readNext();
+		if(/*indexer.tokenType() == QXmlStreamReader::StartElement*/indexer.isStartElement())
+		{
+			qWarning() << indexer.name().toString();
+			if(indexer.name().toString() == "quest")
+			{
+				if(indexer.attributes().value("questtype").toString() == "startquest" )
+				{
+					count++;
+				}
+			  
+			}
+		}
 	}
-
-	Lager.kapazitaet = 800;
-	Lager.fuellung = 0;
-	Lager.taler = 0;
-	Lager.mengenbilanz = 0;
-	Produktion.taler = 0;
+	questIndexList[questfile_name] = count;
+    }
+    
+  }
 }
 
-};
+void quest::readQuest(QString questfile_name)
+{
+if(!questfile_name.isEmpty() && questfile_name.endsWith(".ohq"))
+{
+QFile questfile(questfile_name);
+if(questfile.open(QIODevice::ReadOnly))
+{
 
 
+	QXmlStreamReader reader(&questfile);
 
-
-
-
-#endif
+}
+}
+}

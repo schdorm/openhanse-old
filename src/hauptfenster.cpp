@@ -233,7 +233,7 @@ if(!pause)
 	
 	
 	}
- 	if(!anbord && landingstruct.landingstate == LandingProcess::AtLand)
+	if(!anbord && landingstruct.landingstate == LandingProcess::AtLand)
 	{
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
 		if(ort==0)

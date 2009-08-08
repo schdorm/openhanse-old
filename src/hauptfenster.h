@@ -84,6 +84,8 @@ public:
 	void activeLanding();
 
 	void keyEventWeiterleitung(QKeyEvent *event);
+	
+// 	void questHandler(QString);
 
 zeit spielzeit;
 schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
@@ -241,7 +243,6 @@ double vx, vy;
 
 // const static double pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628;
 		//PI eben
-
 
 
 signals:

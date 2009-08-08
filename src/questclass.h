@@ -18,46 +18,45 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _kontorklasse_h
-#define _kontorklasse_h
+#ifndef _quest_h
+#define _quest_h
 
-#include "waren.h"
-class kontorklasse
+
+#include "zeit.h"
+
+namespace Quest
 {
-public:
-int id;
-int stadtid;
-QString stadt;
-
-Warenstruct Lager;
-Warenstruct Produktion;
-///
-
-void init(const QString ort)
-{
-	static int idzaehler;
-	id=idzaehler;
-	idzaehler++;
-	stadt = ort;
-
-	for(int i=0; i< const_warenanzahl; i++)
+	enum questtasks
 	{
-		Lager.ware[i] = 0;
-		Produktion.ware[i] = 0;
-	}
-
-	Lager.kapazitaet = 800;
-	Lager.fuellung = 0;
-	Lager.taler = 0;
-	Lager.mengenbilanz = 0;
-	Produktion.taler = 0;
+	talk,
+	obtainGoods,
+	delivery,
+	
+	};
+	enum questtypes
+	{
+	startofquest,
+	step,
+	endofquest,
+	
+	};
 }
 
+
+class quest
+{
+public:
+zeit *hfgametime;
+void readQuest(QString);
+
+
+private:
+
+Quest::questtypes questtype;
+int destinationTownID;
+bool questfollowing;
+
+
 };
-
-
-
-
-
 
 #endif

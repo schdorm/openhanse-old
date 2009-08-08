@@ -293,23 +293,31 @@ lager = hf->activeship.Ladung;
 //   lager = hf->activeship.Ladung;
 
 rahmen = new QFrame(this);
-rahmen->setGeometry(hf->x(),hf->y(),hf->width(),hf->height());
-hf->hide();
+// rahmen->setGeometry(hf->x(),hf->y(),hf->width(),hf->height());
+// hf->hide();
 // // rahmen->move(5,0);
-//  rahmen->setFrameShape(QFrame::Panel);
+rahmen->setFrameShape(QFrame::StyledPanel);
 rahmen->setFrameShadow(QFrame::Sunken);
 // rahmen->setPalette(QPalette(Qt::white));
 // rahmen->setPalette(QPalette::Base);
-rahmen->setBackgroundRole(QPalette::Window);
+ rahmen->setBackgroundRole(QPalette::Window);
 // rahmen->setBackgroundRole(QPalette::Base);
-rahmen->setAutoFillBackground(true);
+ rahmen->setAutoFillBackground(true);
 rahmen->setLineWidth(5);
 
 hwin = new handelsfenster();
+
+// hwin->setBackgroundRole(QPalette::Window);
+
+// hwin->setAutoFillBackground(true);
+
 // hwin->setPalette(QPalette(Qt::white));
 // hwin->setAutoFillBackground(true);
 // rahmen->resize(hwin->width(),hwin->height());
 hwin->setParent(rahmen);
+rahmen->setMinimumSize(753, 600);
+//  rahmen->setGeometry(hf->x(),hf->y(),hwin->width(),hwin->height());
+rahmen->move(hf->x() + (hf->width() - rahmen->width())/2, hf->y() + (hf->height() - rahmen->height())/2);
 
 
 // lager = hf->activeship.Ladung;

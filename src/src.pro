@@ -9,7 +9,9 @@ SOURCES += main.cpp \
  produktion.cpp \
  tabpanel.cpp \
  konsole.cpp \
- zeit.cpp
+ zeit.cpp \
+ quests.cpp
+
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \
@@ -29,8 +31,9 @@ HEADERS += schiff.h \
  kontorklasse.h \
  tabpanel.h \
  konsole.h \
- zeit.h
-
+ zeit.h \
+questclass.h \
+questhandler.h
 
 
 QMAKE_CXXFLAGS_RELEASE += -Wall

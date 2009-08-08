@@ -134,7 +134,7 @@ else
 		testschiff->moveBy(i * landingstruct.vx, i * landingstruct.vy);
 		static int durchlauf;
 		durchlauf ++;
-		if(durchlauf%15 == 0)
+		if(durchlauf%10 == 0)
 		{
 		
 		QList <QGraphicsItem*>collList =  testschiff->collidingItems();
