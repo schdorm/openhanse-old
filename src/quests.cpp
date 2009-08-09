@@ -59,6 +59,7 @@ void QuestHandler::indexQuestFile(QString questfile_name)
 	}
 	questIndexList[questfile_name] = count;
     }
+    indexingfile.close();
     
   }
 }
