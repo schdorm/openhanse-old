@@ -36,6 +36,9 @@ echo "Make"
 make 2> ../bin/error.log
 echo "Done"
 
+sh update.sh
+
 clear
 echo "Errors while make:"
 cat ../bin/error.log
+

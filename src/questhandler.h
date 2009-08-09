@@ -23,6 +23,7 @@
 
 #include <QtCore/QMap>
 #include "questclass.h"
+#include "hauptfenster.h"
 
 class QuestHandler //: public QObject 
 {
@@ -30,6 +31,7 @@ class QuestHandler //: public QObject
 public:
 	void indexQuestFile(QString);
 
+void setHFPointer(hauptfenster *);
 // public slots:
 
 // signals:
@@ -37,7 +39,7 @@ public:
 private:
 QMap<QString, int> questIndexList;
 QList<quest> activeTasks;
-
+hauptfenster *hfpointer;
 // protected:
 
 };

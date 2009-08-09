@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -63,6 +63,11 @@ void QuestHandler::indexQuestFile(QString questfile_name)
   }
 }
 
+void QuestHandler::setHFPointer(hauptfenster *hfp)
+{
+hfpointer = hfp;
+}
+
 void quest::readQuest(QString questfile_name)
 {
 if(!questfile_name.isEmpty() && questfile_name.endsWith(".ohq"))
@@ -73,7 +78,7 @@ if(questfile.open(QIODevice::ReadOnly))
 
 
 	QXmlStreamReader reader(&questfile);
-
+questfile.close();
 }
 }
 }
