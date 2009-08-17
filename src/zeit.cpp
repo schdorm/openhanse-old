@@ -20,7 +20,18 @@
 
 #include "zeit.h"
 
-zeit::zeit()
+// zeit::zeit()
+// {
+// existingClock = false;
+// day_length = 2000;
+// year = 1350;
+// month = 4;
+// day = 1;
+// hour = 12;
+// minute = 0;
+// }
+
+void zeit::init()
 {
 existingClock = false;
 day_length = 2000;

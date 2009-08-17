@@ -17,47 +17,65 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _zeit_h
-#define _zeit_h
+#include <stdlib.h>
+#include <math.h>
+#include "wind.h"
 
-#include <QtGui/QGraphicsPixmapItem>
 
-class zeit
+void windclass::init()
 {
+	dir = double (rand()%7);
+	v = rand() %30 +5;
+}
 
-int day_length;
-double minute;
-int hour;
-int day;
-int month;
-int year;
+void windclass::refresh()
+{
+	int aenderung = ((rand()%3)-1);
+	double faenderung = (rand()%23);
+	if((aenderung*M_PI)/ (1+faenderung*10) < 0.2 && (aenderung*M_PI)/ (1+faenderung*10) > -0.2)
+	{
+		dir = dir + (aenderung*M_PI)/(1+faenderung*10);
+	}
+	if(dir > 2 * M_PI)
+	{
+		dir =0;
+	}
 
-bool existingClock;
-QGraphicsPixmapItem *smallclockhand;
-QGraphicsPixmapItem *bigclockhand;
-public:
-// zeit();
-void init();
+	else if(dir < 0)
+	{
+		dir =2 * M_PI;
+	}
 
-void setClockHands(QGraphicsPixmapItem*, QGraphicsPixmapItem*);
+	v = v + ((rand()%3)-1);
 
-void refreshClock();
-bool refreshTime();
+	if(v > 90)
+	{
+		v=90;
+	}
 
-void setMinute(double);
-void setHour(int);
-void setDay(int);
-void setMonth(int);
-void setYear(int);
+	else if(v < 0)
+	{
+	v=1;
+	}
+}
 
-double retMinute();
-int retHour();
-int retDay();
-int retMonth();
-int retYear();
+void windclass::setDir(double param_dir)
+{
+dir = param_dir;
+}
 
-void setDayLength(int);
-int retDayLength();
-};
+double windclass::retDir()
+{
+return dir;
+}
 
-#endif
+void windclass::setV(int param_v)
+{
+v = param_v;
+}
+
+int windclass::retV()
+{
+return v;
+}
+

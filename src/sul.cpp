@@ -145,8 +145,8 @@ void gesamtbild::speichern()
 	savestream << hfgametime->retYear() << "\n";
 	savestream << hfgametime->retDayLength() << "\n";
 
-	savestream << hf->windgeschwindigkeit << "\n";
-	savestream << hf->windrichtung << "\n";
+	savestream << hf->wind.retV() << "\n";
+	savestream << hf->wind.retDir() << "\n";
 // 	savestream << hf->activeship.id << "\n";
 
 	savestream << hf->anbord << "\n";	// 10. Zeile + 1
@@ -273,11 +273,11 @@ QTextStream loadstream(&loadfile);
 	hfgametime->setMonth(loadstream.readLine().toInt());
 	hfgametime->setYear(loadstream.readLine().toInt());
 	hfgametime->setDayLength(loadstream.readLine().toInt());
-	hf->windgeschwindigkeit = loadstream.readLine().toInt();
+	hf->wind.setV( loadstream.readLine().toInt());
 // qWarning() << "WV"<<hf->windgeschwindigkeit;
 
 // 	loadstream >> hf->windrichtung ;
-	hf->windrichtung = loadstream.readLine().toFloat();
+	hf->wind.setDir(loadstream.readLine().toFloat());
 // 	= loadstream.readLine();
 // 	hf->activeship.id = loadstream.readLine().toInt();
 

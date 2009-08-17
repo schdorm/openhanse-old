@@ -17,47 +17,26 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _zeit_h
-#define _zeit_h
+#ifndef _wind_h
+#define _wind_h
 
-#include <QtGui/QGraphicsPixmapItem>
-
-class zeit
+class windclass
 {
 
-int day_length;
-double minute;
-int hour;
-int day;
-int month;
-int year;
+int v;
+double dir;
 
-bool existingClock;
-QGraphicsPixmapItem *smallclockhand;
-QGraphicsPixmapItem *bigclockhand;
 public:
-// zeit();
+
 void init();
 
-void setClockHands(QGraphicsPixmapItem*, QGraphicsPixmapItem*);
+void refresh();
 
-void refreshClock();
-bool refreshTime();
+void setDir(double);
+double retDir();
 
-void setMinute(double);
-void setHour(int);
-void setDay(int);
-void setMonth(int);
-void setYear(int);
-
-double retMinute();
-int retHour();
-int retDay();
-int retMonth();
-int retYear();
-
-void setDayLength(int);
-int retDayLength();
+void setV(int);
+int retV();
 };
 
 #endif

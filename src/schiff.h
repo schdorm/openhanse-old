@@ -27,6 +27,22 @@ class schiffsklasse
 {
 
 private:
+int v;
+int control_velocity;
+double settedSails;
+double toSettedSails;
+bool hasMoved;
+
+double dir;
+double toDir;	// mouse-control
+double rudderDir;	//keyboard-control
+double toRudderDir;	// 	''
+
+// control-difficulty +
+double sailDir;
+// double toSailDir;
+
+
 
 enum schiffstypen
 	{
@@ -61,7 +77,7 @@ desc attribute;
 Warenstruct Ladung;
 
 QString schiffsname;
-quint16 id;
+int id;
 schiffstypen schiffstyp;
 int zustand;
 int manvzustand;		//Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
@@ -71,6 +87,9 @@ int besatzung;
 QString filename;
 int schifflange;	//entspricht SchiffsBildY
 int schiffbreite;	//entspricht SchiffsBildX
+
+int control_difficulty;
+bool mouse_control;
 
 void init()					///== RESET
 {
@@ -103,6 +122,28 @@ void init()					///== RESET
 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
 	Ladung.kapazitaet = rand()%2001;
 }
+
+// control: set - fct.
+void set_ToSettedSails(double);
+void set_SailDir(double);
+void set_ToRudderDir(double);
+void set_ToDir(double);
+
+// control: Return - fct.
+int ret_V();
+double ret_SettedSails();
+double ret_ToSettedSails();
+double ret_SailDir();
+// double ret_ToSailDir();
+double ret_Dir();
+double ret_ToDir();
+double ret_RudderDir();
+double ret_ToRudderDir();
+
+
+// void bewegungsbeschreibung();
+void calcMovement(int, double);
+void moveGraphics();
 
 
 };

@@ -10,7 +10,10 @@ SOURCES += main.cpp \
  tabpanel.cpp \
  konsole.cpp \
  zeit.cpp \
- quests.cpp
+ wind.cpp \
+ schiff.cpp \
+ quests.cpp 
+
 
 TEMPLATE = app
 CONFIG += warn_on \
@@ -32,6 +35,7 @@ HEADERS += schiff.h \
  tabpanel.h \
  konsole.h \
  zeit.h \
+ wind.h \
 questclass.h \
 questhandler.h
 

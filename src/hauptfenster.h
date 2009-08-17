@@ -36,6 +36,9 @@
 #include "schiff.h"
 
 #include "zeit.h"
+
+#include "wind.h"
+
 // #include "gebaude.h"
 // #include "stadtklasse.h"
 
@@ -75,8 +78,8 @@ public:
 	void karteladen(QString);
 
 	void starttimer();
-	void windsetzen();
-	void bewegungsbeschreibung();
+// 	void windsetzen();
+// 	void bewegungsbeschreibung();
 	bool schiffskollision(QGraphicsItem *);
 	bool isLand(QGraphicsItem *);
 	
@@ -89,6 +92,9 @@ public:
 
 zeit spielzeit;
 schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
+
+windclass wind;
+
 int schwierigkeit;
 bool tastatur;
 
@@ -101,8 +107,8 @@ bool uhr;
 
 int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
 
-int windgeschwindigkeit;
-float windrichtung;
+// int windgeschwindigkeit;
+// float windrichtung;
 
 quint32 durchlauf;
 

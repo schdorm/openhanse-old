@@ -26,12 +26,12 @@ const int const_waffen = 10;
 
 struct Warenstruct{
 int taler;
-qint16 ware[const_warenanzahl];
-qint16 waffe[const_waffen];
-qint32 kapazitaet;
-qint16 fuellung;
+int ware[const_warenanzahl];
+int waffe[const_waffen];
+int kapazitaet;
+int fuellung;
 
-qint16 mengenbilanz;				//Fuer Handel
+int mengenbilanz;				//Fuer Handel
 };
 
 enum Ware
