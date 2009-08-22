@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,10 +17,29 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef _BUILDINGS_H
+#define _BUILDINGS_H
+#include <QtGui/QGraphicsItem>
+// #include <QtGui/QMouseEvent>
+// #include <QtGui/QGraphicsScene>
+// #include <QtCore/QObject>
+#include "definitions.h"
 
-#ifndef _FUNCTIONS_H
-#define _FUNCTIONS_H
+class BuildingClass		//Gebaudeklasse
+{
+public:
+// QString name;
 
-void debug();
+void set_GraphicsItem(QGraphicsItem *);
+
+protected:
+QString cityname;
+int cityID;
+int workers;
+Tax::levels tax_level;
+QGraphicsItem *graphicsitem;
+ObjectType::object_types_def type;
+double state;
+};
 
 #endif

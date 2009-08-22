@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -25,7 +25,7 @@
 
 void hauptfenster::landgang()
 {
-activeship.attribute.geschwindigkeit = 0;
+gamedata->active_ship->brake(1);
 emit SIGgeschwindigkeit(0);
 anbord=false;
 qWarning() << "angelegt";
@@ -47,7 +47,7 @@ foreach(it, landobjektliste)
 {
 	if(schiffskollision(it))
 	{
-		landingstruct.landingstate = LandingProcess::AtLand;
+		gamedata->landingstruct.landingstate = LandingProcess::AtLand;
 		return;
 	}
 }
@@ -56,71 +56,71 @@ foreach(it, landobjektliste)
 // }
 // else
 // {
-landingstruct.landingstate = LandingProcess::WaitingForDestination;
+gamedata->landingstruct.landingstate = LandingProcess::WaitingForDestination;
 // }
-activeship.graphicsitem = testschiff;
-testschiff = szene->addPixmap(QPixmap(":img/schiffe/sh08_braun.png"));
-testschiff->setPos(activeship.graphicsitem->x() + (0.5 + ((cos(activeship.attribute.ausrichtung) + 1)/2 ))* activeship.graphicsitem->boundingRect().width(), activeship.graphicsitem->y() + (0.5 + (sin(activeship.attribute.ausrichtung) + 1)/2) 	* activeship.graphicsitem->boundingRect().height());
-QTransform t = activeship.graphicsitem->transform();
-testschiff->setTransform(t);
-testschiff->setZValue(1);
-landingstruct.orientation = activeship.attribute.ausrichtung;
+// activeship.graphicsitem = gamedata->landingstruct.landingShip_gi;
+gamedata->landingstruct.landingShip_gi = szene->addPixmap(QPixmap(":img/schiffe/sh08_braun.png"));
+// gamedata->landingstruct.landingShip_gi->setPos(activeship.graphicsitem->x() + (0.5 + ((cos(activeship.attribute.ausrichtung) + 1)/2 ))* activeship.graphicsitem->boundingRect().width(), activeship.graphicsitem->y() + (0.5 + (sin(activeship.attribute.ausrichtung) + 1)/2) 	* activeship.graphicsitem->boundingRect().height());
+QTransform t = gamedata->active_ship->graphicsitem->transform();
+gamedata->landingstruct.landingShip_gi->setTransform(t);
+gamedata->landingstruct.landingShip_gi->setZValue(1);
+gamedata->landingstruct.orientation = gamedata->active_ship->ret_Dir();
 }
 
 void hauptfenster::activeLanding()
 {
 const int const_landungstransparenz = 80;
-centerOn(testschiff);
+centerOn(gamedata->landingstruct.landingShip_gi);
 const int i = 3;		//Zufaelliger Einfluss .... 
-if(!landingstruct.correctOrientation)
+if(!gamedata->landingstruct.correctOrientation)
 {
-	if((landingstruct.orientation - landingstruct.l_orientation < 0.03 && landingstruct.orientation - landingstruct.l_orientation > -0.03) || (landingstruct.orientation - landingstruct.l_orientation - 2 * M_PI < 0.03 && landingstruct.orientation - landingstruct.l_orientation - 2 * M_PI > -0.03) || (landingstruct.orientation - landingstruct.l_orientation + 2 * M_PI < 0.03 && landingstruct.orientation - landingstruct.l_orientation + 2 * M_PI > -0.03) )
+	if((gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation < 0.03 && gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation > -0.03) || (gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation - 2 * M_PI < 0.03 && gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation - 2 * M_PI > -0.03) || (gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation + 2 * M_PI < 0.03 && gamedata->landingstruct.orientation - gamedata->landingstruct.l_orientation + 2 * M_PI > -0.03) )
 	{
-		landingstruct.orientation = landingstruct.l_orientation;
-		landingstruct.correctOrientation = true;
-		 const int w = testschiff->boundingRect().width()/2;
-		  const int h = testschiff->boundingRect().height()/2;
-		  testschiff->resetTransform();
+		gamedata->landingstruct.orientation = gamedata->landingstruct.l_orientation;
+		gamedata->landingstruct.correctOrientation = true;
+		 const int w = gamedata->landingstruct.landingShip_gi->boundingRect().width()/2;
+		  const int h = gamedata->landingstruct.landingShip_gi->boundingRect().height()/2;
+		  gamedata->landingstruct.landingShip_gi->resetTransform();
 		QTransform t;
 		t.translate( w, h );
-		t.rotateRadians(-landingstruct.orientation);
+		t.rotateRadians(-gamedata->landingstruct.orientation);
 		t.translate( -w, -h );
-		testschiff->setTransform( t );
+		gamedata->landingstruct.landingShip_gi->setTransform( t );
 		return;
 	}
 
-	if(landingstruct.l_orientation - landingstruct.orientation < -M_PI || landingstruct.l_orientation - landingstruct.orientation > M_PI)
+	if(gamedata->landingstruct.l_orientation - gamedata->landingstruct.orientation < -M_PI || gamedata->landingstruct.l_orientation - gamedata->landingstruct.orientation > M_PI)
 	{
-	landingstruct.orientation -= 0.035;
+	gamedata->landingstruct.orientation -= 0.035;
 // 	printf("--");
-// 	qWarning() << landingstruct.orientation;
+// 	qWarning() << gamedata->landingstruct.orientation;
 	}
 	else
 	{
-	landingstruct.orientation += 0.035;
+	gamedata->landingstruct.orientation += 0.035;
 // 	printf("++");
-// 	qWarning() << landingstruct.orientation;
+// 	qWarning() << gamedata->landingstruct.orientation;
 	}
 	
-	if(landingstruct.orientation > (2 * M_PI) - 0.005)
+	if(gamedata->landingstruct.orientation > (2 * M_PI) - 0.005)
 	{
-	landingstruct.orientation = 0;
+	gamedata->landingstruct.orientation = 0;
 	}
 	
-	if(landingstruct.orientation < (-2 * M_PI) + 0.005)
+	if(gamedata->landingstruct.orientation < (-2 * M_PI) + 0.005)
 	{
-	landingstruct.orientation = 0;
+	gamedata->landingstruct.orientation = 0;
 	}
 
 
- 	const int w = testschiff->boundingRect().width()/2;
- 	const int h = testschiff->boundingRect().height()/2;
-	testschiff->resetTransform();
+ 	const int w = gamedata->landingstruct.landingShip_gi->boundingRect().width()/2;
+ 	const int h = gamedata->landingstruct.landingShip_gi->boundingRect().height()/2;
+	gamedata->landingstruct.landingShip_gi->resetTransform();
 	QTransform t;
 	t.translate( w, h );
-	t.rotateRadians(-landingstruct.orientation);
+	t.rotateRadians(-gamedata->landingstruct.orientation);
 	t.translate( -w, -h );
-	testschiff->setTransform( t );
+	gamedata->landingstruct.landingShip_gi->setTransform( t );
 
 
 return;
@@ -131,26 +131,26 @@ return;
 // move um dy/length LE in Y und um dx/length EH in X-Richtung
 else
 {
-		testschiff->moveBy(i * landingstruct.vx, i * landingstruct.vy);
+		gamedata->landingstruct.landingShip_gi->moveBy(i * gamedata->landingstruct.vx, i * gamedata->landingstruct.vy);
 		static int durchlauf;
 		durchlauf ++;
 		if(durchlauf%10 == 0)
 		{
 		
-		QList <QGraphicsItem*>collList =  testschiff->collidingItems();
+		QList <QGraphicsItem*>collList =  gamedata->landingstruct.landingShip_gi->collidingItems();
 		if(!collList.isEmpty())
 		{
 		qWarning() << "debug A";
-			QGraphicsPixmapItem *giit;		//GraphicsItemITerator
-			activeship.attribute.xposm = testschiff->x() + testschiff->boundingRect().width()/2;
-			activeship.attribute.yposm = testschiff->y() + testschiff->boundingRect().height()/2;
+			QGraphicsPixmapItem *giit;		//GraphicsItemITerator -> land
+// 			activeship.attribute.xposm = gamedata->landingstruct.landingShip_gi->x() + gamedata->landingstruct.landingShip_gi->boundingRect().width()/2;
+// 			activeship.attribute.yposm = gamedata->landingstruct.landingShip_gi->y() + gamedata->landingstruct.landingShip_gi->boundingRect().height()/2;
 			foreach(giit, landobjektliste)
 			{
-				if(schiffskollision(giit))
+				if(kollision(gamedata->landingstruct.landingShip_gi,giit))
 				{
 				qWarning() << "Debug B";
-				  int xms = testschiff->x() - giit->x(),	// X Mitte Schiff
-				  yms = testschiff->y() - giit->y();	// Y ~
+				  int xms = gamedata->landingstruct.landingShip_gi->x() - giit->x(),	// X Mitte Schiff
+				  yms = gamedata->landingstruct.landingShip_gi->y() - giit->y();	// Y ~
 // 				  QImage colldimg = QImage((static_cast<QGraphicsPixmapItem*>(giit)).pixmap());
 				  QImage colldimg = QImage(giit->pixmap().toImage());
 
@@ -162,7 +162,7 @@ else
 					if(tempfloat > const_landungstransparenz)
 					{
 // 						bremsfaktor = tempfloat;
-						landingstruct.landingstate = LandingProcess::AtLand;
+						gamedata->landingstruct.landingstate = LandingProcess::AtLand;
 					}
 				    }
 				}

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,10 +35,18 @@
 #include <QtGui/QGridLayout>
 
 // #include <QtGui/QScrollArea>
-
-void gesamtbild::spiel()
+/*
+void gesamtbild::initGameData()
 {
+// gamedata = new DataClass();
 
+}*/
+
+
+void gesamtbild::startNewGame()
+{
+	gamedata = new DataClass();
+	gamedata->active_city = new CityClass();
 	spielbool=true;
 //  	QFile file("");		//Map-XML-Lesen
 //  	if(file.exists())
@@ -46,19 +54,19 @@ void gesamtbild::spiel()
 // 		qWarning() << "Datei existiert" ;
 		for(int i = 0; i<5 ; i++)
 		{
-			stadt.hproduktion[i]=-1;
-			stadt.mproduktion[i]=-1;
-			stadt.nproduktion[i]=-1;
+			gamedata->active_city->hproduction[i]=-1;
+			gamedata->active_city->mproduction[i]=-1;
+			gamedata->active_city->lproduction[i]=-1;
 		}
 
 
 		enum stati	{
 				null,
 				stadttoken,
-				stadtname,
-				stadt_mproduktion,
-				stadt_hproduktion,
-				stadt_nproduktion,
+				city_name,
+				city_mproduction,
+				city_hproduction,
+				city_lproduction,
 				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
 		int hz = 0;		//Zaehlvariablen fuer die jeweiligen Produktionsarrays
@@ -76,34 +84,34 @@ void gesamtbild::spiel()
 			case QXmlStreamReader::StartElement:
 			{
 			qWarning() << "Start:\t" <<reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() =="list")
+				if(reader.qualifiedName().toString() == "list")
 				{
 				break;
 				}
-				if(reader.qualifiedName().toString() =="stadt")
+				if(reader.qualifiedName().toString() == "city")
 				{
 				status=stadttoken;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="stadtname")
+				if(reader.qualifiedName().toString() == "cityname")
 				{
-				status=stadtname;
+				status=city_name;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() =="hproduktion")
+				if(reader.qualifiedName().toString() =="hproduction")
 				{
-				status=stadt_hproduktion;
+				status=city_hproduction;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mproduktion")
+				if(reader.qualifiedName().toString() =="mproduction")
 				{
-				status=stadt_mproduktion;
+				status=city_mproduction;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="nproduktion")
+				if(reader.qualifiedName().toString() =="lproduction")
 				{
-				status=stadt_nproduktion;
+				status=city_lproduction;
 				break;
 				}
 				break;
@@ -117,39 +125,39 @@ void gesamtbild::spiel()
 
 			case QXmlStreamReader::Characters:
 			{
-// 				qWarning() << "Chars:" <<reader.text().toString();
+				qWarning() << "\n\tChars:" <<reader.text().toString() << "\n";
 				//Tags ohne Inhalt - nur mit Unterkategorien
 				switch(status)
 				{
 				case stadttoken:
 					break;
-				case stadtname:
+				case city_name:
 				{
-				stadt.stadtname = reader.text().toString();
-				qWarning() << "\tStadt: " << stadt.stadtname;
+				gamedata->active_city->cityname = reader.text().toString();
+				qWarning() << "\tStadt: " << gamedata->active_city->cityname;
 				break;
 				}
 
-				case stadt_hproduktion:
+				case city_hproduction:
 				{
-				stadt.hproduktion[hz] = reader.text().toString().toInt();
-				qWarning() << "\tHohe Produktion: " << stadt.hproduktion[hz] << "(wird viel produziert)";
+				gamedata->active_city->hproduction[hz] = reader.text().toString().toInt();
+				qWarning() << "\tHohe Produktion: " << gamedata->active_city->hproduction[hz] << "(wird viel produziert)";
 				hz++;
 				break;
 				}
 
-				case stadt_mproduktion:
+				case city_mproduction:
 				{
-				stadt.mproduktion[mz] = reader.text().toString().toInt();
-				qWarning() << "\tMittlere Produktion: " << stadt.mproduktion[mz] << "(wird maessig viel produziert)";
+				gamedata->active_city->mproduction[mz] = reader.text().toString().toInt();
+				qWarning() << "\tMittlere Produktion: " << gamedata->active_city->mproduction[mz] << "(wird maessig viel produziert)";
 				mz++;
 				break;
 				}
 
-				case stadt_nproduktion:
+				case city_lproduction:
 				{
-				stadt.nproduktion[nz] = reader.text().toString().toInt();
-				qWarning() << "\tNiedrige Produktion: " << stadt.nproduktion[nz] << "(wird wenig produziert)";
+				gamedata->active_city->lproduction[nz] = reader.text().toString().toInt();
+				qWarning() << "\tNiedrige Produktion: " << gamedata->active_city->lproduction[nz] << "(wird wenig produziert)";
 				nz++;
 				break;
 				}
@@ -162,12 +170,12 @@ void gesamtbild::spiel()
 			case QXmlStreamReader::EndElement:
 			{
 				qWarning() << "Ende :"<< reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() == "stadt" && !stadt.stadtname.isEmpty())
+				if(reader.qualifiedName().toString() == "stadt" && !gamedata->active_city->cityname.isEmpty())
 				{
-				stadt.init();
-				stadtliste << stadt;
-				qWarning() << stadt.stadtname << " zur Liste hinzugefuegt";
-				stadt.reset();
+				gamedata->active_city->init();
+				gamedata->addCity(gamedata->active_city);
+				qWarning() << gamedata->active_city->cityname << " zur Liste hinzugefuegt";
+				gamedata->active_city->reset();
 				}
 				status=null;
 				break;
@@ -193,27 +201,30 @@ void gesamtbild::spiel()
 // 	}
 
 
-// 	qWarning() << "vor Spielfenster aufgebaut";
+	qWarning() << "vor Spielfenster aufgebaut";
 
- 	hf= new hauptfenster();
+ 	hf = new hauptfenster(gamedata);
+
 	spielfensteraufbau();
 	qWarning() << "Spielfenster aufgebaut";
-
-	hfgametime = &(hf->spielzeit);
-	konsolenwidget->hfgametime = hfgametime;
-	konsolenwidget->debug("Timepointer set");
+// 	hf->setDataClass(gamedata);
+	qWarning() << "Data set";
+// 	hfgametime = &(hf->spielzeit);
+// 	konsolenwidget->hfgametime = hfgametime;
+// 	konsolenwidget->debug("Timepointer set");
 	hf->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
-
+	gamedata->active_ship->filename = "img/schiffe/schiff_gerade_skaliert2.png";
 
 	hf->karteladen("testmap001.ohm");
-	hf->testschiff->setPos(1500,900);
+// 	hf->testschiff->setPos(1500,900);
+	gamedata->active_ship->graphicsitem->setPos(1500, 900);
 //  	qWarning() << "StartTimer";
- 	hf->starttimer();
+	hf->starttimer();
 // 	hf->setSceneRect(1,1,4000,4000);
  	qWarning() << "Timer gestartet";
-	hf->show();
-	hf->centerOn(hf->testschiff);
+// 	hf->show();
+// 	hf->centerOn(hf->testschiff);
 	aktiv=true;
 }
 
@@ -254,17 +265,17 @@ void gesamtbild::spielfensteraufbau()
 
 	for(int i = 0; i < const_warenanzahl; i++)
  	{
-		menupanel->ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
+		menupanel->ware[i]->setText(QString("%1").arg(gamedata->active_ship->cargo.ware[i]));
  	}
 // // 	qWarning() << "Nach Ladungszeugs";
 // 	taler = new QLabel(Ladung);
 // 
 
-// // 	fuellung->setText(QString("Belegt: %1 von %2").arg(hf->activeship.Ladung.gesamtladung, hf->activeship.ladekapazitaet));
+// // 	fuellung->setText(QString("Belegt: %1 von %2").arg(gamedata->active_ship->cargo.gesamtladung, gamedata->active_ship->ladekapazitaet));
 	{
- 	menupanel->taler->setText(QString("%1").arg(hf->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")));
-	QString flstring = QString("%1").arg(hf->activeship.Ladung.fuellung);
-	flstring.append(QString("/%1 belegt").arg(hf->activeship.Ladung.kapazitaet));
+ 	menupanel->taler->setText(QString("%1").arg(gamedata->active_ship->cargo.taler).prepend(tr("Geladenes Geld: ")));
+	QString flstring = QString("%1").arg(gamedata->active_ship->cargo.fuellung);
+	flstring.append(QString("/%1 belegt").arg(gamedata->active_ship->cargo.kapazitaet));
 	menupanel->fuellung->setText(flstring);
 	}
 	menupanel->show();
@@ -322,7 +333,7 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 			QDialog *zeitw = new QDialog(this);
 			QVBoxLayout layout(zeitw);
-			QLabel *anzeige = new QLabel(tr("Zeit: Tag %1,").arg(hfgametime->retDay()).append(QString("%1 Uhr").arg(hfgametime->retHour())), zeitw);
+			QLabel *anzeige = new QLabel(tr("Zeit: Tag %1,").arg(gamedata->gametime.retDay()).append(QString("%1 Uhr").arg(gamedata->gametime.retHour())), zeitw);
 
 // 			anzeige->setText(anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute)));hf->stunde
 // 			qWarning() << anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute));

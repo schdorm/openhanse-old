@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -39,41 +39,25 @@
 
 #include "wind.h"
 
+#include "definitions.h"
+
+#include "dataclass.h"
+
+
 // #include "gebaude.h"
 // #include "stadtklasse.h"
 
 // #include <math.h>
 
 // const int const_mhiscale = 5;
-const int _oh_version = 33;
-namespace MapType
-	{
-	enum mtyp
-		{
-		 sea,			// 001
-		 coast,			// 010 || -> | -> 110
-		 land,			// 011 || -> | -> 111
-		 coast_city,			// 100
-		 land_city
-		};
-	}
-	
-namespace LandingProcess{
-	enum landing_process_states
-	{
-		NotActive,
-		WaitingForDestination,
-		ActiveLanding,
-		AtLand
-	};
-}
+
 	
 
 class hauptfenster : public QGraphicsView
 {
 Q_OBJECT
 public:
-	hauptfenster();
+	hauptfenster(DataClass *);
 
 	void karteladen(QString);
 
@@ -81,19 +65,22 @@ public:
 // 	void windsetzen();
 // 	void bewegungsbeschreibung();
 	bool schiffskollision(QGraphicsItem *);
+	bool kollision(QGraphicsItem*, QGraphicsItem*);
 	bool isLand(QGraphicsItem *);
 	
 	void landing();
 	void activeLanding();
 
 	void keyEventWeiterleitung(QKeyEvent *event);
-	
+	void rotateItem(QGraphicsItem *, double);
 // 	void questHandler(QString);
 
-zeit spielzeit;
-schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
+// zeit spielzeit;
+// schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
+	void setDataClass(DataClass *);
+DataClass *gamedata;
 
-windclass wind;
+// windclass wind;
 
 int schwierigkeit;
 bool tastatur;
@@ -105,7 +92,7 @@ bool anbord;
 bool uhr;
 
 
-int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
+// int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
 
 // int windgeschwindigkeit;
 // float windrichtung;
@@ -127,17 +114,6 @@ quint32 durchlauf;
 // sea
 // };
 
-enum object_types_def
-{
-object_type_townhall,
-object_type_market,
-object_type_church,
-object_type_port,
-object_type_office,
-object_type_bank,
-object_type_tavern,
-object_type_namespacexyz
-};
 
 
 
@@ -150,24 +126,25 @@ int h;				// Hoehe
 float dir;			// Richtung
 };
 
-struct mapproperties_struct{
-QString mapname;
-QString dir;
-QString stadtname;
-QString hintergrund;
-QString handlingimg;
-quint16 hoehe;
-quint16 breite;
-QString mapnord;
-QString mapost;
-QString mapsued;
-QString mapwest;
-// MapType::mtyp maptyp;
-int maptyp;
-}mapprops;
+
+// struct mapproperties_struct{
+// QString mapname;
+// QString dir;
+// QString stadtname;
+// QString hintergrund;
+// QString handlingimg;
+// quint16 hoehe;
+// quint16 breite;
+// QString mapnord;
+// QString mapost;
+// QString mapsued;
+// QString mapwest;
+// // MapType::mtyp maptyp;
+// int maptyp;
+// }mapprops;
 
 
-QGraphicsPixmapItem *testschiff ;
+// QGraphicsPixmapItem *testschiff ;
 QImage collimg[3];
 // QList<QGraphicsPixmapItem*> schi
 // QList <QGraphicsItem *> hafenobjliste;
@@ -238,14 +215,7 @@ QCheckBox *fokussieren;
 #endif
 
 bool pause;
-struct landingstructure{
-LandingProcess::landing_process_states landingstate;
-QLineF landing_line;
-bool correctOrientation;
-double l_orientation;
-double orientation;
-double vx, vy;
-}landingstruct;
+
 
 // const static double pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628;
 		//PI eben

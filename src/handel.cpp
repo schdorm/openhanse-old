@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -35,10 +35,10 @@
 // #define WARENANZAHL 20
 // const int const_warenanzahl = 30;
 
-const int grundpreis[const_warenanzahl] = {50, 95, 84, 67, 10000, 350, 950, 168, 270, 400, 107, 60, 130, 210, 30, 50, 300, 190, 3800, 5100, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
+// const int const_grundpreis[const_warenanzahl] = {50, 95, 84, 67, 10000, 350, 950, 168, 270, 400, 107, 60, 130, 210, 30, 50, 300, 190, 3800, 5100, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
 
-handelsfenster::handelsfenster()
+handelsfenster::handelsfenster()				//defines and declares all trading-variables
 {
 QVBoxLayout *gesamtlayout = new QVBoxLayout(this);
 
@@ -47,19 +47,24 @@ QHBoxLayout *buttonlayout = new QHBoxLayout;
 
 htypgroup = new QButtonGroup(this);		//Gruppe der Radio-Buttons
 
+htypgroup->setExclusive(true);
+
 htyp[0] = new QRadioButton(tr("Schiffshandel"),buttonwidget);
 htyp[1] = new QRadioButton(tr("Kontorhandel"),buttonwidget);
 htyp[2] = new QRadioButton(tr("Lagertransfer"),buttonwidget);
 // htyp[0]->setChecked(true);
+for(int i = 0; i < 3; i++)
+{
+	htypgroup->addButton(htyp[i], i);
+	buttonlayout->addWidget(htyp[i]);
+}
 
-htypgroup->addButton(htyp[0]);
-htypgroup->addButton(htyp[1]);
-htypgroup->addButton(htyp[2]);
-htypgroup->setExclusive(true);
+/*htypgroup->addButton(htyp[1]);
+htypgroup->addButton(htyp[2]);*/
 
-buttonlayout->addWidget(htyp[0]);
-buttonlayout->addWidget(htyp[1]);
-buttonlayout->addWidget(htyp[2]);
+// buttonlayout->addWidget(htyp[0]);
+// buttonlayout->addWidget(htyp[1]);
+// buttonlayout->addWidget(htyp[2]);
 
 QSpacerItem *hsp = new QSpacerItem(20,25);
 // hsp->setParent(this);
@@ -275,27 +280,9 @@ hf->slotpause();
 
 qWarning() << "handel";
 
- for (QList<stadtklasse>::iterator it = stadtliste.begin();
- it != stadtliste.end();
- ++it)
- {
- if(it->stadtname == hf->mapprops.stadtname)
- {
-//  qWarning() << it->stadtname << hf->mapprops.stadtname ;
- stadt = *it;
- lager2 = stadt.stadtwaren;
-break;
- }
- }
-lager = hf->activeship.Ladung;
-
-
-//   lager = hf->activeship.Ladung;
 
 rahmen = new QFrame(this);
-// rahmen->setGeometry(hf->x(),hf->y(),hf->width(),hf->height());
-// hf->hide();
-// // rahmen->move(5,0);
+
 rahmen->setFrameShape(QFrame::StyledPanel);
 rahmen->setFrameShadow(QFrame::Sunken);
 // rahmen->setPalette(QPalette(Qt::white));
@@ -307,20 +294,11 @@ rahmen->setLineWidth(5);
 
 hwin = new handelsfenster();
 
-// hwin->setBackgroundRole(QPalette::Window);
-
-// hwin->setAutoFillBackground(true);
-
-// hwin->setPalette(QPalette(Qt::white));
-// hwin->setAutoFillBackground(true);
-// rahmen->resize(hwin->width(),hwin->height());
 hwin->setParent(rahmen);
 rahmen->setMinimumSize(753, 600);
 //  rahmen->setGeometry(hf->x(),hf->y(),hwin->width(),hwin->height());
 rahmen->move(hf->x() + (hf->width() - rahmen->width())/2, hf->y() + (hf->height() - rahmen->height())/2);
 
-
-// lager = hf->activeship.Ladung;
 
 
 for(int i =0; i < const_warenanzahl; i++)
@@ -332,11 +310,11 @@ hwin->erloes[i]->setText(QString("(Erloes)"));
 hwin->kaufmenge[i]->setRange(0,999);
 hwin->verkaufsmenge[i]->setRange(0,999);
 
-connect(hwin->kaufmenge[i],SIGNAL(valueChanged(int)),this,SLOT(handelsupdate()));
-connect(hwin->verkaufsmenge[i],SIGNAL(valueChanged(int)),this,SLOT(handelsupdate()));
+connect(hwin->kaufmenge[i],SIGNAL(valueChanged(int)), hwin, SLOT(updateWidget()));
+connect(hwin->verkaufsmenge[i],SIGNAL(valueChanged(int)), hwin, SLOT(updateWidget()));
 }
 
-handelsupdate();
+hwin->updateWidget();
 qWarning() << "Nach HU";
 
 
@@ -346,12 +324,12 @@ connect(hwin->exit,SIGNAL(clicked()),hf,SLOT(show()));
 connect(hwin->exit,SIGNAL(clicked()),hf,SLOT(slotpause()));
 
 connect(hwin->handelsbutton,SIGNAL(clicked()),this,SLOT(handelsaktion()));
-connect(hwin,SIGNAL(hmoeglich(bool)), hwin->handelsbutton,SLOT(setEnabled(bool)));
+// connect(hwin,SIGNAL(hmoeglich(bool)), hwin->handelsbutton,SLOT(setEnabled(bool)));
 
-connect(hwin->htypgroup,SIGNAL(buttonClicked(int)),this,SLOT(handelsupdate()));
+connect(hwin->htypgroup,SIGNAL(buttonClicked(int)), hwin, SLOT(buttonHandler(int)));
 // hwin->show();
 rahmen->show();
-
+/*
 if(hf->activeship.attribute.stadt != hf->mapprops.stadtname)
 {
 hwin->htyp[0]->setEnabled(false);
@@ -374,84 +352,129 @@ if(!found)
 hwin->htyp[0]->animateClick();
 hwin->htyp[1]->setEnabled(false);
 hwin->htyp[2]->setEnabled(false);
+}*/
+
+hwin->setGameData(gamedata);
 }
 
-
-}
-
-
-void gesamtbild::handelsupdate()
+void handelsfenster::setGameData(DataClass *param_data)
 {
+gamedata = param_data;
+}
+
+void handelsfenster::buttonHandler(int id)
+{
+switch(id)
+{
+	case 0:
+	{
+		setStorage(gamedata->active_ship->cargo, 0);
+		break;
+	}
+	case 1:
+	{
+		
+		break;
+	}
+	case 2:
+	{
+		
+		break;
+	}
+}
+
+
+}
+
+void handelsfenster::setStorage(Warenstruct param_stor, int i)
+{
+	if(i>=0 && i <= 1)
+	{
+		storage[i] = param_stor;
+	}
+}
+
+void handelsfenster::updateWidget()
+{
+// for(int i = 0; i < const_warenanzahl; i++)
+// {
+// vorrat[i]->setText(QString("%1").arg(storage[0].ware[i]));
+// warenmenge[i]->setText(QString("%1").arg(storage[1].ware[i]));
+// }
+// }
+
+// void gesamtbild::handelsupdate()
+// {
 // static quint8 typ;
 qWarning() << "Handelsupdate";
 // hwin->handelsbutton->setEnabled(false);
 // hwin->handelsbutton->repaint();
-
+/*
 if(hwin->htyp[0]->isChecked() && hwin->typ !=0)
-{
-for (QList<stadtklasse>::iterator it = stadtliste.begin();
-it != stadtliste.end();
-++it)
-	{
-		if(it->stadtname == hf->mapprops.stadtname)
-		{
-			qWarning() << it->stadtname << hf->mapprops.stadtname ;
-			stadt = *it;
-			lager2 = stadt.stadtwaren;
-			break;
-		}
-	}
+{*/
+// for (QList<stadtklasse>::iterator it = stadtliste.begin();
+// it != stadtliste.end();
+// ++it)
+// 	{
+// 		if(it->stadtname == hf->mapprops.stadtname)
+// 		{
+// 			qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 			stadt = *it;
+// 			lager2 = stadt.stadtwaren;
+// 			break;
+// 		}
+// 	}
+// 
+// lager = hf->activeship.Ladung;
 
-lager = hf->activeship.Ladung;
-
-hwin->typ = 0;
-}
+// hwin->typ = 0;
+// }
 
 
-if(hwin->htyp[1]->isChecked() && hwin->typ != 1)
-{
-bool found = false;
-for (QList<kontorklasse>::iterator it = kontorliste.begin();
-it != kontorliste.end();
-++it)
-	{
-		if(it->stadt == hf->mapprops.stadtname)
-		{
-			qWarning() << hf->mapprops.stadtname ;
-			kontor = *it;
-			lager = kontor.Lager;
-			found = true;
-			break;
-		}
-	}
-	if(found)		// Wenn der Kontor nicht gefunden wurde, dann bleibt bisherige 
-	{
-		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
-		{
-			if(it->stadtname == hf->mapprops.stadtname)
-			{
-				qWarning() << it->stadtname << hf->mapprops.stadtname ;
-				stadt = *it;
-				lager2 = stadt.stadtwaren;
-				break;
-				hwin->typ = 1;
-			}
-		}
-	}
-	else
-	{
-	hwin->htyp[1]->setChecked(false);
-	hwin->htyp[hwin->typ]->setChecked(true);
-	}
-}
+// if(hwin->htyp[1]->isChecked() && hwin->typ != 1)
+// {
+// bool found = false;
+// for (QList<kontorklasse>::iterator it = kontorliste.begin();
+// it != kontorliste.end();
+// ++it)
+// 	{
+// 		if(it->stadt == hf->mapprops.stadtname)
+// 		{
+// 			qWarning() << hf->mapprops.stadtname ;
+// 			kontor = *it;
+// 			lager = kontor.Lager;
+// 			found = true;
+// 			break;
+// 		}
+// 	}
+// 	if(found)		// Wenn der Kontor nicht gefunden wurde, dann bleibt bisherige 
+// 	{
+// 		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
+// 		{
+// 			if(it->stadtname == hf->mapprops.stadtname)
+// 			{
+// 				qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 				stadt = *it;
+// 				lager2 = stadt.stadtwaren;
+// 				break;
+// 				hwin->typ = 1;
+// 			}
+// 		}
+// 	}
+// 	else
+// 	{
+// 	hwin->htyp[1]->setChecked(false);
+// 	hwin->htyp[hwin->typ]->setChecked(true);
+// 	}
+// }
 
 
 int mengev[const_warenanzahl];
 int mengek[const_warenanzahl];
 
-int preis[const_warenanzahl];		//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren - Menge + 3)
+int preis_int[const_warenanzahl];		//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren - Menge + 3)
 
-int erloes[const_warenanzahl]; 	//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren + Menge + 3)
+int erloes_int[const_warenanzahl]; 	//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren + Menge + 3)
 
 int stueckerloes[const_warenanzahl];
 int stueckpreis[const_warenanzahl];
@@ -460,43 +483,43 @@ int gesamtpreis = 0;
 
 int mengenbilanz = 0;
 
-if(hwin->htyp[0]->isChecked() || hwin->htyp[1]->isChecked())
+if(htyp[0]->isChecked() || htyp[1]->isChecked())
 {
 // qWarning() << "0 oder 1 gecheckt";
 for (int i = 0; i<const_warenanzahl; i++)
 {
-	if(hwin->kaufmenge[i]->value() <= lager2.ware[i])
+	if(kaufmenge[i]->value() <= storage[1].ware[i])
 	{
-	hwin->kaufmenge[i]->setValue(hwin->kaufmenge[i]->value());
+	kaufmenge[i]->setValue(kaufmenge[i]->value());
 	}
 	else
 	{
-	hwin->kaufmenge[i]->setValue(lager2.ware[i]);
+	kaufmenge[i]->setValue(storage[1].ware[i]);
 	}
 
-	if(hwin->verkaufsmenge[i]->value() <= lager.ware[i])
+	if(verkaufsmenge[i]->value() <= storage[0].ware[i])
 	{
-	hwin->verkaufsmenge[i]->setValue(hwin->verkaufsmenge[i]->value());
+	verkaufsmenge[i]->setValue(verkaufsmenge[i]->value());
 	}
 	else
 	{
-	hwin->verkaufsmenge[i]->setValue(lager.ware[i]);
+	verkaufsmenge[i]->setValue(storage[0].ware[i]);
 	}
 
-	mengek[i] = hwin->kaufmenge[i]->value();
-	mengev[i] = hwin->verkaufsmenge[i]->value();
+	mengek[i] = kaufmenge[i]->value();
+	mengev[i] = verkaufsmenge[i]->value();
 	mengenbilanz = mengenbilanz - mengev[i] + mengek[i];
 
-	stueckpreis[i] = grundpreis[i]  + int(ceil((10 * grundpreis[i]) / (lager2.ware[i] + 2 )));
+	stueckpreis[i] = const_grundpreis[i]  + int(ceil((10 * const_grundpreis[i]) / (storage[1].ware[i] + 2 )));
 
-	preis[i] = mengek[i] * grundpreis[i]  + int(ceil((10 * mengek[i] * grundpreis[i]) / (lager2.ware[i] - mengek[i] + 3 )));
+	preis_int[i] = mengek[i] * const_grundpreis[i]  + int(ceil((10 * mengek[i] * const_grundpreis[i]) / (storage[1].ware[i] - mengek[i] + 3 )));
 
-	erloes[i] = mengev[i] * grundpreis[i]  + int(floor((10 * mengev[i] * grundpreis[i]) / (lager2.ware[i] + mengev[i] + 3 )));
+	erloes_int[i] = mengev[i] * const_grundpreis[i]  + int(floor((10 * mengev[i] * const_grundpreis[i]) / (storage[1].ware[i] + mengev[i] + 3 )));
 
-	stueckerloes[i] = grundpreis[i]  + int(floor((10 * grundpreis[i]) / (lager2.ware[i] + 4 )));
+	stueckerloes[i] = const_grundpreis[i]  + int(floor((10 * const_grundpreis[i]) / (storage[1].ware[i] + 4 )));
 
-	gesamtpreis += preis[i];
-	gesamterloes += erloes[i];
+	gesamtpreis += preis_int[i];
+	gesamterloes += erloes_int[i];
 
 	{
 // 	qWarning() << mengev[i] << erloes[i] << stueckerloes[i];
@@ -504,22 +527,22 @@ for (int i = 0; i<const_warenanzahl; i++)
 		if(erloes[i]>0)
 		{
 // 	hwin->erloes[i]->setText(QString("%1 (%2)").arg(erloes[i], int(erloes[i]/mengev[i])));
-		hwin->erloes[i]->setText( QString("%1").arg(erloes[i]).append(QString("(%1)").arg(int(erloes[i]/mengev[i]))));
+		erloes[i]->setText( QString("%1").arg(erloes_int[i]).append(QString("(%1)").arg(int(erloes_int[i]/mengev[i]))));
 		}
 		else
 		{
-		hwin->erloes[i]->setText(QString("%1").arg(stueckerloes[i]));
+		erloes[i]->setText(QString("%1").arg(stueckerloes[i]));
 		}
 	}
 	{
 		if(preis[i]>0)
 		{
 // 		qWarning() << mengek[i];
-		hwin->preis[i]->setText( QString("%1").arg(preis[i]).append(QString("(%1)").arg(int(preis[i]/mengek[i]))));
+		preis[i]->setText( QString("%1").arg(preis_int[i]).append(QString("(%1)").arg(int(preis_int[i]/mengek[i]))));
 		}
 		else
 		{
-		hwin->preis[i]->setText(QString("%1").arg(stueckpreis[i]));
+		preis[i]->setText(QString("%1").arg(stueckpreis[i]));
 		}
 	}
 }
@@ -527,18 +550,18 @@ for (int i = 0; i<const_warenanzahl; i++)
 int bilanz = gesamterloes - gesamtpreis;
 
 // qWarning() << "Nach Schleife" << gesamterloes << gesamtpreis << bilanz << mengenbilanz;
-for(int i = 0; i < const_warenanzahl; i++)
-{
-hwin->vorrat[i]->setText(QString("%1").arg(lager.ware[i]));
-hwin->warenmenge[i]->setText(QString("%1").arg(lager2.ware[i]));
-}
+ for(int i = 0; i < const_warenanzahl; i++)
+ {
+ vorrat[i]->setText(QString("%1").arg(storage[0].ware[i]));
+ warenmenge[i]->setText(QString("%1").arg(storage[1].ware[i]));
+ }
 
-hwin->umsatz->setText(QString("%1").arg(bilanz));
+umsatz->setText(QString("%1").arg(bilanz));
 
-qWarning() << lager.taler << lager.taler + bilanz; hwin->handelsbutton->setEnabled(false); hwin->show();
+qWarning() << storage[0].taler << storage[0].taler + bilanz; handelsbutton->setEnabled(false); show();
 bool hb_e_geld = true;
 bool hb_e_lager = true;
-if(qint32(lager.taler + bilanz) < 0)
+if(qint32(storage[0].taler + bilanz) < 0)
 	{
 	hb_e_geld = false;	
 // 	hwin->handelsbutton->setEnabled(hb_enabled);
@@ -548,58 +571,58 @@ if(qint32(lager.taler + bilanz) < 0)
 // if((lager.taler + bilanz) > 0 && !hwin->handelsbutton->isEnabled())
 // 	{	hwin->handelsbutton->setEnabled(true);	}
 
-if(lager.kapazitaet < lager.fuellung + mengenbilanz )
+if(storage[0].kapazitaet < storage[0].fuellung + mengenbilanz )
 	{
 // 	hwin->handelsbutton->setEnabled(false);
 	hb_e_lager = false;
 	}
 
-if((!hb_e_lager || !hb_e_geld ) && hwin->handelsbutton->isEnabled())
+if((!hb_e_lager || !hb_e_geld ) && handelsbutton->isEnabled())
 {
-	hwin->handelsbutton->setEnabled(false);
+	handelsbutton->setEnabled(false);
 }
-if((hb_e_lager && hb_e_geld ) && !hwin->handelsbutton->isEnabled())
+if((hb_e_lager && hb_e_geld ) && !handelsbutton->isEnabled())
 {
-	hwin->handelsbutton->setEnabled(true);
+	handelsbutton->setEnabled(true);
 }
 // if(lager.kapazitaet > lager.fuellung + mengenbilanz && hwin->handelsbutton->isEnabled() == false && hb_enabled)
 // 	{	hwin->handelsbutton->setEnabled(true);	}
 
 // qWarning() << "Button-Zeugs";
 }
-lager.mengenbilanz += mengenbilanz;
+storage[0].mengenbilanz += mengenbilanz;
 }
 
-void gesamtbild::handelsaktion()
+void handelsfenster::handelsaktion()
 {
 
 	int warek[const_warenanzahl];
 	int warev[const_warenanzahl];
 // 	qWarning() << "Lager.taler" << lager.taler;
-	lager.taler += hwin->umsatz->text().toInt();
+	storage[0].taler += umsatz->text().toInt();
 // 	qWarning() << "Lager.taler" << lager.taler;
 
 	for(int i=0; i<const_warenanzahl; i++)
 	{
-	warek[i] = hwin->kaufmenge[i]->text().toInt();
-	warev[i] = hwin->verkaufsmenge[i]->text().toInt();
-	lager2.ware[i] = lager.ware[i] + warev[i] - warek[i];
+	warek[i] = kaufmenge[i]->text().toInt();
+	warev[i] = verkaufsmenge[i]->text().toInt();
+	storage[1].ware[i] += warev[i] - warek[i];
 	
-	lager.ware[i] = lager.ware[i] - warev[i] + warek[i];
+	storage[0].ware[i] += warek[i] - warev[i];
 	// hf->activeship.Ladung.ware[i] = lager.ware[i] ;
 	}
-	hf->activeship.Ladung = lager;
+/// 	hf->activeship.Ladung = lager;
 // 	qWarning() << "hf->ASL.taler" << hf->activeship.Ladung.taler;
-	for(int i = 0; i<const_warenanzahl; i++)
-{
-// qWarning() << i;
-menupanel->ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
-}
-	{
-	QString flstring = QString("%1").arg(hf->activeship.Ladung.fuellung);
-	flstring.append(QString("/%1 belegt").arg(hf->activeship.Ladung.kapazitaet));
-	menupanel->fuellung->setText(flstring);
-	}
+// 	for(int i = 0; i<const_warenanzahl; i++)
+// {
+// // qWarning() << i;
+// menupanel->ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
+// }
+// 	{
+// 	QString flstring = QString("%1").arg(hf->activeship.Ladung.fuellung);
+// 	flstring.append(QString("/%1 belegt").arg(hf->activeship.Ladung.kapazitaet));
+// 	menupanel->fuellung->setText(flstring);
+/// 	}
 // hf->activeship.Ladung.gesamtladung += lager.mengenbilanz;
 
 // 	qWarning() << hf->activeship.Ladung.fuellung << hf->activeship.Ladung.kapazitaet;
@@ -607,23 +630,32 @@ menupanel->ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
 // hf->activeship.Ladung.taler += hwin->umsatz->text().toInt();
 
 // 	taler->setText(QString("Geladenes Geld: %1 Taler").arg(hf->activeship.Ladung.taler));
-	menupanel->taler->setText(QString("%1").arg(hf->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")).append(tr("Taler")));
+// 	menupanel->taler->setText(QString("%1").arg(hf->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")).append(tr("Taler")));
 
 // 	fuellung->setText(QString("Belegt: %1 von %2").arg(hf->activeship.Ladung.fuellung, hf->activeship.Ladung.kapazitaet));
 						qWarning() << "Handel ...";
-	rahmen->deleteLater();
+/// 	rahmen->deleteLater();
 
-	stadt.stadtwaren = lager2;
-	for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
-	{
-// 		qWarning() << it->stadtname << hf->mapprops.stadtname ;
-		if(it->stadtname == hf->mapprops.stadtname)
-		{
-// 			qWarning() << it->stadtname;
-			*it = stadt;
-			break;
-		}
-	}
+/// 	stadt.stadtwaren = lager2;
+// 	for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
+// 	{
+// // 		qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 		if(it->stadtname == hf->mapprops.stadtname)
+// 		{
+// // 			qWarning() << it->stadtname;
+// 			*it = stadt;
+// 			break;
+// 		}
+// 	}
+
+}
+
+
+void gesamtbild::tradingFinished()
+{
+delete hwin;
+rahmen->close();
+delete rahmen;
 	hf->show();
 	hf->slotpause();
 }

@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -201,13 +201,15 @@ hf->karteladen(map);
 
 if(cmd == "test a")
 {
+///
+/*
 QFile rfile("test.txt");
 rfile.open(QIODevice::Append);
 hf->mapprops.maptyp = MapType::coast;
 rfile.write(QByteArray().append(QString(hf->mapprops.maptyp)));
 // hf->mapprops.maptyp = MapType::coast | MapType::city;
 rfile.write(QByteArray().append(QString(" ")));
-qWarning() <<hf->mapprops.maptyp; 
+qWarning() <<hf->mapprops.maptyp; */ ///
 /*
 rfile.write(QByteArray().append(QString(MapType::coast | MapType::city)));
 rfile.write(QByteArray().append(QString(" ")));
@@ -216,8 +218,8 @@ qWarning() << (MapType::coast | MapType::city);
 rfile.write(QByteArray().append(QString(MapType::land | MapType::city)));
 rfile.write(QByteArray().append(QString(" ")));
  qWarning() << (MapType::land | MapType::city);*/
-
-rfile.write(QByteArray().append(QString(MapType::land)));
+///
+/*rfile.write(QByteArray().append(QString(MapType::land)));
 rfile.write(QByteArray().append(QString(" ")));
  qWarning() <<MapType::land; 
 
@@ -229,7 +231,7 @@ rfile.write(QByteArray().append(QString(MapType::sea)));
  qWarning() <<MapType::sea; 
 
 
-rfile.close();
+rfile.close();*/ ///
 }
 
 }

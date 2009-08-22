@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,7 +22,7 @@
 #define _waren_h
 
 const int const_warenanzahl = 30;
-const int const_waffen = 10;
+const int const_waffen = 15;
 
 struct Warenstruct{
 int taler;
@@ -83,6 +83,7 @@ wp_lanze,
 wp_bogen,
 wp_armbrust,
 wp_muskete,
+
 wp_l_armor,
 wp_h_armor,
 

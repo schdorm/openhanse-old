@@ -17,46 +17,20 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "buildingclass.h"
 
+// void Gebaude::mousePressEvent(/*QMouseEvent *event*/QGraphicsSceneMouseEvent *)
+// {
+// // emit angeklickt();
+// // emit angeklickt(name);
+// // int j;
+// // j=0;
+// // signaler = new QObject;
+// // signaler->deleteLater();
+// }
 
-#ifndef _tabpanel_h
-#define _tabpanel_h
-
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-// #include <QtGui/
-
-#include "waren.h"
-
-class SeaTabPanel : public QTabWidget
+void BuildingClass::set_GraphicsItem(QGraphicsItem *param_item)
 {
-Q_OBJECT
-// public slots:
+graphicsitem = param_item;
 
-public:
-// TabPanel();
-void create();
-void landmenu();
-QLabel *ware[const_warenanzahl];
-QLabel *fuellung;
-QLabel *taler;
-// QTabWidget *menutabs;
-QWidget *tab[3];
-
-QWidget *ladung;
-QWidget *steuerung;
-// QWidget *;
-
-QPushButton *anlegen;
-// QPushButton *ablegen;
-QPushButton *schuss;
-QSlider *geschwindigkeitsregler;
-QProgressBar *geschwindigkeitsanzeige;
-
-
-};
-
-#endif
+}

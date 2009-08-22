@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -138,96 +138,101 @@ void gesamtbild::speichern()
 	savestream << _oh_version << "\n";
 	savestream << hf->durchlauf << "\n";
 	savestream << hf->schwierigkeit << "\n";
-	savestream << hfgametime->retMinute() << "\n";
-	savestream << hfgametime->retHour() << "\n";
-	savestream << hfgametime->retDay() << "\n";		//5. Zeile
-	savestream << hfgametime->retMonth() << "\n";
-	savestream << hfgametime->retYear() << "\n";
-	savestream << hfgametime->retDayLength() << "\n";
+	savestream << gamedata->gametime.retMinute() << "\n";
+	savestream << gamedata->gametime.retHour() << "\n";
+	savestream << gamedata->gametime.retDay() << "\n";		//5. Zeile
+	savestream << gamedata->gametime.retMonth() << "\n";
+	savestream << gamedata->gametime.retYear() << "\n";
+	savestream << gamedata->gametime.retDayLength() << "\n";
 
-	savestream << hf->wind.retV() << "\n";
-	savestream << hf->wind.retDir() << "\n";
-// 	savestream << hf->activeship.id << "\n";
+	savestream << gamedata->wind.retV() << "\n";
+	savestream << gamedata->wind.retDir() << "\n";
+// 	savestream << gamedata->active_ship->id << "\n";
 
 	savestream << hf->anbord << "\n";	// 10. Zeile + 1
-	savestream << hf->mapprops.stadtname << "\n";
-	savestream << hf->mapprops.mapname << "\n";
-// 	savestream << hf->mapprops.hintergrund << "\n";
-// 	savestream << hf->mapprops.handlingimg << "\n";
-// 	savestream << hf->mapprops.hoehe << "\n";
-// 	savestream << hf->mapprops.breite << "\n";
-// 	savestream << hf->mapprops.mapnord << "\n";
-// 	savestream << hf->mapprops.mapost << "\n";
-// 	savestream << hf->mapprops.mapsued << "\n";
-// 	savestream << hf->mapprops.mapwest << "\n";
+	savestream << gamedata->currentMap.cityname << "\n";
+	savestream << gamedata->currentMap.filename << "\n";
+// 	savestream << gamedata->currentMap.hintergrund << "\n";
+// 	savestream << gamedata->currentMap.handlingimg << "\n";
+// 	savestream << gamedata->currentMap.hoehe << "\n";
+// 	savestream << gamedata->currentMap.breite << "\n";
+// 	savestream << gamedata->currentMap.mapnord << "\n";
+// 	savestream << gamedata->currentMap.mapost << "\n";
+// 	savestream << gamedata->currentMap.mapsued << "\n";
+// 	savestream << gamedata->currentMap.mapwest << "\n";
 
 
-	stadtklasse savestadt;
-	foreach(savestadt, stadtliste)
+	CityClass *savecity;
+	QList <CityClass> citylist = gamedata->ret_CityList();
+	foreach(*savecity, citylist)
 	{
 		savestream << "<stadt>" << "\n";
-		savestream << savestadt.stadtname << "\n";
-		savestream << savestadt.stadtbewohner << "\n";
+		savestream << savecity->cityname << "\n";
+		savestream << savecity->inhabitants << "\n";
 		for(int i = 0; i < const_warenanzahl; i++)
 		{
-			savestream << savestadt.stadtwaren.ware[i] << "\n";
+			savestream << savecity->goods.ware[i] << "\n";
 			if(i<5)
 			{
-			savestream << stadt.hproduktion[i] << "\n";
-			savestream << stadt.mproduktion[i] << "\n";
-			savestream << stadt.nproduktion[i] << "\n";
+			savestream << savecity->hproduction[i] << "\n";
+			savestream << savecity->mproduction[i] << "\n";
+			savestream << savecity->lproduction[i] << "\n";
 			}
 		}
-		savestream << savestadt.stadtwaren.taler << "\n";
-		savestream << savestadt.stadtwaren.kapazitaet << "\n";
+		savestream << savecity->goods.taler << "\n";
+		savestream << savecity->goods.kapazitaet << "\n";
 		savestream << "</stadt>" << "\n";
 	}
-	schiffsliste << hf->activeship;
-	schiffsklasse saveship;
-	foreach(saveship, schiffsliste)
+
+	ShipClass *saveship;
+	QList <ShipClass> shiplist = gamedata->ret_ShipList();
+	shiplist << *gamedata->active_ship;
+	foreach(*saveship, shiplist)
 	{
 		savestream << "<schiff>" << "\n";
-		savestream << saveship.id << "\n";
-		savestream << saveship.schiffsname << "\n";
-		savestream << saveship.attribute.xpos << "\n";
-		savestream << saveship.attribute.ypos << "\n";
-		savestream << saveship.attribute.map << "\n";
-		savestream << saveship.attribute.geschwindigkeit << "\n";
-		savestream << saveship.attribute.ausrichtung << "\n";
-		savestream << saveship.attribute.prozentgesetzteSegel << "\n";
-		savestream << saveship.attribute.sollprozentgesetzteSegel << "\n";
-		savestream << saveship.attribute.steuergeschwindigkeit << "\n";
-		savestream << saveship.attribute.steuerruderausrichtung << "\n";
-		savestream << saveship.attribute.sollsteuerruderausrichtung << "\n";
-		savestream << saveship.attribute.segelausrichtung << "\n";
+		savestream << saveship->id << "\n";
+		savestream << saveship->schiffsname << "\n";/*
+		savestream << saveship->attribute.xpos << "\n";
+		savestream << saveship->attribute.ypos << "\n";
+		savestream << saveship->attribute.map << "\n";
+		savestream << saveship->attribute.geschwindigkeit << "\n";
+		savestream << saveship->attribute.ausrichtung << "\n";
+		savestream << saveship->attribute.prozentgesetzteSegel << "\n";
+		savestream << saveship->attribute.sollprozentgesetzteSegel << "\n";
+		savestream << saveship->attribute.steuergeschwindigkeit << "\n";
+		savestream << saveship->attribute.steuerruderausrichtung << "\n";
+		savestream << saveship->attribute.sollsteuerruderausrichtung << "\n";
+		savestream << saveship->attribute.segelausrichtung << "\n";*/
 		for(int i = 0; i < const_warenanzahl; i++)
 		{
-		savestream << saveship.Ladung.ware[i] << "\n";
+		savestream << saveship->cargo.ware[i] << "\n";
 		}
-		savestream << saveship.Ladung.taler << "\n";
-		savestream << saveship.Ladung.fuellung << "\n";
-		savestream << saveship.Ladung.kapazitaet << "\n";
+		savestream << saveship->cargo.taler << "\n";
+		savestream << saveship->cargo.fuellung << "\n";
+		savestream << saveship->cargo.kapazitaet << "\n";
 		savestream << "</schiff>" << "\n";
 	}
-	schiffsliste.removeLast();
-	kontorklasse savekontor;
-	foreach(savekontor, kontorliste)
+	shiplist.removeLast();
+	KontorClass *savekontor;
+	QList<KontorClass> kontorlist = gamedata->ret_KontorList();
+	foreach(*savekontor, kontorlist)
 	{
 		savestream << "<kontor>" << "\n";
-		savestream << savekontor.id << "\n";
-		savestream << savekontor.stadt << "\n";
+		savestream << savekontor->ret_ID() << "\n";
+		savestream << savekontor->ret_CityID() << "\n";
 			for(int i = 0; i < const_warenanzahl; i++)
 			{
-				savestream << savekontor.Lager.ware[i] << "\n";
+				savestream << savekontor->storage.ware[i] << "\n";
+				savestream << savekontor->production.ware[i];
 			}
-		savestream << savekontor.Lager.taler << "\n";
-		savestream << savekontor.Lager.fuellung << "\n";
-		savestream << savekontor.Lager.kapazitaet << "\n";
+		savestream << savekontor->storage.taler << "\n";
+		savestream << savekontor->storage.fuellung << "\n";
+		savestream << savekontor->storage.kapazitaet << "\n";
 		savestream << "</kontor>" << "\n";
 	}
 
 
-// 	savestream << hf->activeship.id;
+// 	savestream << gamedata->active_ship->id;
 
 	savefile.close();
 qWarning() << "Nach " << filename << "gespeichert(" << dir.path() << ")" ;
@@ -249,7 +254,8 @@ void gesamtbild::laden(QListWidgetItem *spielstand)
 // ladefenster->setAutoFillBackground(true);
 // ladefenster->show();
 // spielfensteraufbau();
-hf = new hauptfenster();
+gamedata = new DataClass();
+hf = new hauptfenster(gamedata);
 // ladefenster->raise();
 filename = spielstand->text();
 qWarning() << "Lade Spielstand:" <<filename;
@@ -267,19 +273,19 @@ QTextStream loadstream(&loadfile);
 	{
 	hf->durchlauf = loadstream.readLine().toInt();	/*qWarning()<< "Durchlauf"<<hf->durchlauf;*/
 	hf->schwierigkeit = loadstream.readLine().toInt();
-	hfgametime->setMinute(loadstream.readLine().toFloat());
-	hfgametime->setHour(loadstream.readLine().toInt());
-	hfgametime->setDay(loadstream.readLine().toInt());	//5. Zeile
-	hfgametime->setMonth(loadstream.readLine().toInt());
-	hfgametime->setYear(loadstream.readLine().toInt());
-	hfgametime->setDayLength(loadstream.readLine().toInt());
-	hf->wind.setV( loadstream.readLine().toInt());
-// qWarning() << "WV"<<hf->windgeschwindigkeit;
+	gamedata->gametime.setMinute(loadstream.readLine().toFloat());
+	gamedata->gametime.setHour(loadstream.readLine().toInt());
+	gamedata->gametime.setDay(loadstream.readLine().toInt());	//5. Zeile
+	gamedata->gametime.setMonth(loadstream.readLine().toInt());
+	gamedata->gametime.setYear(loadstream.readLine().toInt());
+	gamedata->gametime.setDayLength(loadstream.readLine().toInt());
+	gamedata->wind.setV( loadstream.readLine().toInt());
+// qWarning() << "WV"<<gamedata->windgeschwindigkeit;
 
-// 	loadstream >> hf->windrichtung ;
-	hf->wind.setDir(loadstream.readLine().toFloat());
+// 	loadstream >> gamedata->windrichtung ;
+	gamedata->wind.setDir(loadstream.readLine().toFloat());
 // 	= loadstream.readLine();
-// 	hf->activeship.id = loadstream.readLine().toInt();
+// 	gamedata->active_ship->id = loadstream.readLine().toInt();
 
 	QString anbord = loadstream.readLine();		// 10. Zeile + 1
 	if(anbord == "0")
@@ -291,125 +297,128 @@ QTextStream loadstream(&loadfile);
 		hf->anbord = true;
 	}
 	qWarning() << hf->anbord;
-	hf->mapprops.stadtname = loadstream.readLine();
-	hf->mapprops.mapname = loadstream.readLine();
-// 	hf->mapprops.hintergrund = loadstream.readLine();
-// 	hf->mapprops.handlingimg = loadstream.readLine();
-// 	hf->mapprops.hoehe = loadstream.readLine().toInt();
-// 	hf->mapprops.breite = loadstream.readLine().toInt();
-// 	hf->mapprops.mapnord = loadstream.readLine();
-// 	hf->mapprops.mapost = loadstream.readLine();
-// 	hf->mapprops.mapsued = loadstream.readLine();
-// 	hf->mapprops.mapwest = loadstream.readLine();
+	gamedata->currentMap.cityname = loadstream.readLine();
+// 	gamedata->currentMap.mapname = loadstream.readLine();
+// 	gamedata->currentMap.hintergrund = loadstream.readLine();
+// 	gamedata->currentMap.handlingimg = loadstream.readLine();
+// 	gamedata->currentMap.hoehe = loadstream.readLine().toInt();
+// 	gamedata->currentMap.breite = loadstream.readLine().toInt();
+// 	gamedata->currentMap.mapnord = loadstream.readLine();
+// 	gamedata->currentMap.mapost = loadstream.readLine();
+// 	gamedata->currentMap.mapsued = loadstream.readLine();
+// 	gamedata->currentMap.mapwest = loadstream.readLine();
 
-	hf->karteladen(hf->mapprops.mapname);
+	hf->karteladen(gamedata->currentMap.filename);
 
 
-	stadtklasse loadstadt;
-// 	foreach(savestadt, stadtliste)
+	CityClass loadcity;
+// 	foreach(savecity, stadtliste)
 // 	loadstream >> typindikator;
 	typindikator = loadstream.readLine();
 // 	qWarning() << "Typindikator" << typindikator;
 	while(typindikator == "<stadt>")
 	{
 // 		loadstream >> "<stadt>" ;
-		loadstadt.stadtname = loadstream.readLine();
-		loadstadt.stadtbewohner = loadstream.readLine().toInt();
+		loadcity.init();
+		loadcity.cityname = loadstream.readLine();
+		loadcity.inhabitants = loadstream.readLine().toInt();
 		for(int i = 0; i < const_warenanzahl; i++)
 		{
-			loadstadt.stadtwaren.ware[i] = loadstream.readLine().toInt();
+			loadcity.goods.ware[i] = loadstream.readLine().toInt();
 			if(i<5)
 			{
-				loadstadt.hproduktion[i] = loadstream.readLine().toInt();
-				loadstadt.mproduktion[i] = loadstream.readLine().toInt();
-				loadstadt.nproduktion[i] = loadstream.readLine().toInt();
+				loadcity.hproduction[i] = loadstream.readLine().toInt();
+				loadcity.mproduction[i] = loadstream.readLine().toInt();
+				loadcity.lproduction[i] = loadstream.readLine().toInt();
 			}
 		}
-		loadstadt.stadtwaren.taler = loadstream.readLine().toInt();
-		loadstadt.stadtwaren.kapazitaet = loadstream.readLine().toInt();
+		loadcity.goods.taler = loadstream.readLine().toInt();
+// 		loadcity..kapazitaet = loadstream.readLine().toInt();
 		stringbuffer = loadstream.readLine();
 // 						 	qWarning() << "\n\tStringbuffer:" << stringbuffer;
-		stadtliste << loadstadt ;
+		gamedata->addCity(&loadcity);
 		typindikator = loadstream.readLine();
 // 		qWarning() << "Typindikator" << typindikator << stadtliste.size();
 
 	}
 
-	schiffsklasse loadship;
+	ShipClass loadship;
 	while(typindikator == "<schiff>")
 	{
 		loadship.id = loadstream.readLine().toInt();	/*qWarning() << "ID"<<loadship.id;*/
 		loadship.schiffsname = loadstream.readLine();
-		loadship.attribute.xpos = loadstream.readLine().toInt();
-		loadship.attribute.ypos = loadstream.readLine().toInt();
-		loadship.attribute.map = loadstream.readLine();	
-		loadship.attribute.geschwindigkeit = loadstream.readLine().toInt();
-		loadship.attribute.ausrichtung = loadstream.readLine().toFloat();
-		loadship.attribute.prozentgesetzteSegel = loadstream.readLine().toFloat();
-		loadship.attribute.sollprozentgesetzteSegel = loadstream.readLine().toFloat();
-		loadship.attribute.steuergeschwindigkeit = loadstream.readLine().toInt();
-		loadship.attribute.steuerruderausrichtung = loadstream.readLine().toFloat();
-		loadship.attribute.sollsteuerruderausrichtung = loadstream.readLine().toFloat();
-		loadship.attribute.segelausrichtung = loadstream.readLine().toFloat();
+// 		loadship.attribute.xpos = loadstream.readLine().toInt();
+// 		loadship.attribute.ypos = loadstream.readLine().toInt();
+// 		loadship.attribute.map = loadstream.readLine();	
+// 		loadship.attribute.geschwindigkeit = loadstream.readLine().toInt();
+// 		loadship.attribute.ausrichtung = loadstream.readLine().toFloat();
+// 		loadship.attribute.prozentgesetzteSegel = loadstream.readLine().toFloat();
+// 		loadship.attribute.sollprozentgesetzteSegel = loadstream.readLine().toFloat();
+// 		loadship.attribute.steuergeschwindigkeit = loadstream.readLine().toInt();
+// 		loadship.attribute.steuerruderausrichtung = loadstream.readLine().toFloat();
+// 		loadship.attribute.sollsteuerruderausrichtung = loadstream.readLine().toFloat();
+// 		loadship.attribute.segelausrichtung = loadstream.readLine().toFloat();
 		for(int i = 0; i < const_warenanzahl; i++)
 		{
-			loadship.Ladung.ware[i] = loadstream.readLine().toUShort();
-// 			qWarning() << "Ware"<<i <<loadship.Ladung.ware[i];
+			loadship.cargo.ware[i] = loadstream.readLine().toUShort();
+// 			qWarning() << "Ware"<<i <<loadship.cargo.ware[i];
 		}
-		loadship.Ladung.taler = loadstream.readLine().toInt();
-		loadship.Ladung.fuellung = loadstream.readLine().toInt();
-		loadship.Ladung.kapazitaet = loadstream.readLine().toInt();
+		loadship.cargo.taler = loadstream.readLine().toInt();
+		loadship.cargo.fuellung = loadstream.readLine().toInt();
+		loadship.cargo.kapazitaet = loadstream.readLine().toInt();
 		stringbuffer = loadstream.readLine();
-		schiffsliste << loadship;
+		gamedata->addShip(&loadship);
 		typindikator = loadstream.readLine();
 	}
-/*	hf->activeship.id = loadstream.readLine().toInt();*/
-// 	qWarning() << "Schiff belegt" << hf->activeship.id << loadship.id ;
-	hf->activeship = loadship;
-	kontorklasse loadkontor;
+/*	gamedata->active_ship->id = loadstream.readLine().toInt();*/
+// 	qWarning() << "Schiff belegt" << gamedata->active_ship->id << loadship.id ;
+	gamedata->active_ship = &loadship;
+	KontorClass loadkontor;
 	while(typindikator == "<kontor>")
 	{
-		loadkontor.id = loadstream.readLine().toInt();
-		loadkontor.stadt = loadstream.readLine();
+// 		loadkontor.id = loadstream.readLine().toInt();
+// 		loadkontor.cityID = loadstream.readLine().toInt();
 
 		for(int i = 0; i < const_warenanzahl; i++)
 		{
-			loadkontor.Lager.ware[i] = loadstream.readLine().toInt();
+			loadkontor.storage.ware[i] = loadstream.readLine().toInt();
 		}
-		loadkontor.Lager.taler = loadstream.readLine().toInt();
-		loadkontor.Lager.fuellung = loadstream.readLine().toInt();
-		loadkontor.Lager.kapazitaet = loadstream.readLine().toInt();
+		loadkontor.storage.taler = loadstream.readLine().toInt();
+		loadkontor.storage.fuellung = loadstream.readLine().toInt();
+		loadkontor.storage.kapazitaet = loadstream.readLine().toInt();
 		stringbuffer = loadstream.readLine();
-		kontorliste << loadkontor;
+		gamedata->addKontor(&loadkontor);
 		typindikator = loadstream.readLine();
 
 	}
 	spielfensteraufbau();
 // 	qWarning() << "Map" << loadship.attribute.map;
 // 	qWarning() << "SV:"<< loadship.attribute.geschwindigkeit;
-
-	hf->testschiff->setPos(hf->activeship.attribute.xpos, hf->activeship.attribute.ypos);
+/// 	gamedata->active_ship->graphicsitem->setPos();
+// 	hf->testschiff->setPos(gamedata->active_ship->attribute.xpos, gamedata->active_ship->attribute.ypos);
 // 	hf->testschiff->setPos(300,300);
-// 	qWarning() << "Ausrichtung:"<< hf->activeship.attribute.ausrichtung << "XPos" << hf->activeship.attribute.xpos << "YPos" << hf->activeship.attribute.ypos;
-	if(hf->anbord)
+// 	qWarning() << "Ausrichtung:"<< gamedata->active_ship->attribute.ausrichtung << "XPos" << gamedata->active_ship->attribute.xpos << "YPos" << gamedata->active_ship->attribute.ypos;
+/// Wichtig: ....
+/*	if(hf->anbord)
 	{
 	QTransform t;
 	const int w = hf->testschiff->boundingRect().width()/2;
 	const int h = hf->testschiff->boundingRect().height()/2;
 
-	hf->activeship.schiffbreite = 2 * w;
-	hf->activeship.schifflange = 2 * h;
+	gamedata->active_ship->schiffbreite = 2 * w;
+	gamedata->active_ship->schifflange = 2 * h;
 
 	t.translate( w, h );
-	t.rotateRadians(- hf->activeship.attribute.ausrichtung);
+	t.rotateRadians(- gamedata->active_ship->attribute.ausrichtung);
 	t.translate( -w, -h );
 	hf->testschiff->setTransform( t );
 
 	hf->show();
 	hf->centerOn(hf->testschiff);
 	hf->starttimer();
-	}
+	}*/
 // 	}
+	hf->starttimer();
 
 // ladefenster->close();
 aktiv=true;

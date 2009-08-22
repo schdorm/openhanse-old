@@ -18,45 +18,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "dataclass.h"
 
-#ifndef _tabpanel_h
-#define _tabpanel_h
-
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-// #include <QtGui/
-
-#include "waren.h"
-
-class SeaTabPanel : public QTabWidget
+void DataClass::addBuilding(BuildingClass *param_building)
 {
-Q_OBJECT
-// public slots:
+BuildingList << *param_building;
+}
 
-public:
-// TabPanel();
-void create();
-void landmenu();
-QLabel *ware[const_warenanzahl];
-QLabel *fuellung;
-QLabel *taler;
-// QTabWidget *menutabs;
-QWidget *tab[3];
+void DataClass::addShip(ShipClass *param_ship)
+{
+ShipList << *param_ship;
+}
 
-QWidget *ladung;
-QWidget *steuerung;
-// QWidget *;
+void DataClass::addKontor(KontorClass *param_kontor)
+{
+KontorList << *param_kontor;
+}
 
-QPushButton *anlegen;
-// QPushButton *ablegen;
-QPushButton *schuss;
-QSlider *geschwindigkeitsregler;
-QProgressBar *geschwindigkeitsanzeige;
+void DataClass::addCity(CityClass *param_city)
+{
+CityList << *param_city;
+}
+
+void DataClass::setCurrentCity(CityClass *param_city)
+{
+active_city = param_city;
+}
+
+void DataClass::setCurrentCity(QString param_cityname)
+{
+	currentMap.cityname = param_cityname;
+	currentMap.isCity = true;
+	foreach(*active_city, CityList)
+	{
+		if(active_city->cityname == currentMap.cityname)
+		{
+			break;
+		}
+	}
+}
+
+QList<CityClass> DataClass::ret_CityList()
+{
+return CityList;
+}
+QList<ShipClass> DataClass::ret_ShipList()
+{
+return ShipList;
+}
+QList<KontorClass> DataClass::ret_KontorList()
+{
+return KontorList;
+}
 
 
-};
 
-#endif

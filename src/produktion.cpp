@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,205 +20,214 @@
 
 #include "gesamtbild.h"
 #include "waren.h"
-
+#include "stadtklasse.h"
+#include "kontorklasse.h"
 #include <QtDebug>
 
 void gesamtbild::produktion(int durchlauf)
 {
-	foreach(stadt,stadtliste)
+	CityClass *cityit;
+	QList <CityClass> cityList = gamedata->ret_CityList();
+	foreach(*cityit, cityList)
 	{
-		qWarning() << "Stadtproduktion:" << stadt.stadtname;
+	cityit->production(durchlauf);
+	}
+}
+
+void CityClass::production(int durchlauf)
+{
+		qWarning() << "Stadtproduktion:" << cityname;
 // 		for(int i=0;i<20;i++)
 // 		{
 		for(int j=0;j<5;j++)		//kann man mal noch schoen mit switch und case machen
 		{
-			switch(stadt.hproduktion[j])
+			switch(hproduction[j])
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
-// 			stadt.stadtwaren.ware[i] += ((rand() % 12) + stadt.stadtbewohner/100);
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/500 > 0)
+// 			goods.ware[i] += ((rand() % 12) + inhabitants/100);
+				if(goods.ware[W_Werkzeuge] - inhabitants/500 > 0)
 				{
-				stadt.stadtwaren.ware[W_Baumstamme] = stadt.stadtwaren.ware[W_Baumstamme] + stadt.stadtbewohner/100;
-				stadt.stadtwaren.ware[W_Werkzeuge] = stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/500;
+				goods.ware[W_Baumstamme] = goods.ware[W_Baumstamme] + inhabitants/100;
+				goods.ware[W_Werkzeuge] = goods.ware[W_Werkzeuge] - inhabitants/500;
 				}
-				stadt.stadtwaren.ware[W_Baumstamme]++;		//Grundproduktion um Festfahren und komplette Stockung der Wirtschaft zu verhindern
+				goods.ware[W_Baumstamme]++;		//Grundproduktion um Festfahren und komplette Stockung der Wirtschaft zu verhindern
 				break;
 				}
 			case W_Holzbretter:			//Holzbretter
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/200 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/400 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/200 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/400 > 0)
 				{
-				stadt.stadtwaren.ware[W_Holzbretter] += stadt.stadtbewohner/100;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/200;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/400;
+				goods.ware[W_Holzbretter] += inhabitants/100;
+				goods.ware[W_Baumstamme] -= inhabitants/200;
+				goods.ware[W_Werkzeuge] -= inhabitants/400;
 				}
 				break;
 				}
 			case W_Holzkohle:			//Holzkohle ... (2 HK aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0 )
+				if(goods.ware[W_Baumstamme] - inhabitants/500 > 0 && goods.ware[W_Holzbretter] - 1 > 0 )
 				{
-				stadt.stadtwaren.ware[W_Holzkohle] += stadt.stadtbewohner/400;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/500;
-// 				stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Holzkohle] += inhabitants/400;
+				goods.ware[W_Baumstamme] -= inhabitants/500;
+// 				goods.ware[W_Holzbretter] -= inhabitants/1000;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
 			case W_Pech:				//Pech (5 Pech aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/500 > 0 &&
- 				stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/500 > 0 &&
+ 				goods.ware[W_Holzbretter] - 1 > 0)
 				{
-				stadt.stadtwaren.ware[W_Pech] += stadt.stadtbewohner/100;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/500;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Pech] += inhabitants/100;
+				goods.ware[W_Baumstamme] -= inhabitants/500;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
 			case W_Steine:				//Steine / Ziegel
 				{
-				if(stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
-				stadt.stadtwaren.ware[W_Steine] += stadt.stadtbewohner/400;
-				stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/500;
+				if(goods.ware[W_Holzbretter] - inhabitants/500 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
+				goods.ware[W_Steine] += inhabitants/400;
+				goods.ware[W_Holzbretter] -= inhabitants/1000;
+				goods.ware[W_Werkzeuge] -= inhabitants/500;
 				break;
 				}
 			case W_Eisenerz:			//Eisenerz
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/400 >0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/400 >0)
 				{
-				stadt.stadtwaren.ware[W_Eisenerz] += stadt.stadtbewohner/200;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/400;
+				goods.ware[W_Eisenerz] += inhabitants/200;
+				goods.ware[W_Werkzeuge] -= inhabitants/400;
 				}
-				stadt.stadtwaren.ware[W_Eisenerz]++;
+				goods.ware[W_Eisenerz]++;
 				break;
 				}
 			case W_Schmiedeeisen:			//Schmiedeeisen
 				{
-				if(stadt.stadtwaren.ware[W_Eisenerz] - stadt.stadtbewohner/200 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/400 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/500 > 0)
+				if(goods.ware[W_Eisenerz] - inhabitants/200 > 0 && goods.ware[W_Holzkohle] - inhabitants/400 > 0 && goods.ware[W_Werkzeuge] - inhabitants/500 > 0)
 				{
-				stadt.stadtwaren.ware[W_Schmiedeeisen] += stadt.stadtbewohner/250;
-				stadt.stadtwaren.ware[W_Eisenerz] -= stadt.stadtbewohner/200;	
-				stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/400;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/500;
+				goods.ware[W_Schmiedeeisen] += inhabitants/250;
+				goods.ware[W_Eisenerz] -= inhabitants/200;	
+				goods.ware[W_Holzkohle] -= inhabitants/400;
+				goods.ware[W_Werkzeuge] -= inhabitants/500;
 				}
 				break;
 				}
 			case W_Werkzeuge:			//Werkzeuge
 				{
-				if(stadt.stadtwaren.ware[W_Schmiedeeisen] - stadt.stadtbewohner/200 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/400 > 0)
+				if(goods.ware[W_Schmiedeeisen] - inhabitants/200 > 0 && goods.ware[W_Holzkohle] - inhabitants/500 > 0 && goods.ware[W_Holzbretter] - inhabitants/400 > 0)
 				{
-					stadt.stadtwaren.ware[W_Werkzeuge] += stadt.stadtbewohner/25;
-					stadt.stadtwaren.ware[W_Schmiedeeisen] -= stadt.stadtbewohner/200;
-					stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/400;
+					goods.ware[W_Werkzeuge] += inhabitants/25;
+					goods.ware[W_Schmiedeeisen] -= inhabitants/200;
+					goods.ware[W_Holzkohle] -= inhabitants/500;
+					goods.ware[W_Holzbretter] -= inhabitants/400;
 				}
-				stadt.stadtwaren.ware[W_Werkzeuge]++;
+				goods.ware[W_Werkzeuge]++;
 				break;
 				}
 			case W_Leder:			//Leder
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/1000 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/1000 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Leder] += stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Leder] += inhabitants/500;
+					goods.ware[W_Salz] -= inhabitants/1000;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Wolle:			//Wolle
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Wolle] += stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Wolle] += inhabitants/500;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Stoffe:		//Stoffe
 				{
-				if(stadt.stadtwaren.ware[W_Wolle] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Wolle] - inhabitants/500 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Stoffe] += stadt.stadtbewohner/100;
-					stadt.stadtwaren.ware[W_Wolle] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Stoffe] += inhabitants/100;
+					goods.ware[W_Wolle] -= inhabitants/1000;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Salz:		//Salz
 				{
-				if(stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/800 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Holzbretter] - inhabitants/800 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Salz] += stadt.stadtbewohner/80;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/800;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Salz] += inhabitants/80;
+					goods.ware[W_Holzbretter] -= inhabitants/800;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Fisch:		//Fisch
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/400 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1500 > 0 && stadt.stadtwaren.ware[W_Hanf] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/400 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/1500 > 0 && goods.ware[W_Hanf] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fisch] += stadt.stadtbewohner/200;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1500;
-					stadt.stadtwaren.ware[W_Hanf] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Fisch] += inhabitants/200;
+					goods.ware[W_Salz] -= inhabitants/400;
+					goods.ware[W_Werkzeuge] -= inhabitants/1500;
+					goods.ware[W_Hanf] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/200 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/200 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fleisch] += stadt.stadtbewohner/200;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/200;
+					goods.ware[W_Fleisch] += inhabitants/200;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
+					goods.ware[W_Getreide] -= inhabitants/200;
 				}
 				break;
 				}
 			case W_Getreide:		//Getreide
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Getreide] += stadt.stadtbewohner/80;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/500;
+					goods.ware[W_Getreide] += inhabitants/80;
+					goods.ware[W_Werkzeuge] -= inhabitants/500;
 				}
-				stadt.stadtwaren.ware[W_Getreide]++;
+				goods.ware[W_Getreide]++;
 				break;
 				}
 			case W_Bier:		//Bier
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/500 > 0 &&
-				stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/1000 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/500 > 0 &&
+				goods.ware[W_Holzbretter] - inhabitants/1000 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Bier] += stadt.stadtbewohner/80;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Bier] += inhabitants/80;
+					goods.ware[W_Getreide] -= inhabitants/500;
+					goods.ware[W_Holzbretter] -= inhabitants/1000;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Wein:		//Wein
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Wein] += stadt.stadtbewohner/250;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+				goods.ware[W_Wein] += inhabitants/250;
+				goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Hanf:		//Hanf
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Hanf] += stadt.stadtbewohner/250;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+					goods.ware[W_Hanf] += inhabitants/250;
+					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
@@ -234,48 +243,48 @@ void gesamtbild::produktion(int durchlauf)
 				break;
 			}
 
-			switch(stadt.mproduktion[j])
+			switch(mproduction[j])
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
-// 			stadt.stadtwaren.ware[i] += ((rand() % 12) + stadt.stadtbewohner/100);
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+// 			goods.ware[i] += ((rand() % 12) + inhabitants/100);
+				if(goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Baumstamme] = stadt.stadtwaren.ware[W_Baumstamme] + stadt.stadtbewohner/200;
-				stadt.stadtwaren.ware[W_Werkzeuge] = stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000;
+				goods.ware[W_Baumstamme] = goods.ware[W_Baumstamme] + inhabitants/200;
+				goods.ware[W_Werkzeuge] = goods.ware[W_Werkzeuge] - inhabitants/1000;
 				}
 				break;
 				}
 			case W_Holzbretter:			//Holzbretter
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/400 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/800 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/400 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/800 > 0)
 				{
-				stadt.stadtwaren.ware[W_Holzbretter] += stadt.stadtbewohner/200;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/400;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/800;
+				goods.ware[W_Holzbretter] += inhabitants/200;
+				goods.ware[W_Baumstamme] -= inhabitants/400;
+				goods.ware[W_Werkzeuge] -= inhabitants/800;
 				}
 				break;
 				}
 			case W_Holzkohle:			//Holzkohle ... (2 HK aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/1000 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0 )
+				if(goods.ware[W_Baumstamme] - inhabitants/1000 > 0 && goods.ware[W_Holzbretter] - 1 > 0 )
 				{
-				stadt.stadtwaren.ware[W_Holzkohle] += stadt.stadtbewohner/800;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/1000;
-// 				stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Holzkohle] += inhabitants/800;
+				goods.ware[W_Baumstamme] -= inhabitants/1000;
+// 				goods.ware[W_Holzbretter] -= inhabitants/1000;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
 			case W_Pech:			//Pech (5 Pech aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/1000 > 0 &&
- 				stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/1000 > 0 &&
+ 				goods.ware[W_Holzbretter] - 1 > 0)
 				{
-				stadt.stadtwaren.ware[W_Holzkohle] += stadt.stadtbewohner/200;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Holzkohle] += inhabitants/200;
+				goods.ware[W_Baumstamme] -= inhabitants/1000;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
@@ -285,126 +294,126 @@ void gesamtbild::produktion(int durchlauf)
 				}
 			case W_Eisenerz:
 				{		//Eisenerz
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/800 >0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/800 >0)
 				{
-				stadt.stadtwaren.ware[W_Eisenerz] += stadt.stadtbewohner/400;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/800;
+				goods.ware[W_Eisenerz] += inhabitants/400;
+				goods.ware[W_Werkzeuge] -= inhabitants/800;
 				}
 				break;
 				}
 			case W_Schmiedeeisen:			//Schmiedeeisen
 				{
-				if(stadt.stadtwaren.ware[W_Eisenerz] - stadt.stadtbewohner/400 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/800 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Eisenerz] - inhabitants/400 > 0 && goods.ware[W_Holzkohle] - inhabitants/800 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Schmiedeeisen] += stadt.stadtbewohner/500;
-				stadt.stadtwaren.ware[W_Eisenerz] -= stadt.stadtbewohner/400;	
-				stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/800;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+				goods.ware[W_Schmiedeeisen] += inhabitants/500;
+				goods.ware[W_Eisenerz] -= inhabitants/400;	
+				goods.ware[W_Holzkohle] -= inhabitants/800;
+				goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Werkzeuge:			//Werkzeuge
 				{
-				if(stadt.stadtwaren.ware[W_Schmiedeeisen] - stadt.stadtbewohner/400 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/1000 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/800 > 0)
+				if(goods.ware[W_Schmiedeeisen] - inhabitants/400 > 0 && goods.ware[W_Holzkohle] - inhabitants/1000 > 0 && goods.ware[W_Holzbretter] - inhabitants/800 > 0)
 				{
-					stadt.stadtwaren.ware[W_Werkzeuge] += stadt.stadtbewohner/40;
-					stadt.stadtwaren.ware[W_Schmiedeeisen] -= stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/800;
+					goods.ware[W_Werkzeuge] += inhabitants/40;
+					goods.ware[W_Schmiedeeisen] -= inhabitants/400;
+					goods.ware[W_Holzkohle] -= inhabitants/1000;
+					goods.ware[W_Holzbretter] -= inhabitants/800;
 				}
-				stadt.stadtwaren.ware[W_Werkzeuge]++;
+				goods.ware[W_Werkzeuge]++;
 				break;
 				}
 			case W_Leder:			//Leder
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/2000 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/2000 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Leder] += stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Leder] += inhabitants/1000;
+					goods.ware[W_Salz] -= inhabitants/2000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Wolle:			//Wolle
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Wolle] += stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Wolle] += inhabitants/1000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Stoffe:		//Stoffe
 				{
-				if(stadt.stadtwaren.ware[W_Wolle] - stadt.stadtbewohner/1000 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Wolle] - inhabitants/1000 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Stoffe] += stadt.stadtbewohner/200;
-					stadt.stadtwaren.ware[W_Wolle] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Stoffe] += inhabitants/200;
+					goods.ware[W_Wolle] -= inhabitants/1000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Salz:		//Salz
 				{
-				if(stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/1600 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Holzbretter] - inhabitants/1600 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Salz] += stadt.stadtbewohner/100;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1600;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Salz] += inhabitants/100;
+					goods.ware[W_Holzbretter] -= inhabitants/1600;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Fisch:		//Fisch
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/400 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/400 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fisch] += stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Fisch] += inhabitants/400;
+					goods.ware[W_Salz] -= inhabitants/400;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/400 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/400 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fleisch] += stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/400;
+					goods.ware[W_Fleisch] += inhabitants/400;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
+					goods.ware[W_Getreide] -= inhabitants/400;
 				}
 				break;
 				}
 			case W_Getreide:		//Getreide
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Getreide] += stadt.stadtbewohner/120;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Getreide] += inhabitants/120;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
-				stadt.stadtwaren.ware[W_Getreide] ++;
+				goods.ware[W_Getreide] ++;
 				break;
 				}
 			case W_Bier:		//Bier
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/1000 > 0 &&
-				stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/2000 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/1000 > 0 &&
+				goods.ware[W_Holzbretter] - inhabitants/2000 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Bier] += stadt.stadtbewohner/200;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Bier] += inhabitants/200;
+					goods.ware[W_Getreide] -= inhabitants/1000;
+					goods.ware[W_Holzbretter] -= inhabitants/2000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Wein:		//Wein
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Wein] += stadt.stadtbewohner/500;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+				goods.ware[W_Wein] += inhabitants/500;
+				goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
@@ -424,48 +433,48 @@ void gesamtbild::produktion(int durchlauf)
 			default:
 				break;
 			}
-			switch(stadt.nproduktion[j])
+			switch(lproduction[j])
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
-// 			stadt.stadtwaren.ware[i] += ((rand() % 12) + stadt.stadtbewohner/100);
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1500 > 0)
+// 			goods.ware[i] += ((rand() % 12) + inhabitants/100);
+				if(goods.ware[W_Werkzeuge] - inhabitants/1500 > 0)
 				{
-				stadt.stadtwaren.ware[W_Baumstamme] = stadt.stadtwaren.ware[W_Baumstamme] + stadt.stadtbewohner/250;
-				stadt.stadtwaren.ware[W_Werkzeuge] = stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1500;
+				goods.ware[W_Baumstamme] = goods.ware[W_Baumstamme] + inhabitants/250;
+				goods.ware[W_Werkzeuge] = goods.ware[W_Werkzeuge] - inhabitants/1500;
 				}
 				break;
 				}
 			case W_Holzbretter:			//Holzbretter
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/500 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1000 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/500 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Holzbretter] += stadt.stadtbewohner/250;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/500;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1000;
+				goods.ware[W_Holzbretter] += inhabitants/250;
+				goods.ware[W_Baumstamme] -= inhabitants/500;
+				goods.ware[W_Werkzeuge] -= inhabitants/1000;
 				}
 				break;
 				}
 			case W_Holzkohle:			//Holzkohle ... (2 HK aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/1500 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0 )
+				if(goods.ware[W_Baumstamme] - inhabitants/1500 > 0 && goods.ware[W_Holzbretter] - 1 > 0 )
 				{
-				stadt.stadtwaren.ware[W_Holzkohle] += stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/1500;
-// 				stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Holzkohle] += inhabitants/1000;
+				goods.ware[W_Baumstamme] -= inhabitants/1500;
+// 				goods.ware[W_Holzbretter] -= inhabitants/1000;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
 			case W_Pech:			//Pech (5 Pech aus 3 BS und 1 HB)
 				{
-				if(stadt.stadtwaren.ware[W_Baumstamme] - stadt.stadtbewohner/1500 > 0 &&
- 				stadt.stadtwaren.ware[W_Holzbretter] - 1 > 0)
+				if(goods.ware[W_Baumstamme] - inhabitants/1500 > 0 &&
+ 				goods.ware[W_Holzbretter] - 1 > 0)
 				{
-				stadt.stadtwaren.ware[W_Holzkohle] += stadt.stadtbewohner/250;
-				stadt.stadtwaren.ware[W_Baumstamme] -= stadt.stadtbewohner/1500;
-				stadt.stadtwaren.ware[W_Holzbretter] --;
+				goods.ware[W_Holzkohle] += inhabitants/250;
+				goods.ware[W_Baumstamme] -= inhabitants/1500;
+				goods.ware[W_Holzbretter] --;
 				}
 				break;
 				}
@@ -475,124 +484,124 @@ void gesamtbild::produktion(int durchlauf)
 				}
 			case W_Eisenerz:
 				{		//Eisenerz
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 >0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 >0)
 				{
-				stadt.stadtwaren.ware[W_Eisenerz] += stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+				goods.ware[W_Eisenerz] += inhabitants/1000;
+				goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Schmiedeeisen:			//Schmiedeeisen
 				{
-				if(stadt.stadtwaren.ware[W_Eisenerz] - stadt.stadtbewohner/800 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/1200 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/1500 > 0)
+				if(goods.ware[W_Eisenerz] - inhabitants/800 > 0 && goods.ware[W_Holzkohle] - inhabitants/1200 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1500 > 0)
 				{
-				stadt.stadtwaren.ware[W_Schmiedeeisen] += stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Eisenerz] -= stadt.stadtbewohner/800;	
-				stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/1200;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/1500;
+				goods.ware[W_Schmiedeeisen] += inhabitants/1000;
+				goods.ware[W_Eisenerz] -= inhabitants/800;	
+				goods.ware[W_Holzkohle] -= inhabitants/1200;
+				goods.ware[W_Werkzeuge] -= inhabitants/1500;
 				}
 				break;
 				}
 			case W_Werkzeuge:			//Werkzeuge
 				{
-				if(stadt.stadtwaren.ware[W_Schmiedeeisen] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Holzkohle] - stadt.stadtbewohner/1500 > 0 && stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/1200 > 0)
+				if(goods.ware[W_Schmiedeeisen] - inhabitants/500 > 0 && goods.ware[W_Holzkohle] - inhabitants/1500 > 0 && goods.ware[W_Holzbretter] - inhabitants/1200 > 0)
 				{
-					stadt.stadtwaren.ware[W_Werkzeuge] += stadt.stadtbewohner/100;
-					stadt.stadtwaren.ware[W_Schmiedeeisen] -= stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Holzkohle] -= stadt.stadtbewohner/1500;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1200;
+					goods.ware[W_Werkzeuge] += inhabitants/100;
+					goods.ware[W_Schmiedeeisen] -= inhabitants/500;
+					goods.ware[W_Holzkohle] -= inhabitants/1500;
+					goods.ware[W_Holzbretter] -= inhabitants/1200;
 				}
 				break;
 				}
 			case W_Leder:			//Leder
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/2000 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/2000 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Leder] += stadt.stadtbewohner/1000;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Leder] += inhabitants/1000;
+					goods.ware[W_Salz] -= inhabitants/2000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Wolle:			//Wolle
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Wolle] += stadt.stadtbewohner/1500;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Wolle] += inhabitants/1500;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Stoffe:		//Stoffe
 				{
-				if(stadt.stadtwaren.ware[W_Stoffe] - stadt.stadtbewohner/1500 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Stoffe] - inhabitants/1500 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Stoffe] += stadt.stadtbewohner/250;
-					stadt.stadtwaren.ware[W_Wolle] -= stadt.stadtbewohner/1500;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Stoffe] += inhabitants/250;
+					goods.ware[W_Wolle] -= inhabitants/1500;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Salz:		//Salz
 				{
-				if(stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/2000 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Holzbretter] - inhabitants/2000 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Salz] += stadt.stadtbewohner/400;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Salz] += inhabitants/400;
+					goods.ware[W_Holzbretter] -= inhabitants/2000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Fisch:		//Fisch
 				{
-				if(stadt.stadtwaren.ware[W_Salz] - stadt.stadtbewohner/500 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Salz] - inhabitants/500 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fisch] += stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Fisch] += inhabitants/500;
+					goods.ware[W_Salz] -= inhabitants/500;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/500 > 0 && stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/500 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Fleisch] += stadt.stadtbewohner/500;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/500;
+					goods.ware[W_Fleisch] += inhabitants/500;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
+					goods.ware[W_Getreide] -= inhabitants/500;
 				}
 				break;
 				}
 			case W_Getreide:		//Getreide
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Getreide] += stadt.stadtbewohner/250;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Getreide] += inhabitants/250;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Bier:		//Bier
 				{
-				if(stadt.stadtwaren.ware[W_Getreide] - stadt.stadtbewohner/1500 > 0 &&
-				stadt.stadtwaren.ware[W_Holzbretter] - stadt.stadtbewohner/2000 > 0 &&
-				stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/1500 > 0 &&
+				goods.ware[W_Holzbretter] - inhabitants/2000 > 0 &&
+				goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-					stadt.stadtwaren.ware[W_Bier] += stadt.stadtbewohner/250;
-					stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/1500;
-					stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/2000;
-					stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+					goods.ware[W_Bier] += inhabitants/250;
+					goods.ware[W_Getreide] -= inhabitants/1500;
+					goods.ware[W_Holzbretter] -= inhabitants/2000;
+					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
 			case W_Wein:		//Wein
 				{
-				if(stadt.stadtwaren.ware[W_Werkzeuge] - stadt.stadtbewohner/2000 > 0)
+				if(goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
 				{
-				stadt.stadtwaren.ware[W_Wein] += stadt.stadtbewohner/1000;
-				stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/2000;
+				goods.ware[W_Wein] += inhabitants/1000;
+				goods.ware[W_Werkzeuge] -= inhabitants/2000;
 				}
 				break;
 				}
@@ -612,23 +621,23 @@ void gesamtbild::produktion(int durchlauf)
 			default:
 				break;
 			}
-// 			if(stadt.hproduktion[j] == i)
+// 			if(hproduction[j] == i)
 // 			{
-// 			qWarning() << "Hproduktion vorher: "<< stadt.stadtwaren.ware[i];
-// 			stadt.stadtwaren.ware[i] += ((rand() % 12) + stadt.stadtbewohner/100);
-// 			qWarning() << "Hproduktion nachher" << stadt.stadtwaren.ware[i];
+// 			qWarning() << "Hproduktion vorher: "<< goods.ware[i];
+// 			goods.ware[i] += ((rand() % 12) + inhabitants/100);
+// 			qWarning() << "Hproduktion nachher" << goods.ware[i];
 // 			}
-// 			if(stadt.mproduktion[j] == i)
+// 			if(mproduction[j] == i)
 // 			{
-// 			qWarning() << "MProduktion vorher" << stadt.stadtwaren.ware[i];
-// 			stadt.stadtwaren.ware[i] += ((rand() % 9) + stadt.stadtbewohner/200);
-// 			qWarning() << "MProduktion nachher" << stadt.stadtwaren.ware[i];
+// 			qWarning() << "MProduktion vorher" << goods.ware[i];
+// 			goods.ware[i] += ((rand() % 9) + inhabitants/200);
+// 			qWarning() << "MProduktion nachher" << goods.ware[i];
 // 			}
-// 			if(stadt.nproduktion[j] == i)
+// 			if(lproduction[j] == i)
 // 			{
-// 			qWarning() << "NProduktion vorher" << stadt.stadtwaren.ware[i];
-// 			stadt.stadtwaren.ware[i] += ((rand()% 4) + stadt.stadtbewohner/350);
-// 			qWarning() << "NProduktion nachher" << stadt.stadtwaren.ware[i];
+// 			qWarning() << "NProduktion vorher" << goods.ware[i];
+// 			goods.ware[i] += ((rand()% 4) + inhabitants/350);
+// 			qWarning() << "NProduktion nachher" << goods.ware[i];
 // 			}
 		}
 // 		}
@@ -638,37 +647,37 @@ void gesamtbild::produktion(int durchlauf)
 		if(durchlauf%3==0)				//Alle 3 "Tage"
 		{
 			int lqualitaet=0;
-			// stadt.stadtware[W_Baumstamme];
-			stadt.stadtwaren.ware[W_Holzbretter] -= stadt.stadtbewohner/1000;
-// stadt.stadtware[W_Holzkohle] -= stadt.stadtbewohner/1000;		//Als Heizzeug .. evtl. anpassen
-// stadt.stadtware[W_Pech];
-			stadt.stadtwaren.ware[W_Steine] -= stadt.stadtbewohner/2000;
-// stadt.stadtware[W_Eisenerz];
-			stadt.stadtwaren.ware[W_Schmiedeeisen] -= stadt.stadtbewohner/2000;
-			stadt.stadtwaren.ware[W_Werkzeuge] -= stadt.stadtbewohner/500;
-			stadt.stadtwaren.ware[W_Leder] -= stadt.stadtbewohner/500;		//Leder
-			stadt.stadtwaren.ware[W_Wolle] -= stadt.stadtbewohner/1000;
-			stadt.stadtwaren.ware[W_Stoffe] -= stadt.stadtbewohner/300;
-			stadt.stadtwaren.ware[W_Salz] -= stadt.stadtbewohner/500;
-			stadt.stadtwaren.ware[W_Fisch] -= stadt.stadtbewohner/100;
+			// stadtware[W_Baumstamme];
+			goods.ware[W_Holzbretter] -= inhabitants/1000;
+// stadtware[W_Holzkohle] -= inhabitants/1000;		//Als Heizzeug .. evtl. anpassen
+// stadtware[W_Pech];
+			goods.ware[W_Steine] -= inhabitants/2000;
+// stadtware[W_Eisenerz];
+			goods.ware[W_Schmiedeeisen] -= inhabitants/2000;
+			goods.ware[W_Werkzeuge] -= inhabitants/500;
+			goods.ware[W_Leder] -= inhabitants/500;		//Leder
+			goods.ware[W_Wolle] -= inhabitants/1000;
+			goods.ware[W_Stoffe] -= inhabitants/300;
+			goods.ware[W_Salz] -= inhabitants/500;
+			goods.ware[W_Fisch] -= inhabitants/100;
 					//Fisch hauefig gegessen
-			stadt.stadtwaren.ware[W_Fleisch] -= stadt.stadtbewohner/800;
+			goods.ware[W_Fleisch] -= inhabitants/800;
 					//Fleisch fuer wohlhabendere Schichten
-			stadt.stadtwaren.ware[W_Getreide] -= stadt.stadtbewohner/50;
+			goods.ware[W_Getreide] -= inhabitants/50;
 					//Getreide fuer alle
-			stadt.stadtwaren.ware[W_Bier] -= stadt.stadtbewohner/50;
+			goods.ware[W_Bier] -= inhabitants/50;
 					//Bier auch sehr wichtig - billiges Getraenk fuer jedermann
-			stadt.stadtwaren.ware[W_Wein] -= stadt.stadtbewohner/100;
+			goods.ware[W_Wein] -= inhabitants/100;
 					//Wein wieder fuer wohlhabendere Schichten
-// stadt.stadtware[17];
-// stadt.stadtware[18];
-// stadt.stadtware[19];
+// stadtware[17];
+// stadtware[18];
+// stadtware[19];
 
 			for(int i = 0; i<const_warenanzahl ;i++)
 			{
-				if(stadt.stadtwaren.ware[i]<0)
+				if(goods.ware[i]<0)
 				{
-					stadt.stadtwaren.ware[i]=0;
+					goods.ware[i]=0;
 					lqualitaet -= (1+rand()%7);
 				}
 				else
@@ -676,24 +685,24 @@ void gesamtbild::produktion(int durchlauf)
 				lqualitaet ++;
 				}
 			}
-			stadt.stadtbewohner +=lqualitaet;
-			qWarning() << stadt.stadtbewohner;
+			inhabitants +=lqualitaet;
+			qWarning() << inhabitants;
 		}
 
-		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
-		{
-// 			qWarning() << it->stadtname << hf->mapprops.stadtname ;
-			if(it->stadtname == stadt.stadtname)
-			{
-				*it = stadt;
-				break;
-			}
-		}
+// 		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
+// 		{
+// // 			qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 			if(it->stadtname == stadtname)
+// 			{
+// 				*it = stadt;
+// 				break;
+// 			}
+// 		}
 
 	}
 
 // qWarning() << "Ende Produktion";
 
-}
+// }
 // }
 // }

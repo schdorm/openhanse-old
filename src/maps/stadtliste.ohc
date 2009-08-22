@@ -1,9 +1,8 @@
 <list>
-	<stadt>
-	<stadtname>Teststadt</stadtname>
-	<hproduktion>1</hproduktion>
-	<nproduktion>7</nproduktion>
-	</stadt>
-
+	<city>
+	<cityname>Teststadt</cityname>
+	<hproduction>1</hproduction>
+	<lproduction>7</lproduction>
+	</city>
 
 </list>

@@ -18,43 +18,56 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifndef _DATA_CLASS_H
+#define _DATA_CLASS_H
 
-#ifndef _tabpanel_h
-#define _tabpanel_h
+#include "stadtklasse.h"
+#include "kontorklasse.h"
+#include "schiff.h"
+#include "wind.h"
+#include "zeit.h"
+#include "buildingclass.h"
 
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-// #include <QtGui/
+#include "map.h"
 
-#include "waren.h"
-
-class SeaTabPanel : public QTabWidget
+class DataClass 
 {
-Q_OBJECT
-// public slots:
 
 public:
-// TabPanel();
-void create();
-void landmenu();
-QLabel *ware[const_warenanzahl];
-QLabel *fuellung;
-QLabel *taler;
-// QTabWidget *menutabs;
-QWidget *tab[3];
+CityClass *active_city;
+KontorClass *active_kontor;
+ShipClass *active_ship;
 
-QWidget *ladung;
-QWidget *steuerung;
-// QWidget *;
+zeit gametime;
+windclass wind;
+MapClass currentMap;
 
-QPushButton *anlegen;
-// QPushButton *ablegen;
-QPushButton *schuss;
-QSlider *geschwindigkeitsregler;
-QProgressBar *geschwindigkeitsanzeige;
+void addBuilding(BuildingClass *);		// add a Building .... to the Building .... List
+void addShip(ShipClass *);
+void addKontor(KontorClass *);
+void addCity(CityClass *);
+
+void setCurrentCity(QString);
+void setCurrentCity(CityClass *);
+bool anbord;
+
+LandingProcess::landingstructure landingstruct;
+
+
+QList<CityClass> ret_CityList();
+QList<ShipClass> ret_ShipList();
+QList<KontorClass> ret_KontorList();
+
+
+private:
+int schwierigkeit;
+
+
+QList <CityClass> CityList;
+QList <ShipClass> ShipList;
+QList <BuildingClass> BuildingList;
+QList <KontorClass> KontorList;
+
 
 
 };

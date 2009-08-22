@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -37,6 +37,7 @@
 #include "tabpanel.h"
 #include "konsole.h"
 
+#include "dataclass.h"
 
 #include <QtGui/QKeyEvent>
 
@@ -63,11 +64,12 @@ void execCommand(QString);
 
 void aktivieren();
 
-void spiel();
+void startNewGame();
 
 void handel();
-void handelsupdate();
-void handelsaktion();
+void tradingFinished();
+// void handelsupdate();
+// void handelsaktion();
 void produktion(int);
 
 void landmenu();
@@ -86,15 +88,8 @@ void lademenu();
 private:
 bool spielbool;
 bool aktiv;
-qint8 schwierigkeitsgrad;
-
-zeit *hfgametime;
-
-stadtklasse stadt;
-kontorklasse kontor;
-
-Warenstruct lager;
-Warenstruct lager2;
+int schwierigkeitsgrad;
+DataClass *gamedata;
 
 hauptfenster *hf;
 handelsfenster *hwin;
@@ -111,14 +106,14 @@ QComboBox *schwierigkeitauswahl;
 QPushButton *okbutton;
 QString filename;			// fuer Savegame 
 
-struct gebaudeklasse{			//Zusaetzliche, Nicht-Map-Standard-Gebaude, kommen in Liste
+/*struct gebaudeklasse{			//Zusaetzliche, Nicht-Map-Standard-Gebaude, kommen in Liste
 int id;
 QString name;
 QString datei;
 int xpos;
 int ypos;
 quint8 menschen;
-};
+}; */
 
 // struct kontorklasse{
 // QString stadt;
@@ -142,10 +137,10 @@ quint8 menschen;
 };*/
 
 
-QList <stadtklasse> stadtliste;
-QList <schiffsklasse> schiffsliste;
-QList <gebaudeklasse> gebaudeliste;
-QList <kontorklasse> kontorliste;
+// QList <stadtklasse> stadtliste;
+// QList <schiffsklasse> schiffsliste;
+// QList <gebaudeklasse> gebaudeliste;
+// QList <kontorklasse> kontorliste;
 
 protected:
 	void keyPressEvent(QKeyEvent *event);

@@ -18,44 +18,29 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifndef _MAPCLASS_H
+#define _MAPCLASS_H
+#include "definitions.h"
 
-#ifndef _tabpanel_h
-#define _tabpanel_h
-
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-// #include <QtGui/
-
-#include "waren.h"
-
-class SeaTabPanel : public QTabWidget
+class MapClass
 {
-Q_OBJECT
-// public slots:
-
 public:
-// TabPanel();
-void create();
-void landmenu();
-QLabel *ware[const_warenanzahl];
-QLabel *fuellung;
-QLabel *taler;
-// QTabWidget *menutabs;
-QWidget *tab[3];
+QString filename;
+QPoint coordinate;
+QSize size;
+bool isCity;
+QString cityname;
+QString background;
+QString mapnorth;
+QString mapeast;
+QString mapsouth;
+QString mapwest;
+MapType::mtyp maptyp;
 
-QWidget *ladung;
-QWidget *steuerung;
-// QWidget *;
+private:
 
-QPushButton *anlegen;
-// QPushButton *ablegen;
-QPushButton *schuss;
-QSlider *geschwindigkeitsregler;
-QProgressBar *geschwindigkeitsanzeige;
 
+protected:
 
 };
 

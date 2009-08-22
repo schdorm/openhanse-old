@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -33,6 +33,7 @@
 #include <QtGui/QSpacerItem>
 
 #include "waren.h"
+#include "dataclass.h"
 
 // const int const_warenanzahl = 30;
 
@@ -40,11 +41,17 @@ class handelsfenster : public QWidget
 {
 Q_OBJECT
 
-signals:
-void hmoeglich(bool);
+// signals:
+// void hmoeglich(bool);
 
 public:
 handelsfenster();
+void updateWidget();
+void setGameData(DataClass *);
+void buttonHandler(int);
+void setStorage(Warenstruct, int);
+
+DataClass *gamedata;
 
 QButtonGroup *htypgroup;
 QRadioButton *htyp[3];		//Handelstyp: Schiff mit Stadt, Kontor mit Stadt, Transfer Kontor->Schiff
@@ -63,11 +70,18 @@ QSpinBox *verkaufsmenge[const_warenanzahl];
 QPushButton *handelsbutton;
 QPushButton *exit;
 
-void sethandelsbutton(bool enabled)
-{
-handelsbutton->setEnabled(enabled);
-emit hmoeglich(enabled);
-}
+// void sethandelsbutton(bool enabled)
+// {
+// handelsbutton->setEnabled(enabled);
+// // emit hmoeglich(enabled);
+// }
+private:
+Warenstruct storage[2];			// Storage1 -> city/city/kontor; storage0 -> ship / Kontor/ship;
+// Warenstruct storage2;
+
+
+
+void handelsaktion();
 
 
 };

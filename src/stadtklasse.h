@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   christian.doerffel@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   christian.doerffel@googlemail.com                                     *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,12 +20,13 @@
 #ifndef _stadtklasse_h
 #define _stadtklasse_h
 
-// #include <QtCore/QObject>
 #include <QtCore/QString>
+// #include <stdlib.h>
 
 #include "waren.h"
+#include "definitions.h"
 // #include <math.h>
-class stadtklasse /*: public QObject*/
+class CityClass /*: public QObject*/
 {
 // Q_OBJECT
 public:
@@ -35,19 +36,24 @@ public:
 // // int ware01,ware02,ware03,ware04,ware05,ware06,ware07,ware08,ware09,ware10,ware11,ware12, ware13, ware14, ware15, ware16, ware17, ware18, ware19, ware20;		//Waren der Haendler
 // qint16 ware[30];
 // };
-Warenstruct stadtwaren;
-QString stadtname;
-int stadtbewohner;
-bool hasOffice;		//Kontor/Office built in this town.
+Warenstruct goods;
+QString cityname;
+int inhabitants;
+int id;
+bool hasKontor;		//Kontor built in this town.
 
-int hproduktion[5];
-int mproduktion[5];
-int nproduktion[5];
+int hproduction[5];		// high production
+int mproduction[5];
+int lproduction[5];		// low production
 // public slots:
 //  void produktion(int);
 
+// void produktion();
+// void verbrauch();
+
 	void init()
 	{
+	hasKontor = false;
 		srand(time(NULL));
 		for(int i=0; i<const_warenanzahl; i++)
 		{
@@ -57,17 +63,17 @@ int nproduktion[5];
 			int r=rand()%20;
 			int s=rand()%20;
 			int p = rand()%10;
-			stadtwaren.ware[i] = s + r + p;
+			goods.ware[i] = s + r + p;
 
 		}
 		// else
 		// stadtwaren.ware[i] = int(sqrt(stadtwaren.ware[i] * stadtwaren.ware[i])) % 100;
 
 		}
-	stadtbewohner=2000;				//das kommt mal noch ins XML-Zeugs rein
+	inhabitants = 1300 + rand()%1000;				//das kommt mal noch ins XML-Zeugs rein
 
-	static int id;
-	stadtwaren.kapazitaet = id + 10000000;	// i + 10 mio
+	static int id_counter;
+	id = id_counter;
 	id++;
 	}
 
@@ -75,15 +81,15 @@ void reset()
 {
 for(int i = 0; i<5; i++)
 {
-hproduktion[i]=-1;
-mproduktion[i]=-1;
-nproduktion[i]=-1;
+hproduction[i]=-1;
+mproduction[i]=-1;
+lproduction[i]=-1;
 }
-stadtname=QString();
-stadtbewohner = 0;
-stadtwaren.kapazitaet = 0;
+cityname = QString();
+inhabitants = 0;
+// stadtwaren.kapazitaet = 0;
 }
-
+void production(int);
 };
 
 

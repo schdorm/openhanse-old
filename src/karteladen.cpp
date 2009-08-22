@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -34,17 +34,17 @@ void hauptfenster::karteladen(QString mname)
 	qWarning() << "Karteladen: " << mname;
 	QDir dir;
 	dir = QDir().current();
-
+	QString wdir;
 	if(dir.cd("maps"))
 {
-	QString wdir = dir.absolutePath();
+	wdir = dir.absolutePath();
 // 	wdir.append("/maps");
 	wdir.append("/");
 	qWarning()  << "Working Direktory:" <<wdir;
 
 	mname.prepend(wdir);
 
-	mapprops.dir=wdir;
+
 
 	qWarning() << "Wdir:" << wdir << "MName:" << mname;
 }
@@ -58,7 +58,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 	QFile file(mname);		//Map-XML-Lesen
 	if(file.exists())
 	{
-
+	gamedata->currentMap.filename = mname;
 
 // 	QGraphicsScene *tempsc = new QGraphicsScene;
 	setScene(tempsc);
@@ -95,7 +95,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				m_typ,
 				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
-		mapprops.stadtname = QString();
+		gamedata->currentMap.cityname = QString();
 		int ofkt = -1;				//Funktion des Objektes
 		QString otooltip = QString();				//name/tooltip des objekts
 		QString odatei = QString();				//name des Bildes des Objekts
@@ -108,17 +108,18 @@ qWarning() << "Mapdir does not exist. Exiting.";
 
 		file.open(QIODevice::ReadOnly | QIODevice::Text);
 		QXmlStreamReader reader(&file);
+		gamedata->currentMap.isCity = false;
 		while (reading) 
 		{
-		reader.readNext();
-		switch(reader.tokenType())
+		
+		switch(reader.readNext())
 		{
 			case QXmlStreamReader::StartElement:
 			{
 			qWarning() << "\nStart:\t" <<reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() =="mapprop")
+				if(reader.qualifiedName().toString() =="mapproperties")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_prop;
 				break;
 				}
@@ -127,52 +128,52 @@ qWarning() << "Mapdir does not exist. Exiting.";
 				status=m_stadtname;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="maphintergrund")
+				if(reader.qualifiedName().toString() =="mapbackground")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_img;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapnord")
+				if(reader.qualifiedName().toString() =="mapnorth")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_nord;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapost")
+				if(reader.qualifiedName().toString() =="mapeast")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_ost;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapsued")
+				if(reader.qualifiedName().toString() =="mapsouth")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_sued;
 				break;
 				}
 				if(reader.qualifiedName().toString() =="mapwest")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_west;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapbreite")
+				if(reader.qualifiedName().toString() =="mapwidth")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_grx;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="maphoehe")
+				if(reader.qualifiedName().toString() =="mapheight")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_gry;
 				break;
 				}
 
 				if(reader.qualifiedName().toString() =="maptype")
 				{
-// 				qWarning() << "Start: mapprops";
+// 				qWarning() << "Start: gamedata->currentMap";
 				status=m_typ;
 				break;
 				}
@@ -244,121 +245,123 @@ qWarning() << "Mapdir does not exist. Exiting.";
 					break;
 				case m_stadtname:
 				{
-				mapprops.stadtname = reader.text().toString();
+// 					gamedata->currentMap.cityname = reader.text().toString();
+// 					gamedata->currentMap.isCity = true;
+					gamedata->setCurrentCity(reader.text().toString());
 				break;
 				}
 				case m_img:
 				{
-				mapprops.hintergrund = reader.text().toString();
-				mapprops.hintergrund.prepend(mapprops.dir);
-//  				mapprops.hintergrund.prepend(":");
- 				QFile mapimgfile(mapprops.hintergrund);
+				gamedata->currentMap.background = reader.text().toString();
+				gamedata->currentMap.background.prepend(wdir);
+//  				gamedata->currentMap.background.prepend(":");
+ 				QFile mapimgfile(gamedata->currentMap.background);
  					if(mapimgfile.exists())
  					{
-					szene->setBackgroundBrush(QBrush(QImage(mapprops.hintergrund)));
+					szene->setBackgroundBrush(QBrush(QImage(gamedata->currentMap.background)));
 					}
 					else
-						qWarning() << "Maphintergrund:" << mapprops.hintergrund << "nicht gefunden!" << mapprops.dir;
+						qWarning() << "Maphintergrund:" << gamedata->currentMap.background << "nicht gefunden!" << wdir;
 				break;
 				}
 
 				case m_nord:
 				{
-				mapprops.mapnord = reader.text().toString();
+				gamedata->currentMap.mapnorth = reader.text().toString();
 
-				qWarning() << "Nord-Map:" << mapprops.mapnord;
-				if(!QFile(mapprops.mapnord).exists())
+				qWarning() << "Nord-Map:" << gamedata->currentMap.mapnorth;
+				if(!QFile(gamedata->currentMap.mapnorth).exists())
 					{
-					qWarning() << mapprops.mapnord << "Existiert nicht";
-					mapprops.mapnord = QString();
+					qWarning() << gamedata->currentMap.mapnorth << "Existiert nicht";
+					gamedata->currentMap.mapnorth = QString();
 					}
 				break;
 				}
 
 				case m_ost:
 				{
-				mapprops.mapost = reader.text().toString();
-				qWarning() << "Ost-Map:" << mapprops.mapost;
-				if(!QFile(mapprops.mapost).exists())
+				gamedata->currentMap.mapeast = reader.text().toString();
+				qWarning() << "Ost-Map:" << gamedata->currentMap.mapeast;
+				if(!QFile(gamedata->currentMap.mapeast).exists())
 					{
-					qWarning() << mapprops.mapost << "Existiert nicht";
-					mapprops.mapost = QString();
+					qWarning() << gamedata->currentMap.mapeast << "Existiert nicht";
+					gamedata->currentMap.mapeast = QString();
 					}
 				break;
 				}
 
 				case m_sued:
 				{
-				mapprops.mapsued = reader.text().toString();
-				qWarning() << "Sued-Map:" << mapprops.mapsued;
-				if(!QFile(mapprops.mapsued).exists())
+				gamedata->currentMap.mapsouth = reader.text().toString();
+				qWarning() << "Sued-Map:" << gamedata->currentMap.mapsouth;
+				if(!QFile(gamedata->currentMap.mapsouth).exists())
 					{
-					qWarning() << mapprops.mapsued << "Existiert nicht";
-					mapprops.mapsued = QString();
+					qWarning() << gamedata->currentMap.mapsouth << "Existiert nicht";
+					gamedata->currentMap.mapsouth = QString();
 					}
 				break;
 				}
 
 				case m_west:
 				{
-				mapprops.mapwest = reader.text().toString();
-				qWarning() << "West-Map:" << mapprops.mapwest;
-				if(!QFile(mapprops.mapwest).exists())
+				gamedata->currentMap.mapwest = reader.text().toString();
+				qWarning() << "West-Map:" << gamedata->currentMap.mapwest;
+				if(!QFile(gamedata->currentMap.mapwest).exists())
 					{
-					qWarning() << mapprops.mapwest << "Existiert nicht";
-					mapprops.mapwest = QString();
+					qWarning() << gamedata->currentMap.mapwest << "Existiert nicht";
+					gamedata->currentMap.mapwest = QString();
 					}
 				break;
 				}
 
 				case m_grx:
 				{
-					mapprops.breite = reader.text().toString().toInt();
+					gamedata->currentMap.size.setWidth(reader.text().toString().toInt());
 					break;
 				}
 				case m_gry:
 				{
-					mapprops.hoehe = reader.text().toString().toInt();
+					gamedata->currentMap.size.setHeight(reader.text().toString().toInt());
 					break;
 				}
 				case m_typ:
 				{
-					mapprops.maptyp =
+					gamedata->currentMap.maptyp =
 					  static_cast<MapType::mtyp>( reader.text().toString().toInt() );
 					break;
 	/*				if(reader.text().toString().toInt() == 0)
 					{
-						mapprops.maptyp = MapType::sea;
+						gamedata->currentMap.maptyp = MapType::sea;
 					}
 					if(reader.text().toString().toInt() == 1)
 					{
-						mapprops.maptyp = MapType::coast;
+						gamedata->currentMap.maptyp = MapType::coast;
 					}
 					if(reader.text().toString().toInt() == 2)
 					{
-						mapprops.maptyp = MapType::land;
+						gamedata->currentMap.maptyp = MapType::land;
 					}
 					if(reader.text().toString().toInt() == 3)
 					{
-						mapprops.maptyp = MapType::coast_city;
+						gamedata->currentMap.maptyp = MapType::coast_city;
 					}
 					if(reader.text().toString().toInt() == 4)
 					{
-						mapprops.maptyp = MapType::land_city;
+						gamedata->currentMap.maptyp = MapType::land_city;
 					}*/
 // 					if(reader.text().toString() == "sea")
 // 					{
-// 						mapprops.maptyp = sea;
+// 						gamedata->currentMap.maptyp = sea;
 // 					}
 // 					if(reader.text().toString() == "coast")
 // 					{
-// 						mapprops.maptyp = coast;
+// 						gamedata->currentMap.maptyp = coast;
 // 					}
 // 					if(reader.text().toString() == "land")
 // 					{
-// 						mapprops.maptyp = land;
+// 						gamedata->currentMap.maptyp = land;
 // 					}
-// 					mapprops.maptyp = reader.text().toString().toInt();
+// 					gamedata->currentMap.maptyp = reader.text().toString().toInt();
 
 				}
 
@@ -413,13 +416,13 @@ qWarning() << "Mapdir does not exist. Exiting.";
 	//jetzt zeichnen: habe alle Eigenschaften des Objektes erhalten?
 				{
 // 						if(!odatei.contains("img"))
-// 						{ odatei.prepend(mapprops.dir);
+// 						{ odatei.prepend(wdir);
 // 						}
 // 						else
 // 							odatei.prepend(":");
 
 					qWarning() << odatei << ofkt;
-					odatei = odatei.prepend(mapprops.dir);
+					odatei = odatei.prepend(wdir);
 					QFile bild(odatei);
 					if(bild.exists())
 					{
@@ -512,62 +515,65 @@ qWarning() << "Mapdir does not exist. Exiting.";
 // #endif
 // }
 // 	setSceneRect(0,0,2000,3000);
-// 	if(mapprops.maptyp == sea)
+// 	if(gamedata->currentMap.maptyp == sea)
 // 	{
-	setSceneRect(0,0,mapprops.breite,mapprops.hoehe);
+	setSceneRect(0,0,gamedata->currentMap.size.width(), gamedata->currentMap.size.height() );
 // 	}
-// 	if(mapprops.maptyp == coast)
+// 	if(gamedata->currentMap.maptyp == coast)
 // 	{
-// 	QString mhfname = QString("kollisionskarte.png").prepend(mapprops.dir);
+// 	QString mhfname = QString("kollisionskarte.png").prepend(wdir);
 // 	QFile mhifile (mhfname);
 // 	if(mhifile.exists())
 // 	{
 // 	qWarning() << mhfname << "vorhanden";
 // 	maphandlingimg = QImage(mhfname);
-// // 	qWarning() << QString("kollissionskarte.png").prepend(mapprops.dir);
-// 	mapprops.breite =  maphandlingimg.width() * 5;
-// 	mapprops.hoehe = maphandlingimg.height() * 5;
+// // 	qWarning() << QString("kollissionskarte.png").prepend(wdir);
+// 	gamedata->currentMap.breite =  maphandlingimg.width() * 5;
+// 	gamedata->currentMap.hoehe = maphandlingimg.height() * 5;
 // // 	setSceneRect(0, 0, maphandlingimg.width() * 5, maphandlingimg.height() * 5);
-// 	setSceneRect(0,0,mapprops.breite,mapprops.hoehe);
-// 	qWarning() << "Breite:" << mapprops.breite << "Hoehe:" << mapprops.hoehe;
+// 	setSceneRect(0,0,gamedata->currentMap.breite,gamedata->currentMap.hoehe);
+// 	qWarning() << "Breite:" << gamedata->currentMap.breite << "Hoehe:" << gamedata->currentMap.hoehe;
 // 	}
 // 	else
 // 	qWarning() << mhfname << "not found";
 // 	}
-// 	mapprops.hoehe = maphandlingimg.height();
-// 	mapprops.breite = maphandlingimg.width();
-							///	mapprops.mapname = mname;
-// 	setSceneRect(20,20,mapprops.breite-40, mapprops.hoehe-40);
+// 	gamedata->currentMap.hoehe = maphandlingimg.height();
+// 	gamedata->currentMap.breite = maphandlingimg.width();
+							///	gamedata->currentMap.mapname = mname;
+// 	setSceneRect(20,20,gamedata->currentMap.breite-40, gamedata->currentMap.hoehe-40);
 
 
 
 	if(anbord)
 {
-	testschiff = szene->addPixmap(QPixmap(activeship.filename));
+QGraphicsPixmapItem *testschiff;
+	qWarning() << gamedata->active_ship->filename;
+	testschiff = szene->addPixmap(QPixmap(gamedata->active_ship->filename));
 	testschiff->setZValue(0.1);
-
+	gamedata->active_ship->setGraphicsItem (testschiff);
+	gamedata->active_ship->rotateGraphics();
 // 	testschiff->setPos(1500,700);
-	QTransform t;
-	const int w = testschiff->boundingRect().width()/2;
-	const int h = testschiff->boundingRect().height()/2;
+// 	QTransform t;
+// 	const int w = active_ship;
+// 	const int h = testschiff->boundingRect().height()/2;
+// 
+// 	t.translate( w, h );
+// 	t.rotateRadians(-gamedata->active_ship.ret_Dir());
+// 	t.translate( -w, -h );
+// 	testschiff->setTransform( t );
+// 	active_ship.schiffbreite = testschiff->boundingRect().width();
+// 	active_ship.schifflange = testschiff->boundingRect().height();
 
-	t.translate( w, h );
-	t.rotateRadians(-activeship.attribute.ausrichtung);
-	t.translate( -w, -h );
-	testschiff->setTransform( t );
-	activeship.schiffbreite = testschiff->boundingRect().width();
-	activeship.schifflange = testschiff->boundingRect().height();
-
-	activeship.attribute.map = mapprops.mapname;
-	activeship.attribute.stadt = mapprops.stadtname;
+// 	active_ship.attribute.map = gamedata->currentMap.mapname;
+// 	active_ship.attribute.stadt = gamedata->currentMap.stadtname;
 	
-	qWarning() << mapprops.maptyp;
-	if(mapprops.maptyp == MapType::coast || mapprops.maptyp == MapType::coast_city)
+	qWarning() << gamedata->currentMap.maptyp;
+	if(gamedata->currentMap.maptyp == MapType::coast || gamedata->currentMap.maptyp == MapType::coast_city)
 	{
 	emit sig_anlegbar(true);
 // 	qWarning() << "anlegbar";
 	}
-	else if(mapprops.maptyp == MapType::sea)
+	else if(gamedata->currentMap.maptyp == MapType::sea)
 	{
 	emit sig_anlegbar(false);
 // 	qWarning() << "nicht anlegbar";
@@ -615,7 +621,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 	setScene(szene);
 if(anbord)
 {
-	centerOn(testschiff);
+	centerOn(gamedata->active_ship->graphicsitem);
 }
 	tempsc->deleteLater();
 

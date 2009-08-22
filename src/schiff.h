@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,10 +20,11 @@
 #ifndef _schiffsklasse_h
 #define _schiffsklasse_h
 
-#include "waren.h"
+// #include "waren.h"
+#include "definitions.h"
 #include <QtGui/QGraphicsItem>
 
-class schiffsklasse 
+class ShipClass 
 {
 
 private:
@@ -42,17 +43,14 @@ double toRudderDir;	// 	''
 double sailDir;
 // double toSailDir;
 
+int g_height, g_height2;	// graphicsitem - height -> laenge
+int g_width, g_width2;		// graphicsitem - width -> breite
+
+PositioningStruct currentPosition;
 
 
-enum schiffstypen
-	{
-	Kraier,
-	Kogge,
-	Holk
-	};
 
-
-struct desc
+/*struct desc
 {
 int xpos, xposm;
 int ypos, yposm;
@@ -69,16 +67,17 @@ float segelausrichtung;
 float ausrichtung, sollausrichtung;			//aktueller Winkel -> Sollwinkel bei Maussteuerung
 float steuerruderausrichtung, sollsteuerruderausrichtung;				//aktueller Winkel des Ruders
 // QPoint ecke_obenlinks, ecke_obenrechts, ecke_untenlinks, ecke_untenrechts;
-};
+};*/
 
 public:
-QGraphicsItem *graphicsitem;
-desc attribute;
-Warenstruct Ladung;
+QGraphicsPixmapItem *graphicsitem;
+
+// desc attribute;
+Warenstruct cargo;			//Ladung
 
 QString schiffsname;
 int id;
-schiffstypen schiffstyp;
+ShipType::schiffstypen type;
 int zustand;
 int manvzustand;		//Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
 int besatzung;
@@ -97,16 +96,16 @@ void init()					///== RESET
 	id = idzuweisung;
 	idzuweisung++;
 
-	Ladung.taler = 5000;
+	cargo.taler = 5000;
 
 	for(int i = 0; i<const_warenanzahl; i++)
 	{
-		Ladung.ware[i]=5;
+		cargo.ware[i]=5;
 	}
-	Ladung.fuellung=0;
+	cargo.fuellung=0;
 
 	zustand = 100;
-	schiffstyp = Kogge;
+	type = ShipType::Kogge;/*
 	attribute.sollsteuerruderausrichtung=0;
 	attribute.steuerruderausrichtung=0;
 	attribute.sollausrichtung=0;
@@ -118,16 +117,20 @@ void init()					///== RESET
 	attribute.sollgeschwindigkeit=0;
 	attribute.prozentgesetzteSegel=0;
 	attribute.sollprozentgesetzteSegel=0;
-	attribute.segelausrichtung=0;
+	attribute.segelausrichtung=0;*/
 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
-	Ladung.kapazitaet = rand()%2001;
+	cargo.kapazitaet = rand()%2001;
 }
+
+void setGraphicsItem(QGraphicsPixmapItem*);
 
 // control: set - fct.
 void set_ToSettedSails(double);
 void set_SailDir(double);
 void set_ToRudderDir(double);
 void set_ToDir(double);
+
+void brake(double);
 
 // control: Return - fct.
 int ret_V();
@@ -140,11 +143,16 @@ double ret_ToDir();
 double ret_RudderDir();
 double ret_ToRudderDir();
 
+PositioningStruct ret_currentPosition();
+int ret_MPos_X();
+int ret_MPos_Y();
+
 
 // void bewegungsbeschreibung();
 void calcMovement(int, double);
-void moveGraphics();
+bool moveGraphics();
 
+void rotateGraphics();
 
 };
 

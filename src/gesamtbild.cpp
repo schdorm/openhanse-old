@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -140,7 +140,7 @@ void gesamtbild::hauptmenu()
 // 	ende->move(450,380);
 // 	spielbt->move();
 	connect(spielbt,SIGNAL(clicked()),rahmen, SLOT(deleteLater()));
-	connect(spielbt,SIGNAL(clicked()),this, SLOT(spiel()));
+	connect(spielbt,SIGNAL(clicked()),this, SLOT(startNewGame()));
 // 	connect(spielbt,SIGNAL(clicked()),this, SLOT(handel()));
 	connect(ende,SIGNAL(clicked()),this,SLOT(close()));
 

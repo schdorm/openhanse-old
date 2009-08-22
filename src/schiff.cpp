@@ -21,7 +21,7 @@
 #include "schiff.h"
 #include <math.h>
 
-void schiffsklasse::calcMovement(int windv, double winddir)
+void ShipClass::calcMovement(int windv, double winddir)
 {
 	if(settedSails > toSettedSails)
 	{
@@ -125,54 +125,75 @@ void schiffsklasse::calcMovement(int windv, double winddir)
 	}
 }
 
-int schiffsklasse::ret_V()
+void ShipClass::brake(double param_brakefactor)
+{
+	v = v * (1 - param_brakefactor);
+
+}
+
+int ShipClass::ret_V()
 {
 return v;
 }
 
-double schiffsklasse::ret_SettedSails()
+double ShipClass::ret_SettedSails()
 {
 return settedSails;
 }
 
-double schiffsklasse::ret_ToSettedSails()
+double ShipClass::ret_ToSettedSails()
 {
 return toSettedSails;
 }
 
-double schiffsklasse::ret_SailDir()
+double ShipClass::ret_SailDir()
 {
 return sailDir;
 }
 
-// double schiffsklasse::ret_ToSailDir()
+// double ShipClass::ret_ToSailDir()
 // {
 // return toSailDir;
 // }
 
-double schiffsklasse::ret_Dir()
+double ShipClass::ret_Dir()
 {
 return dir;
 }
 
-double schiffsklasse::ret_ToDir()
+double ShipClass::ret_ToDir()
 {
 return toDir;
 }
 
-double schiffsklasse::ret_RudderDir()
+double ShipClass::ret_RudderDir()
 {
 return rudderDir;
 }
 
-double schiffsklasse::ret_ToRudderDir()
+double ShipClass::ret_ToRudderDir()
 {
 return toRudderDir;
 }
 
+PositioningStruct ShipClass::ret_currentPosition()
+{
+return currentPosition;
+}
+
+int ShipClass::ret_MPos_X()
+{
+return currentPosition.m_position.x();
+}
 
 
-void schiffsklasse::set_ToSettedSails(double param_amount)
+int ShipClass::ret_MPos_Y()
+{
+return currentPosition.m_position.y();
+}
+
+
+void ShipClass::set_ToSettedSails(double param_amount)
 {
 	if(param_amount >= 0 && param_amount <= 1)
 	{
@@ -187,7 +208,7 @@ void schiffsklasse::set_ToSettedSails(double param_amount)
 }
 
 
-void schiffsklasse::set_SailDir(double param_dir)
+void ShipClass::set_SailDir(double param_dir)
 {
 	if(param_dir <= 2 * M_PI && param_dir >= 0)
 	{
@@ -195,7 +216,7 @@ void schiffsklasse::set_SailDir(double param_dir)
 	}
 }
 
-void schiffsklasse::set_ToRudderDir(double param_dir)
+void ShipClass::set_ToRudderDir(double param_dir)
 {
 	if(param_dir <= 2 * M_PI && param_dir >= 0)
 	{
@@ -203,7 +224,7 @@ void schiffsklasse::set_ToRudderDir(double param_dir)
 	}
 }
 
-void schiffsklasse::set_ToDir(double param_dir)
+void ShipClass::set_ToDir(double param_dir)
 {
 	if(param_dir <= 2 * M_PI && param_dir >= 0)
 	{
@@ -211,6 +232,56 @@ void schiffsklasse::set_ToDir(double param_dir)
 	}
 }
 
-void schiffsklasse::moveGraphics()
+void ShipClass::setGraphicsItem(QGraphicsPixmapItem *param_item)
 {
+graphicsitem = param_item;
+g_height = param_item->boundingRect().height();
+g_height2 = g_height / 2;
+
+g_width = param_item->boundingRect().width();
+g_width2 = g_width / 2;
 }
+
+bool ShipClass::moveGraphics()
+{
+	bool moved = false;
+	if(v != 0)
+	{
+		graphicsitem->moveBy(- (v * sin(dir))/10, - (v * cos(dir))/10);
+		moved = true;
+	}
+	static double last_dir;
+	if(last_dir != dir)
+	{
+		last_dir = dir;
+		moved = true;
+		graphicsitem->resetTransform();
+		QTransform t;
+		t.translate( g_width2, g_height2 );
+		t.rotateRadians(- dir);
+		t.translate( -g_width2, -g_height2 );
+		graphicsitem->setTransform( t );
+	}
+	if(moved)
+	{
+	currentPosition.generic_position = graphicsitem->pos();
+	currentPosition.m_position.setX(currentPosition.generic_position.x() + cos(dir) * g_width2 + sin(dir) * g_height2);
+	currentPosition.m_position.setY(currentPosition.generic_position.y() + cos(dir) * g_height2 + sin(dir) * g_width2);
+// 	int mposx = int(testschiff->x() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite/2 + sin(gamedata->active_ship->ret_Dir())* gamedata->active_ship->schifflange / 2);
+
+// 	int mposy = int(testschiff->y() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schifflange/2 + sin(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite /2);
+	
+	}
+	return moved;
+}
+
+void ShipClass::rotateGraphics()
+{
+int temp_v = v;
+v = 0;
+dir -= 0.000001;
+moveGraphics();
+dir += 0.000001;
+v = temp_v;
+}
+

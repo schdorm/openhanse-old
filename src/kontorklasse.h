@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,35 +22,41 @@
 #define _kontorklasse_h
 
 #include "waren.h"
-class kontorklasse
+#include "buildingclass.h"
+class KontorClass : public BuildingClass
 {
-public:
+private:
 int id;
-int stadtid;
-QString stadt;
+public:
 
-Warenstruct Lager;
-Warenstruct Produktion;
+int ret_ID()		{	return id;	}
+int ret_CityID()	{	return cityID;	}
+// int cityid;
+// QString stadt; --> inherited from BuildingClass --> cityname + cityID
+
+Warenstruct storage;
+Warenstruct production;
 ///
+void productGoods();
 
 void init(const QString ort)
 {
 	static int idzaehler;
 	id=idzaehler;
 	idzaehler++;
-	stadt = ort;
+	cityname = ort;
 
 	for(int i=0; i< const_warenanzahl; i++)
 	{
-		Lager.ware[i] = 0;
-		Produktion.ware[i] = 0;
+		storage.ware[i] = 0;
+		production.ware[i] = 0;
 	}
 
-	Lager.kapazitaet = 800;
-	Lager.fuellung = 0;
-	Lager.taler = 0;
-	Lager.mengenbilanz = 0;
-	Produktion.taler = 0;
+	storage.kapazitaet = 800;
+	storage.fuellung = 0;
+	storage.taler = 0;
+	storage.mengenbilanz = 0;
+	production.taler = 0;
 }
 
 };

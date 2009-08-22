@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2009 by Christian Doerffel   *
- *   schdorm@googlemail.com   *
+ *   Copyright (C) 2009 by Christian Doerffel                              *
+ *   schdorm@googlemail.com                                                *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -18,9 +18,21 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "functions_generic.h"
+#ifndef _BUILDMENU_H
+#define _BUILDMENU_H
+#include <QtGui/QWidget>
+#include <QtGui/QTabWidget>
+#include <QtGui/QPushButton>
 
-void debug()
+class BuildMenu : public QWidget
 {
+Q_OBJECT
+public:
 
-}
+private:
+QPushButton building[1];
+
+
+};
+
+#endif
