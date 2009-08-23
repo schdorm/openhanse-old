@@ -545,7 +545,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 
 
 
-	if(anbord)
+	if(gamedata->anbord)
 {
 QGraphicsPixmapItem *testschiff;
 	qWarning() << gamedata->active_ship->filename;
@@ -622,7 +622,7 @@ QGraphicsPixmapItem *testschiff;
 	
 	
 	setScene(szene);
-if(anbord)
+if(gamedata->anbord)
 {
 	centerOn(gamedata->active_ship->graphicsitem);
 }

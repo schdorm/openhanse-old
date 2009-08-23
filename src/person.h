@@ -18,62 +18,35 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#ifndef _Person_H
+#define _Person_H
 
-#ifndef _tabpanel_h
-#define _tabpanel_h
-
-#include <QtGui/QTabWidget>
-#include <QtGui/QLabel>
-#include <QtGui/QSlider>
-#include <QtGui/QProgressBar>
-#include <QtGui/QPushButton>
-// #include <QtGui/
-
-#include "waren.h"
-#include "dataclass.h"
-
-class SeaTabPanel : public QTabWidget
+#include <QtGui/QGraphicsItem>
+#include "definitions.h"
+class Person
 {
-Q_OBJECT
-// public slots:
-
+// Q_OBJECT
 public:
-// TabPanel();
-void create();
-void landmenu();
+void setPixmapItem(QGraphicsPixmapItem*);
 
-#ifdef __test_
-bool sub;
+// public slots:
+// 
+// signals:
+void fillSidePixmapList(QImage *, QRect, int, bool);		//adds n pixmaps to the Left and the section-images mirrored to the Right - Pixmap List
+void fillUpPixmapList(QImage *,QRect, int);
+void fillDownPixmapList(QImage *, QRect, int);
 
-int tempint;
-int tempint2;
-#endif
 
-QLabel *ware[const_warenanzahl];
-QLabel *fuellung;
-QLabel *taler;
-// QTabWidget *menutabs;
-QWidget *tab[3];
-
-QWidget *ladung;
-QWidget *steuerung;
-// QWidget *;
-
-QPushButton *anlegen;
-// QPushButton *ablegen;
-QPushButton *schuss;
-QSlider *geschwindigkeitsregler;
-QProgressBar *geschwindigkeitsanzeige;
-
-QLabel *stat_color;
-QLabel *stat_icon;
-
-void setGameData(DataClass*);
 private:
-DataClass *gamedata;
+QGraphicsPixmapItem *graphicsitem;
+QList<QPixmap> LeftPixmapList;
+QList<QPixmap> UpPixmapList;
+QList<QPixmap> RightPixmapList;
+QList<QPixmap> DownPixmapList;
 
-public slots:
-void update();
+
+protected:
+
 };
 
 #endif

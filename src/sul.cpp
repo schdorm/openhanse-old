@@ -149,7 +149,7 @@ void gesamtbild::speichern()
 	savestream << gamedata->wind.retDir() << "\n";
 // 	savestream << gamedata->active_ship->id << "\n";
 
-	savestream << hf->anbord << "\n";	// 10. Zeile + 1
+	savestream << gamedata->anbord << "\n";	// 10. Zeile + 1
 	savestream << gamedata->currentMap.cityname << "\n";
 	savestream << gamedata->currentMap.filename << "\n";
 // 	savestream << gamedata->currentMap.hintergrund << "\n";
@@ -290,13 +290,13 @@ QTextStream loadstream(&loadfile);
 	QString anbord = loadstream.readLine();		// 10. Zeile + 1
 	if(anbord == "0")
 	{
-		hf->anbord = false;
+		gamedata->anbord = false;
 	}
 	else
 	{
-		hf->anbord = true;
+		gamedata->anbord = true;
 	}
-	qWarning() << hf->anbord;
+	qWarning() << "Anbord: " << anbord << gamedata->anbord;
 	gamedata->currentMap.cityname = loadstream.readLine();
 // 	gamedata->currentMap.mapname = loadstream.readLine();
 // 	gamedata->currentMap.hintergrund = loadstream.readLine();

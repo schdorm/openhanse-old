@@ -14,7 +14,8 @@ SOURCES += main.cpp \
  schiff.cpp \
  quests.cpp \
  buildings.cpp \
- dataclass.cpp
+ dataclass.cpp \
+ person.cpp
 
 
 TEMPLATE = app
@@ -38,13 +39,14 @@ HEADERS += schiff.h \
  konsole.h \
  zeit.h \
  wind.h \
-questclass.h \
-questhandler.h \
-definitions.h \
-dataclass.h \
-build_menu.h \
-buildingclass.h \
-map.h
+ questclass.h \
+ questhandler.h \
+  definitions.h \
+ dataclass.h \
+ build_menu.h \
+ buildingclass.h \
+ map.h \
+ person.h
 
 
 QMAKE_CXXFLAGS_RELEASE += -Wall

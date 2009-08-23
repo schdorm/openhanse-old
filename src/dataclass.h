@@ -27,7 +27,7 @@
 #include "wind.h"
 #include "zeit.h"
 #include "buildingclass.h"
-
+#include "person.h"
 #include "map.h"
 
 class DataClass 
@@ -59,7 +59,6 @@ QList<CityClass> ret_CityList();
 QList<ShipClass> ret_ShipList();
 QList<KontorClass> ret_KontorList();
 
-
 private:
 int schwierigkeit;
 
@@ -68,6 +67,7 @@ QList <CityClass> CityList;
 QList <ShipClass> ShipList;
 QList <BuildingClass> BuildingList;
 QList <KontorClass> KontorList;
+QList <Person> PersonList;
 
 
 

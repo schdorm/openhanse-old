@@ -27,20 +27,20 @@ void hauptfenster::landgang()
 {
 gamedata->active_ship->brake(1);
 emit SIGgeschwindigkeit(0);
-anbord=false;
+gamedata->anbord=false;
 qWarning() << "angelegt";
 }
 
  void hauptfenster::einschiffen()
 {
 qWarning() << "abgelegt";
-anbord=true;
+gamedata->anbord=true;
 }
 
 
 void hauptfenster::landing()
 {
-anbord = false;
+gamedata->anbord = false;
 // bool directLanding;
 QGraphicsItem *it;
 foreach(it, landobjektliste)

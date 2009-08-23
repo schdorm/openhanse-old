@@ -86,7 +86,7 @@ int schwierigkeit;
 bool tastatur;
 
 bool anlegbar;
-bool anbord;
+// bool anbord;
 // bool uhra;
 
 bool uhr;

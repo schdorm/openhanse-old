@@ -71,7 +71,7 @@ hauptfenster::hauptfenster(DataClass *dc)
 
 	qWarning() << "Schiffstyp" << gamedata->active_ship->type;
 
-	anbord=true;
+	gamedata->anbord=true;
 	pause = false;
 // 	uhra=false;
 // 	tageslaenge = 2000;
@@ -236,7 +236,7 @@ if(!pause)
 	
 	
 	}
-	if(!anbord && gamedata->landingstruct.landingstate == LandingProcess::AtLand)
+	if(!gamedata->anbord && gamedata->landingstruct.landingstate == LandingProcess::AtLand)
 	{
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
 		if(ort==0)
@@ -312,7 +312,7 @@ if(!pause)
 // #endif
 		}
 	}
-	else if(anbord)
+	else if(gamedata->anbord)
 	{
 // 	gamedata->active_ship->mouse_control = true;
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
@@ -412,7 +412,7 @@ switch (event->key())
 {
 	case Qt::Key_W:
 	{
-		if(anbord)
+		if(gamedata->anbord)
 		{
 // 		if(gamedata->active_ship->attribute.sollprozentgesetzteSegel < 1)
 // 		{
@@ -433,7 +433,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 					gamedata->active_ship->set_ToSettedSails(gamedata->active_ship->ret_ToSettedSails() - 0.2);
 // 					gamedata->active_ship->mouse_control = false;
@@ -465,7 +465,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 					gamedata->active_ship->set_ToRudderDir(gamedata->active_ship->ret_ToRudderDir() + 0.0002);
 // 					tastatur = true;
@@ -480,7 +480,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 				gamedata->active_ship->set_SailDir(gamedata->active_ship->ret_SailDir() + 0.02);
 
@@ -501,7 +501,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 					gamedata->active_ship->set_ToRudderDir(gamedata->active_ship->ret_ToRudderDir() - 0.0002);
 // 					gamedata->active_ship->mouse_control = false;
@@ -514,7 +514,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 					
 				}
@@ -570,7 +570,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 				}
 				else
@@ -581,7 +581,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(anbord)
+				if(gamedata->anbord)
 				{
 					
 				}
@@ -644,14 +644,14 @@ switch (event->key())
 	}
 	case Qt::Key_Up:
 	{
-		if(anbord)
+		if(gamedata->anbord)
 // 		gamedata->active_ship->attribute.geschwindigkeit ++;
 		break;
 	}
 
 	case Qt::Key_Down:
 	{
-		if(anbord)
+		if(gamedata->anbord)
 // 		gamedata->active_ship->attribute.geschwindigkeit--;
 		break;
 	}
@@ -858,7 +858,7 @@ activeLanding();
 }
 
 
-else if(anbord)
+else if(gamedata->anbord)
 {
 
 // qWarning() << "Beginn Schiffszeug";

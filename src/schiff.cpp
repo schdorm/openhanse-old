@@ -21,7 +21,7 @@
 #include "schiff.h"
 #include <math.h>
 
-#define _debug_
+// #define _debug_
 #ifdef _debug_
 #include <QtDebug>
 #endif
