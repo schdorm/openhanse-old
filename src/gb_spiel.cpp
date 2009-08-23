@@ -46,7 +46,7 @@ void gesamtbild::initGameData()
 void gesamtbild::startNewGame()
 {
 	gamedata = new DataClass();
-	gamedata->active_city = new CityClass();
+// 	gamedata->active_city = new CityClass();
 	spielbool=true;
 //  	QFile file("");		//Map-XML-Lesen
 //  	if(file.exists())
@@ -127,6 +127,7 @@ void gesamtbild::startNewGame()
 			{
 				qWarning() << "\n\tChars:" <<reader.text().toString() << "\n";
 				//Tags ohne Inhalt - nur mit Unterkategorien
+				if(reader.text().toString().simplified().isEmpty()){break;};
 				switch(status)
 				{
 				case stadttoken:
@@ -209,19 +210,19 @@ void gesamtbild::startNewGame()
 	qWarning() << "Spielfenster aufgebaut";
 // 	hf->setDataClass(gamedata);
 	qWarning() << "Data set";
-// 	hfgametime = &(hf->spielzeit);
 // 	konsolenwidget->hfgametime = hfgametime;
 // 	konsolenwidget->debug("Timepointer set");
 	hf->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
-	gamedata->active_ship->filename = "img/schiffe/schiff_gerade_skaliert2.png";
-
+	gamedata->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
+// 					  ":img/schiffe/schiff_gerade_skaliert2.png"
+	gamedata->active_ship->control_difficulty = schwierigkeitsgrad;
 	hf->karteladen("testmap001.ohm");
 // 	hf->testschiff->setPos(1500,900);
 	gamedata->active_ship->graphicsitem->setPos(1500, 900);
+	hf->centerOn(gamedata->active_ship->graphicsitem);
 //  	qWarning() << "StartTimer";
 	hf->starttimer();
-// 	hf->setSceneRect(1,1,4000,4000);
  	qWarning() << "Timer gestartet";
 // 	hf->show();
 // 	hf->centerOn(hf->testschiff);
@@ -278,6 +279,7 @@ void gesamtbild::spielfensteraufbau()
 	flstring.append(QString("/%1 belegt").arg(gamedata->active_ship->cargo.kapazitaet));
 	menupanel->fuellung->setText(flstring);
 	}
+	menupanel->setGameData(gamedata);
 	menupanel->show();
 
 	gridlayout->setColumnStretch(0,7);
@@ -311,7 +313,7 @@ void gesamtbild::spielfensteraufbau()
 // 	connect(ablegen, SIGNAL(clicked()), anlegen, SLOT(show()));
 // 	connect(ablegen, SIGNAL(clicked()), ablegen, SLOT(hide()));
 
-	connect(menupanel->geschwindigkeitsregler,SIGNAL(valueChanged(int)),hf,SLOT(segelsetzen(int)));
+	connect(menupanel->geschwindigkeitsregler,SIGNAL(valueChanged(int)), hf, SLOT(segelsetzen(int)));
 	
 	konsolenwidget = new konsole();
 	konsolenwidget->resize(width(), height()/2);
@@ -349,9 +351,9 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
   			zeitw->raise();
 			zeitw->show();
 
-			connect(ok, SIGNAL(clicked()),hf,SLOT(endePause()));
-			connect(ok, SIGNAL(clicked()),zeitw,SLOT(close()));
-			connect(ok, SIGNAL(clicked()),zeitw,SLOT(deleteLater()));
+			connect(ok, SIGNAL(clicked()), hf, SLOT(endePause()));
+			connect(ok, SIGNAL(clicked()), zeitw, SLOT(close()));
+			connect(ok, SIGNAL(clicked()), zeitw, SLOT(deleteLater()));
 }
 
 

@@ -237,7 +237,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 
 			case QXmlStreamReader::Characters:
 			{
-// 				qWarning() << "Chars:" <<reader.text().toString();
+ 				qWarning() << "Chars:" <<reader.text().toString();
 				//Tags ohne Inhalt - nur mit Unterkategorien
 				switch(status)
 				{
@@ -517,6 +517,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 // 	setSceneRect(0,0,2000,3000);
 // 	if(gamedata->currentMap.maptyp == sea)
 // 	{
+	qWarning() << gamedata->currentMap.size;
 	setSceneRect(0,0,gamedata->currentMap.size.width(), gamedata->currentMap.size.height() );
 // 	}
 // 	if(gamedata->currentMap.maptyp == coast)
@@ -550,7 +551,7 @@ QGraphicsPixmapItem *testschiff;
 	qWarning() << gamedata->active_ship->filename;
 	testschiff = szene->addPixmap(QPixmap(gamedata->active_ship->filename));
 	testschiff->setZValue(0.1);
-	gamedata->active_ship->setGraphicsItem (testschiff);
+	gamedata->active_ship->setGraphicsItem(testschiff);
 	gamedata->active_ship->rotateGraphics();
 // 	testschiff->setPos(1500,700);
 // 	QTransform t;
@@ -597,11 +598,11 @@ QGraphicsPixmapItem *testschiff;
 // }
 // qWarning()<< "MLoad: WL: Eintraege" << wolkenliste.size();
 ///qWarning() << "Wolken malen";
-/*	int wolkenzahl = rand()%25;
+	int wolkenzahl = rand()%25;
 // 	int wolkenzahl=10;
 	for(int i=0;i<wolkenzahl;i++)
 	{
-	quint8 a = rand()%2;
+	int a = rand()%2;
 	if(a==1)
 	{
 	wolke = szene->addPixmap(QPixmap(":img/objekte/wolke01.png"));
@@ -617,7 +618,9 @@ QGraphicsPixmapItem *testschiff;
 // 	wolken[i] = szene->addPixmap(QPixmap(":img/objekte/wolke01.png"));
 // 	wolken[i]->setPos(rand()%3300+500,rand()%2300+400);
 	}
-	qWarning()<< "MloadEnde: WL: Eintraege" << wolkenliste.size();*/
+	qWarning()<< "MloadEnde: WL: Eintraege" << wolkenliste.size();
+	
+	
 	setScene(szene);
 if(anbord)
 {

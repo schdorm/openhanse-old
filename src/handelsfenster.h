@@ -46,9 +46,9 @@ Q_OBJECT
 
 public:
 handelsfenster();
-void updateWidget();
+~handelsfenster();
 void setGameData(DataClass *);
-void buttonHandler(int);
+
 void setStorage(Warenstruct, int);
 
 DataClass *gamedata;
@@ -56,10 +56,10 @@ DataClass *gamedata;
 QButtonGroup *htypgroup;
 QRadioButton *htyp[3];		//Handelstyp: Schiff mit Stadt, Kontor mit Stadt, Transfer Kontor->Schiff
 
-QLabel *warenmenge[const_warenanzahl];
-QLabel *preis[const_warenanzahl];
-QLabel *vorrat[const_warenanzahl];
-QLabel *erloes[const_warenanzahl];
+QLabel *warenmenge[const_warenanzahl];		//Angebot || city-> goods
+QLabel *preis[const_warenanzahl];		// price
+QLabel *vorrat[const_warenanzahl];		// eigene Waren (Lager 0) || goods <- storage 0
+QLabel *erloes[const_warenanzahl];		//
 
 QLabel /* *gesamtpreis, *gesamterloes,*/ *handelsbilanz, *umsatz;
 
@@ -75,13 +75,19 @@ QPushButton *exit;
 // handelsbutton->setEnabled(enabled);
 // // emit hmoeglich(enabled);
 // }
+
+private slots:
+void buttonHandler(int);
+void handelsaktion();
+void updateWidget();
+
 private:
 Warenstruct storage[2];			// Storage1 -> city/city/kontor; storage0 -> ship / Kontor/ship;
 // Warenstruct storage2;
 
 
 
-void handelsaktion();
+
 
 
 };

@@ -108,10 +108,12 @@ QString mapname;
 QPoint mapcoords;
 };
 
-const int AKTUALISIERUNGSINTERVALL = 25;
+const int AKTUALISIERUNGSINTERVALL = 30;
 const int WENDEGESCHWINDIGKEIT = 10;
 const int BESCHLEUNIGUNG = 50;
 const int WINDVERAENDERUNG = 30;
+
+const float const_max_rudder_deflection = 0.04;
 
 const int const_grundpreis[const_warenanzahl] = {50, 95, 84, 67, 10000, 350, 950, 168, 270, 400, 107, 60, 130, 210, 30, 50, 300, 190, 3800, 5100, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 

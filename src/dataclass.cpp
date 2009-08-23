@@ -20,6 +20,18 @@
 
 #include "dataclass.h"
 
+DataClass::DataClass()
+{
+active_ship = new ShipClass();
+// active_ship->init();
+active_city = new CityClass();
+active_kontor = new KontorClass();
+
+landingstruct.landingstate = LandingProcess::NotActive;
+}
+
+
+
 void DataClass::addBuilding(BuildingClass *param_building)
 {
 BuildingList << *param_building;

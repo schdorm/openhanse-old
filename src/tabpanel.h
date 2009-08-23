@@ -22,6 +22,8 @@
 #ifndef _tabpanel_h
 #define _tabpanel_h
 
+// #define test
+
 #include <QtGui/QTabWidget>
 #include <QtGui/QLabel>
 #include <QtGui/QSlider>
@@ -30,6 +32,7 @@
 // #include <QtGui/
 
 #include "waren.h"
+#include "dataclass.h"
 
 class SeaTabPanel : public QTabWidget
 {
@@ -40,6 +43,14 @@ public:
 // TabPanel();
 void create();
 void landmenu();
+
+#ifdef __test_
+bool sub;
+
+int tempint;
+int tempint2;
+#endif
+
 QLabel *ware[const_warenanzahl];
 QLabel *fuellung;
 QLabel *taler;
@@ -56,7 +67,15 @@ QPushButton *schuss;
 QSlider *geschwindigkeitsregler;
 QProgressBar *geschwindigkeitsanzeige;
 
+QLabel *stat_color;
+QLabel *stat_icon;
 
+void setGameData(DataClass*);
+private:
+DataClass *gamedata;
+
+public slots:
+void update();
 };
 
 #endif

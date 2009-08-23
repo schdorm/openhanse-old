@@ -66,8 +66,8 @@
 hauptfenster::hauptfenster(DataClass *dc)
 {
 	gamedata = dc;
-	gamedata->active_ship = new ShipClass();
-	gamedata->active_ship->init();
+// 	gamedata->active_ship = new ShipClass();
+// 	gamedata->active_ship->init();
 
 	qWarning() << "Schiffstyp" << gamedata->active_ship->type;
 
@@ -314,6 +314,7 @@ if(!pause)
 	}
 	else if(anbord)
 	{
+// 	gamedata->active_ship->mouse_control = true;
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
 
@@ -326,6 +327,8 @@ if(!pause)
 
 #ifndef _RELEASE_
 	qWarning() << "Maussteuerung" << x << y << mposx << mposy;
+	QGraphicsLineItem *blah = new QGraphicsLineItem(QLineF(mposx, mposy, x, y));
+	szene->addItem(blah);
 #endif
 
 	if(x > mposx &&  y < mposy)			// Klick im "I. Quadrant" (Schiff -> KO [O(0|0)] )
@@ -415,7 +418,7 @@ switch (event->key())
 // 		{
 // 			gamedata->active_ship->attribute.sollprozentgesetzteSegel = gamedata->active_ship->attribute.sollprozentgesetzteSegel + 0.2;
 			gamedata->active_ship->set_ToSettedSails(gamedata->active_ship->ret_ToSettedSails() + 0.2);
-
+// 			gamedata->active_ship->mouse_control = false;
 #ifndef _RELEASE_
 			qWarning() << "Segel gesetzt:" << gamedata->active_ship->ret_ToSettedSails();
 #endif
@@ -433,6 +436,7 @@ switch (event->key())
 				if(anbord)
 				{
 					gamedata->active_ship->set_ToSettedSails(gamedata->active_ship->ret_ToSettedSails() - 0.2);
+// 					gamedata->active_ship->mouse_control = false;
 				}
 				else
 				{
@@ -465,7 +469,8 @@ switch (event->key())
 				{
 					gamedata->active_ship->set_ToRudderDir(gamedata->active_ship->ret_ToRudderDir() + 0.0002);
 // 					tastatur = true;
-					gamedata->active_ship->mouse_control = false;
+// 					gamedata->active_ship->mouse_control = false;
+					
 				}
 				else
 				{
@@ -499,7 +504,7 @@ switch (event->key())
 				if(anbord)
 				{
 					gamedata->active_ship->set_ToRudderDir(gamedata->active_ship->ret_ToRudderDir() - 0.0002);
-					gamedata->active_ship->mouse_control = false;
+// 					gamedata->active_ship->mouse_control = false;
 				}
 				else
 				{
@@ -729,13 +734,15 @@ durchlauf++;
 
 // if(false)
 // if(durchlauf%2 == 0 && uhra)u(fi                          
+#ifdef _DEBUG_REFRESH_
+qWarning() << "Aktualisieren";
+#endif
 
-
-// qWarning() << "Aktualisieren";
 // static int durchlauf;	//Zaehlvariable fuer Ruder bzw. Geschwindigkeit -> Schiff ist traege und wird nur langsam schneller / lenkt langsam ----> jetzt Klassenvariable
 
 if(gamedata->gametime.refreshTime())			//returns true, when a new day starts ...
 {
+	qWarning() << "New Day ...";
 	emit sig_newDay(durchlauf);
 // 	qWarning() << "Aktualisierungssignal gesendet";
 	if(durchlauf > 2000000000)	// 4 000 000 000
@@ -750,11 +757,10 @@ if(gamedata->gametime.refreshTime())			//returns true, when a new day starts ...
 
 
 
-if(durchlauf % WINDVERAENDERUNG ==0)
+if(durchlauf % WINDVERAENDERUNG == 0)
 {
-// qWarning() << "Windzeugs";
-// windsetzen();
-gamedata->wind.refresh();
+	qWarning() << "Windsetzen ...";
+	gamedata->wind.refresh();
 
 #ifndef _NO_CONTROL_LABEL_
 	double windrichtung = gamedata->wind.retDir();
@@ -837,38 +843,49 @@ int windgeschwindigkeit = gamedata->wind.retV();
 
 }
 
-// qWarning() << "Ende Wolkenzeugs";
+//  qWarning() << "Ende Wolkenzeugs";
 
-
+// #define _DEBUG_REFRESH_
 ///////SCHIFF////////////////////////////////////////
 //falls v>0 / geplant: v>0
 // qWarning() << "IfAnbord";
 if(gamedata->landingstruct.landingstate == LandingProcess::ActiveLanding)
 {
+#ifdef _DEBUG_REFRESH_
+qWarning() << "Landing";
+#endif
 activeLanding();
 }
 
 
 else if(anbord)
 {
+
 // qWarning() << "Beginn Schiffszeug";
 // if(gamedata->active_ship->attribute.geschwindigkeit > 0 || gamedata->active_ship->attribute.sollprozentgesetzteSegel > 0 || gamedata->active_ship->attribute.prozentgesetzteSegel > 0 || windgeschwindigkeit > 0)
 {
 // qWarning() << "Vor Bewegungsbeschreibung";
 // 	bewegungsbeschreibung();
 // qWarning() << "Nach Bewegungsbeschreibung";
+#ifdef _DEBUG_REFRESH_
+ 	qWarning() << "Calc Movement";
+#endif
 	gamedata->active_ship->calcMovement(gamedata->wind.retV(), gamedata->wind.retDir());
-	gamedata->active_ship->moveGraphics();
+#ifdef _DEBUG_REFRESH_
+	qWarning() << "End: Calc Movement, move Graphics";
+#endif
+// 	gamedata->active_ship->moveGraphics();
 
 //////////////////////Landkollossion
 /////////////////Schiffbar?
 // qWarning() << "Schiffbar?";
 
-
- if(gamedata->active_ship->moveGraphics())
+// if(0==1)
+if(gamedata->active_ship->moveGraphics())
  {
-
-
+#ifdef _DEBUG_REFRESH_
+	qWarning() << "End moveGraphics()";
+#endif
 	float bremsfaktor = 0;
 
 // QList <QGraphicsItem*> collliste = testschiff->collidingItems();	//Kollisionsliste

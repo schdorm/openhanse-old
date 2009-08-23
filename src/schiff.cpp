@@ -21,6 +21,11 @@
 #include "schiff.h"
 #include <math.h>
 
+#define _debug_
+#ifdef _debug_
+#include <QtDebug>
+#endif
+
 void ShipClass::calcMovement(int windv, double winddir)
 {
 	if(settedSails > toSettedSails)
@@ -36,33 +41,52 @@ void ShipClass::calcMovement(int windv, double winddir)
 	{
 		settedSails += 0.1;
 	}
-	
-	if(control_difficulty == 0)
+	#ifdef _debug_
+	qWarning() << settedSails << toSettedSails << " sS << tSS";
+	#endif
+// 	if(settedSails > 0 && windv > 0)
 	{
-		double accelerationv = settedSails * windv * (1 + cos(dir - winddir))/2 ;
-		if(accelerationv > v)
+		if(control_difficulty == 0)
 		{
-			v += int(ceil((accelerationv - v)/4));
+			double accelerationv = windv * (0.8 + cos(dir - winddir))/2 ;
+// 			if(accelerationv > v)
+			{
+// 				v += (ceil((accelerationv - v)/4));
+ 				v += (settedSails + 0.1) * (accelerationv - v)/25;
+			}
+			if( v > 0)
+			{
+ 			v -= (v+5)/100;
+			}
+/*			else if(accelerationv < v)
+			{
+// 				v += (floor((accelerationv - v)/4));
+				v += (accelerationv - v)/20;
+			}*/
+			#ifdef _debug_
+			qWarning() << accelerationv << v << v/20 << (settedSails + 0.1) * (accelerationv - v)/25;
+			#endif
 		}
-		else if(accelerationv < v)
-		{
-			v += int(floor((accelerationv - v)/4));
-		}
-	}
 	
-	else if(control_difficulty == 1)
-	{
-		double acceleration = settedSails * windv * cos(dir + sailDir - winddir) - v;
-		if(acceleration > 0)
+		else if(control_difficulty == 1)
 		{
-			v += int (ceil(acceleration/2));
+			double acceleration = settedSails * windv * cos(dir + sailDir - winddir) - v;
+			if(acceleration > 0)
+			{
+				v += int (ceil(acceleration/2));
+			}
+			else if(acceleration < 0 )
+			{
+				v += int (floor(acceleration/2));
+			}
+			#ifdef _debug_
+			qWarning() << acceleration;
+			#endif
 		}
-		else if(acceleration < 0 )
-		{
-			v += int (floor(acceleration/2));
-		}
+		#ifdef _debug_
+		qWarning() << v << " v";
+		#endif
 	}
-	
 	
 	if(mouse_control)
 	{
@@ -95,7 +119,7 @@ void ShipClass::calcMovement(int windv, double winddir)
 	}
 	else
 	{
-		if(rudderDir != 0 && toRudderDir != 0)
+		if(rudderDir != 0 || toRudderDir != 0)
 		{
 			static int delayvar;		// control-delaying-variable
 			delayvar ++;
@@ -104,10 +128,22 @@ void ShipClass::calcMovement(int windv, double winddir)
 				delayvar = 1;
 				if(rudderDir != toRudderDir)
 				{
-					rudderDir += (toRudderDir - rudderDir)/5;
+					
+					if(toRudderDir < 0 && rudderDir > toRudderDir)
+					{
+						rudderDir += (toRudderDir + rudderDir)/5;
+					}
+					else if(toRudderDir >= 0 && rudderDir < toRudderDir)
+					{
+						rudderDir += (toRudderDir - rudderDir)/5;
+					}
 					if(rudderDir < 0.0001 && rudderDir > -0.0001 && toRudderDir == 0)
 					{
 						rudderDir = 0;
+					}
+					else if(rudderDir > 0.1 || rudderDir < -0.1)
+					{
+					rudderDir = 0;
 					}
 				}
 			}
@@ -131,7 +167,7 @@ void ShipClass::brake(double param_brakefactor)
 
 }
 
-int ShipClass::ret_V()
+double ShipClass::ret_V()
 {
 return v;
 }
@@ -195,22 +231,27 @@ return currentPosition.m_position.y();
 
 void ShipClass::set_ToSettedSails(double param_amount)
 {
+
 	if(param_amount >= 0 && param_amount <= 1)
 	{
-		if(param_amount < 0.1)
+		if(param_amount < 0.01)
 		{
 		toSettedSails = 0;
-		return;
+// 		return;
 		}
-		toSettedSails = param_amount;
+		else
+			toSettedSails = param_amount;
 		
+		#ifdef _debug_
+		qWarning() << "void ShipClass::set_ToSettedSails(double param_amount)" << param_amount;
+		#endif
 	}
 }
 
 
 void ShipClass::set_SailDir(double param_dir)
 {
-	if(param_dir <= 2 * M_PI && param_dir >= 0)
+	if(param_dir <= 0.3 && param_dir >= -0.3)
 	{
 	sailDir = param_dir;
 	}
@@ -218,7 +259,7 @@ void ShipClass::set_SailDir(double param_dir)
 
 void ShipClass::set_ToRudderDir(double param_dir)
 {
-	if(param_dir <= 2 * M_PI && param_dir >= 0)
+	if(param_dir <= const_max_rudder_deflection && param_dir >= - const_max_rudder_deflection)
 	{
 	toRudderDir = param_dir;
 	}
@@ -248,6 +289,13 @@ bool ShipClass::moveGraphics()
 	if(v != 0)
 	{
 		graphicsitem->moveBy(- (v * sin(dir))/10, - (v * cos(dir))/10);
+/*		static int wait;
+		wait ++;
+		if(v < 1 && v > -1 && wait%10 == 0 )
+		{
+		wait = 1;
+		graphicsitem->moveBy((rand()%3-1)/2, (rand()%3-1)/2);
+		}*/
 		moved = true;
 	}
 	static double last_dir;
@@ -265,8 +313,15 @@ bool ShipClass::moveGraphics()
 	if(moved)
 	{
 	currentPosition.generic_position = graphicsitem->pos();
-	currentPosition.m_position.setX(currentPosition.generic_position.x() + cos(dir) * g_width2 + sin(dir) * g_height2);
-	currentPosition.m_position.setY(currentPosition.generic_position.y() + cos(dir) * g_height2 + sin(dir) * g_width2);
+	
+	currentPosition.m_position.setX(currentPosition.generic_position.x() + g_width2 );
+	currentPosition.m_position.setY(currentPosition.generic_position.y() + g_height2);
+	
+// 	currentPosition.m_position.setX(currentPosition.generic_position.x() + /*cos(dir) **/ g_width2 /*+ sin(dir) * g_height2*/);
+// 	currentPosition.m_position.setY(currentPosition.generic_position.y() +/* cos(dir) **/ g_height2 /*+ sin(dir) * g_width2*/);
+	
+// 	currentPosition.m_position.setX(currentPosition.generic_position.x() + sin(dir) * g_width2 + cos(dir) * g_height2);
+// 	currentPosition.m_position.setY(currentPosition.generic_position.y() + sin(dir) * g_height2 + cos(dir) * g_width2);
 // 	int mposx = int(testschiff->x() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite/2 + sin(gamedata->active_ship->ret_Dir())* gamedata->active_ship->schifflange / 2);
 
 // 	int mposy = int(testschiff->y() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schifflange/2 + sin(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite /2);

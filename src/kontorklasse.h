@@ -29,22 +29,11 @@ private:
 int id;
 public:
 
-int ret_ID()		{	return id;	}
-int ret_CityID()	{	return cityID;	}
-// int cityid;
-// QString stadt; --> inherited from BuildingClass --> cityname + cityID
-
-Warenstruct storage;
-Warenstruct production;
-///
-void productGoods();
-
-void init(const QString ort)
-{
-	static int idzaehler;
+KontorClass(){
+static int idzaehler;
 	id=idzaehler;
 	idzaehler++;
-	cityname = ort;
+
 
 	for(int i=0; i< const_warenanzahl; i++)
 	{
@@ -57,6 +46,26 @@ void init(const QString ort)
 	storage.taler = 0;
 	storage.mengenbilanz = 0;
 	production.taler = 0;
+	}
+
+
+int ret_ID()		{	return id;	}
+int ret_CityID()	{	return cityID;	}
+// int cityid;
+// QString stadt; --> inherited from BuildingClass --> cityname + cityID
+
+Warenstruct storage;
+Warenstruct production;
+///
+void productGoods();
+
+
+
+void build(const QString param_cityname, int param_cityid)
+{
+	cityname = param_cityname;
+	cityID = param_cityid;
+	tax_level = Tax::midhighLevel;
 }
 
 };

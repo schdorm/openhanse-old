@@ -28,8 +28,8 @@ class ShipClass
 {
 
 private:
-int v;
-int control_velocity;
+double v;
+double control_velocity;		//describes, how fast a ship can turn; drops, if the ship is spoilt / damaged ..
 double settedSails;
 double toSettedSails;
 bool hasMoved;
@@ -90,7 +90,7 @@ int schiffbreite;	//entspricht SchiffsBildX
 int control_difficulty;
 bool mouse_control;
 
-void init()					///== RESET
+ShipClass()					///== RESET
 {
 	static int idzuweisung;
 	id = idzuweisung;
@@ -105,7 +105,19 @@ void init()					///== RESET
 	cargo.fuellung=0;
 
 	zustand = 100;
-	type = ShipType::Kogge;/*
+	type = ShipType::Kogge;
+	v = 0;
+	dir = 0;
+	toDir = 0;
+	sailDir = 0;
+	rudderDir = 0;
+	toRudderDir = 0;
+	settedSails = 0;
+	toSettedSails = 0;
+	control_velocity = 1;
+	
+	control_difficulty = 0;
+	/*
 	attribute.sollsteuerruderausrichtung=0;
 	attribute.steuerruderausrichtung=0;
 	attribute.sollausrichtung=0;
@@ -133,7 +145,7 @@ void set_ToDir(double);
 void brake(double);
 
 // control: Return - fct.
-int ret_V();
+double ret_V();
 double ret_SettedSails();
 double ret_ToSettedSails();
 double ret_SailDir();

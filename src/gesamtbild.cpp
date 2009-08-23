@@ -41,6 +41,7 @@
 gesamtbild::gesamtbild()
 {
 	QDir dir = QDir().current();
+// 	qWarning() << dir.absolutePath();
 {
 	QDateTime dt = QDateTime().currentDateTime();
 	QFile("debug.log").rename("debug.log~");

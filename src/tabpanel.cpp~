@@ -242,7 +242,7 @@ stat_color->setPixmap(stat_color_pm);
 
 }
 
-void SeaTabPanel::setGameData(DataClass *param_dc)
+void SeaTabPanel::setDataClass(DataClass *param_dc)
 {
 gamedata = param_dc;
 }

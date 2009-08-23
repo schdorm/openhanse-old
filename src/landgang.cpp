@@ -60,7 +60,10 @@ gamedata->landingstruct.landingstate = LandingProcess::WaitingForDestination;
 // }
 // activeship.graphicsitem = gamedata->landingstruct.landingShip_gi;
 gamedata->landingstruct.landingShip_gi = szene->addPixmap(QPixmap(":img/schiffe/sh08_braun.png"));
-// gamedata->landingstruct.landingShip_gi->setPos(activeship.graphicsitem->x() + (0.5 + ((cos(activeship.attribute.ausrichtung) + 1)/2 ))* activeship.graphicsitem->boundingRect().width(), activeship.graphicsitem->y() + (0.5 + (sin(activeship.attribute.ausrichtung) + 1)/2) 	* activeship.graphicsitem->boundingRect().height());
+gamedata->landingstruct.landingShip_gi->setPos(gamedata->active_ship->graphicsitem->x() + (0.5 + ((cos(gamedata->active_ship->ret_Dir()) + 1)/2 ))* gamedata->active_ship->graphicsitem->boundingRect().width(), gamedata->active_ship->graphicsitem->y() + (0.5 + (sin(gamedata->active_ship->ret_Dir()) + 1)/2) 	* gamedata->active_ship->graphicsitem->boundingRect().height());
+
+// gamedata->landingstruct.landingShip_gi->setPos(gamedata->active_ship->ret_MPos_X() + gamedata->active_ship->graphicsitem->boundingRect().x(), gamedata->active_ship->ret_MPos_Y() /*+ activeship.g_height2*/);
+
 QTransform t = gamedata->active_ship->graphicsitem->transform();
 gamedata->landingstruct.landingShip_gi->setTransform(t);
 gamedata->landingstruct.landingShip_gi->setZValue(1);

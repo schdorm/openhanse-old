@@ -45,13 +45,15 @@ void CityClass::production(int durchlauf)
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
+				goods.ware[W_Baumstamme]++;		//Grundproduktion um Festfahren und komplette Stockung der Wirtschaft zu verhindern
+				
 // 			goods.ware[i] += ((rand() % 12) + inhabitants/100);
 				if(goods.ware[W_Werkzeuge] - inhabitants/500 > 0)
 				{
 				goods.ware[W_Baumstamme] = goods.ware[W_Baumstamme] + inhabitants/100;
 				goods.ware[W_Werkzeuge] = goods.ware[W_Werkzeuge] - inhabitants/500;
 				}
-				goods.ware[W_Baumstamme]++;		//Grundproduktion um Festfahren und komplette Stockung der Wirtschaft zu verhindern
+
 				break;
 				}
 			case W_Holzbretter:			//Holzbretter
@@ -102,7 +104,7 @@ void CityClass::production(int durchlauf)
 				goods.ware[W_Eisenerz] += inhabitants/200;
 				goods.ware[W_Werkzeuge] -= inhabitants/400;
 				}
-				goods.ware[W_Eisenerz]++;
+				goods.ware[W_Eisenerz]++;	// Grundproduktion
 				break;
 				}
 			case W_Schmiedeeisen:			//Schmiedeeisen
@@ -182,11 +184,12 @@ void CityClass::production(int durchlauf)
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(goods.ware[W_Getreide] - inhabitants/200 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/200 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1000 > 0 && goods.ware[W_Salz] - inhabitants/300 > 0)
 				{
 					goods.ware[W_Fleisch] += inhabitants/200;
 					goods.ware[W_Werkzeuge] -= inhabitants/1000;
 					goods.ware[W_Getreide] -= inhabitants/200;
+					goods.ware[W_Salz] -= inhabitants/300;
 				}
 				break;
 				}
@@ -290,6 +293,10 @@ void CityClass::production(int durchlauf)
 				}
 			case W_Steine:			//Steine / Ziegel
 				{
+				if(goods.ware[W_Holzbretter] - inhabitants/800 > 0 && goods.ware[W_Werkzeuge] - inhabitants/1500 > 0)
+				goods.ware[W_Steine] += inhabitants/800;
+				goods.ware[W_Holzbretter] -= inhabitants/1500;
+				goods.ware[W_Werkzeuge] -= inhabitants/800;
 				break;
 				}
 			case W_Eisenerz:
@@ -377,11 +384,12 @@ void CityClass::production(int durchlauf)
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(goods.ware[W_Getreide] - inhabitants/400 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/400 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0 && goods.ware[W_Salz] - inhabitants/500 > 0)
 				{
 					goods.ware[W_Fleisch] += inhabitants/400;
 					goods.ware[W_Werkzeuge] -= inhabitants/2000;
 					goods.ware[W_Getreide] -= inhabitants/400;
+					goods.ware[W_Salz] -= inhabitants/500 ;
 				}
 				break;
 				}
@@ -480,6 +488,12 @@ void CityClass::production(int durchlauf)
 				}
 			case W_Steine:			//Steine / Ziegel
 				{
+				if(goods.ware[W_Holzbretter] - inhabitants/1500 > 0 )
+				{
+				goods.ware[W_Steine] += inhabitants/800;
+				goods.ware[W_Holzbretter] -= inhabitants/1500;
+// 				goods.ware[W_Holzbretter] --;
+				}
 				break;
 				}
 			case W_Eisenerz:
@@ -566,11 +580,12 @@ void CityClass::production(int durchlauf)
 				}
 			case W_Fleisch:		//Fleisch
 				{
-				if(goods.ware[W_Getreide] - inhabitants/500 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0)
+				if(goods.ware[W_Getreide] - inhabitants/1000 > 0 && goods.ware[W_Werkzeuge] - inhabitants/2000 > 0 && goods.ware[W_Salz] - inhabitants/500)
 				{
 					goods.ware[W_Fleisch] += inhabitants/500;
 					goods.ware[W_Werkzeuge] -= inhabitants/2000;
-					goods.ware[W_Getreide] -= inhabitants/500;
+					goods.ware[W_Getreide] -= inhabitants/1000;
+					goods.ware[W_Salz] -= inhabitants/500;
 				}
 				break;
 				}
@@ -699,10 +714,251 @@ void CityClass::production(int durchlauf)
 // 			}
 // 		}
 
-	}
+}
 
 // qWarning() << "Ende Produktion";
 
 // }
 // }
 // }
+
+void KontorClass::productGoods()
+{
+double production_param[const_warenanzahl];
+
+	for(int i = 0; i<const_warenanzahl; i++)
+	{
+		production_param[i] = -1;
+	}
+	
+	for(int i = 0; i < const_warenanzahl; i++)
+	{
+		if(production.ware[i] < 0)
+		{
+		    if(storage.ware[i] > production.ware[i])
+		    {
+			storage.ware[i] += production.ware[i];
+		    }
+		    else
+		    {
+			switch(i)
+			{
+			case W_Baumstamme:			//Baumstaemme
+				{
+				production_param[W_Pech] = storage.ware[i] / production.ware[i];
+				production_param[W_Holzkohle] = storage.ware[i] / production.ware[i];
+				production_param[W_Salz] = storage.ware[i] / production.ware[i];
+				break;
+				}
+			case W_Holzbretter:			//Holzbretter
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Salz])
+				{
+					production_param[W_Salz] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Steine])
+				{
+					production_param[W_Steine] = storage.ware[i] / production.ware[i];
+				}
+				
+				if(storage.ware[i] / production.ware[i] < production_param[W_Holzkohle])
+				{
+					production_param[W_Holzkohle] = storage.ware[i] / production.ware[i];
+				}
+				
+				if(storage.ware[i] / production.ware[i] < production_param[W_Pech])
+				{
+					production_param[W_Pech] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Werkzeuge])
+				{
+					production_param[W_Werkzeuge] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Bier])
+				{
+					production_param[W_Bier] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Holzkohle:			//Holzkohle ... (2 HK aus 3 BS und 1 HB)
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Werkzeuge])
+				{
+					production_param[W_Werkzeuge] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Schmiedeeisen])
+				{
+					production_param[W_Schmiedeeisen] = storage.ware[i] / production.ware[i];
+				}
+				
+				break;
+				}
+			case W_Pech:				//Pech (5 Pech aus 3 BS und 1 HB)
+				{
+				
+				break;
+				}
+			case W_Steine:				//Steine / Ziegel
+				{
+				
+				break;
+				}
+			case W_Eisenerz:			//Eisenerz
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Schmiedeeisen])
+				{
+					production_param[W_Schmiedeeisen] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Schmiedeeisen:			//Schmiedeeisen
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Werkzeuge])
+				{
+					production_param[W_Werkzeuge] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Werkzeuge:			//Werkzeuge
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Baumstamme])
+				{
+					production_param[W_Baumstamme] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Holzbretter])
+				{
+					production_param[W_Holzbretter] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Eisenerz])
+				{
+					production_param[W_Eisenerz] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Stoffe])
+				{
+					production_param[W_Stoffe] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Wein])
+				{
+					production_param[W_Wein] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Fisch])
+				{
+					production_param[W_Fisch] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Bier])
+				{
+					production_param[W_Bier] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Fleisch])
+				{
+					production_param[W_Fleisch] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Leder])
+				{
+					production_param[W_Leder] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Getreide])
+				{
+					production_param[W_Getreide] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Schmiedeeisen])
+				{
+					production_param[W_Schmiedeeisen] = storage.ware[i] / production.ware[i];
+				}
+				
+				break;
+				}
+			case W_Leder:			//Leder
+				{
+				
+				break;
+				}
+			case W_Wolle:			//Wolle
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Stoffe])
+				{
+					production_param[W_Stoffe] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Stoffe:		//Stoffe
+				{
+				break;
+				}
+			case W_Salz:		//Salz
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Leder])
+				{
+					production_param[W_Leder] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Fleisch])
+				{
+					production_param[W_Fleisch] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Fisch])
+				{
+					production_param[W_Fisch] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Fisch:		//Fisch
+				{
+				break;
+				}
+			case W_Fleisch:		//Fleisch
+				{
+				break;
+				}
+			case W_Getreide:		//Getreide
+				{
+				if(storage.ware[i] / production.ware[i] < production_param[W_Leder])
+				{
+					production_param[W_Leder] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Fleisch])
+				{
+					production_param[W_Fleisch] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Bier])
+				{
+					production_param[W_Bier] = storage.ware[i] / production.ware[i];
+				}
+				if(storage.ware[i] / production.ware[i] < production_param[W_Wolle])
+				{
+					production_param[W_Wolle] = storage.ware[i] / production.ware[i];
+				}
+				break;
+				}
+			case W_Bier:		//Bier
+				{
+				break;
+				}
+			case W_Wein:		//Wein
+				{
+				break;
+				}
+			case W_Hanf:		//Hanf
+				{
+				break;
+				}
+			case W_Gold:		//Gold
+				{
+				break;
+				}
+			case W_Schmuck:		//Schmuck
+				{
+				break;
+				}
+			default:
+				break;
+			}
+			}
+		    }
+		
+		    
+	}
+for(int i = 0; i < const_warenanzahl; i++)
+{
+storage.ware[i] -= production.ware[i] * production_param[i];		// neg. production_param * neg prod = pos nettoprod. --> -nettoprod = neg. ; neg prod_param * pos prod = neg. nettoproduction --> -nettoprod = pos 
+}
+}
