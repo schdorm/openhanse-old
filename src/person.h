@@ -36,6 +36,7 @@ void fillSidePixmapList(QImage *, QRect, int, bool);		//adds n pixmaps to the Le
 void fillUpPixmapList(QImage *,QRect, int);
 void fillDownPixmapList(QImage *, QRect, int);
 
+void move(int);
 
 private:
 QGraphicsPixmapItem *graphicsitem;
@@ -43,6 +44,8 @@ QList<QPixmap> LeftPixmapList;
 QList<QPixmap> UpPixmapList;
 QList<QPixmap> RightPixmapList;
 QList<QPixmap> DownPixmapList;
+int step;
+int currentDirection;
 
 
 protected:

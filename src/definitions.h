@@ -42,6 +42,17 @@ namespace ObjectType
 	};
 }
 
+namespace Direction
+{
+	enum directions
+	{
+	Up,
+	Down,
+	Left,
+	Right
+	
+	};
+}
 
 const int _oh_version = 35;
 namespace MapType

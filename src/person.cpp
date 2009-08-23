@@ -87,3 +87,100 @@ void Person::fillDownPixmapList(QImage *param_img_ptr, const QRect param_rect, c
 	}
  }
  
+void Person::move(int param_dir)
+{
+ switch (param_dir)
+ {
+	case Direction::Up:
+	{
+		if(currentDirection == param_dir) //Move
+		{
+			if(step == UpPixmapList.size())
+			{
+			step = 0;
+			}
+			else
+			{
+				step ++;
+			}
+			graphicsitem->setPixmap(UpPixmapList.value(step));
+		}
+		else	// Rotate
+		{
+			graphicsitem->setPixmap(UpPixmapList.first());
+			step = 0;
+			currentDirection = param_dir;
+		}
+		break;
+	}
+	case Direction::Down:
+	{
+		if(currentDirection == param_dir) //Move
+		{
+			if(step == DownPixmapList.size())
+			{
+			step = 0;
+			}
+			else
+			{
+				step ++;
+			}
+			graphicsitem->setPixmap(DownPixmapList.value(step));
+		}
+		else	// Rotate
+		{
+			graphicsitem->setPixmap(DownPixmapList.first());
+			step = 0;
+			currentDirection = param_dir;
+		}
+		break;
+	}
+	case Direction::Left:
+	{
+		if(currentDirection == param_dir) //Move
+		{
+			if(step == LeftPixmapList.size())
+			{
+			step = 0;
+			}
+			else
+			{
+				step ++;
+			}
+			graphicsitem->setPixmap(LeftPixmapList.value(step));
+		}
+		else	// Rotate
+		{
+			graphicsitem->setPixmap(LeftPixmapList.first());
+			step = 0;
+			currentDirection = param_dir;
+		}
+		break;
+	}
+	case Direction::Right:
+	{
+		if(currentDirection == param_dir) //Move
+		{
+			if(step == RightPixmapList.size())
+			{
+			step = 0;
+			}
+			else
+			{
+				step ++;
+			}
+			graphicsitem->setPixmap(RightPixmapList.value(step));
+		}
+		else	// Rotate
+		{
+			graphicsitem->setPixmap(RightPixmapList.first());
+			step = 0;
+			currentDirection = param_dir;
+		}
+		 break;
+	}
+ 
+ }
+ 
+}
+ 
