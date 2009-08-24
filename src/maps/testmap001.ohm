@@ -1,7 +1,7 @@
 <map>
-<maphintergrund>img/wasser04.png</maphintergrund>
-<mapbreite>5000</mapbreite>
-<maphoehe>4000</maphoehe>
+<mapbackground>img/wasser04.png</mapbackground>
+<mapwidth>5000</mapwidth>
+<mapheight>4000</mapheight>
 <objekt>
 <objektfunktion>101</objektfunktion>
 <objektdatei>img/land_halbtransparent_gross_bearbeitet+++.png</objektdatei>

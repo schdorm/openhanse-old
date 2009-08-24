@@ -4,5 +4,5 @@
 #cd ../src/
 # mkdir bin/
 # cd src
-cp -rvu maps/ ../bin/maps/
+cp -rvu maps/ ../bin/
 make
