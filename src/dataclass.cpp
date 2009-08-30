@@ -26,6 +26,7 @@ active_ship = new ShipClass();
 // active_ship->init();
 active_city = new CityClass();
 active_kontor = new KontorClass();
+active_char = new Person();
 
 landingstruct.landingstate = LandingProcess::NotActive;
 }
@@ -50,6 +51,11 @@ KontorList << *param_kontor;
 void DataClass::addCity(CityClass *param_city)
 {
 CityList << *param_city;
+}
+
+void DataClass::addPerson(Person *param_person)
+{
+PersonList << *param_person;
 }
 
 void DataClass::setCurrentCity(CityClass *param_city)

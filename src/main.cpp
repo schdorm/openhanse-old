@@ -21,15 +21,26 @@
 
 #include <QApplication>
 
-//  #include <QtDebug>
+	#include <QtDebug>
  #include <QDir>
 
 #include "gesamtbild.h"
 
 int main(int argc, char *argv[])
 {
+QStringList application_parameters;
+for(int i = 0; i < argc; i++)
+{
+application_parameters << QString(argv[i]);
+qWarning() << QString(argv[i]) << i;
+}
 
-      QApplication app(argc, argv);
+if(!application_parameters.contains(QString("noopengl")))
+{
+	QApplication::setGraphicsSystem("opengl");
+}
+
+	QApplication app(argc, argv);
  	QDir dir;
 
 	dir.setCurrent(QFileInfo(QString(argv[0])).absolutePath());

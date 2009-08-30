@@ -35,9 +35,11 @@ class DataClass
 
 public:
 DataClass();
+
 CityClass *active_city;
 KontorClass *active_kontor;
 ShipClass *active_ship;
+Person *active_char;
 
 zeit gametime;
 windclass wind;
@@ -47,6 +49,7 @@ void addBuilding(BuildingClass *);		// add a Building .... to the Building .... 
 void addShip(ShipClass *);
 void addKontor(KontorClass *);
 void addCity(CityClass *);
+void addPerson(Person *);
 
 void setCurrentCity(QString);
 void setCurrentCity(CityClass *);

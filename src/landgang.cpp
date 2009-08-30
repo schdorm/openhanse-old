@@ -48,7 +48,16 @@ foreach(it, landobjektliste)
 	if(schiffskollision(it))
 	{
 		gamedata->landingstruct.landingstate = LandingProcess::AtLand;
+// 		gamedata->active_char->fillDownPixmapList(QImage(":img/sonstige/charset1.png"), QRect(85,6,21,40), 6);
+// 		gamedata->active_char->fillUpPixmapList(QImage(":img/sonstige/charset1.png"), QRect(13,344,21,40), 1);
+// 		gamedata->active_char->fillUpPixmapList(QImage(":img/sonstige/charset1.png"), QRect(84,344,21,40), 6);
+// 		gamedata->active_char->fillDownPixmapList(QImage(":img/sonstige/charset1_bearb_scal_2x.png"), QRect(137,0,20,40), 1);
+// 		gamedata->active_char->fillDownPixmapList(QImage(":img/sonstige/charset1_bearb_scal_2x.png"), QRect(0,0,20,40), 6);
+///		gamedata->active_char->fillUpPixmapList(QImage(":img/sonstige/charset1_bearb_scal_2x.png"), QRect(137,0,20,40), 1);
+///		gamedata->active_char->fillUpPixmapList(QImage(":img/sonstige/charset1_bearb_scal_2x.png"), QRect(0,0,20,40), 6);
 		return;
+		
+		// Side: standing: 18 [139|40]; walking: 22[0|40]; Down: walking 20[0|0]; standing: 20 [137|0]
 	}
 }
 // if(directLanding)

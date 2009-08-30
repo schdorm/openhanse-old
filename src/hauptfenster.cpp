@@ -18,16 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-// const int tageslaenge = 1000;
 
-// const int taglaenge = 
-
-// #define AKTUALISIERUNGSINTERVALL 40
-// #define WENDEGESCHWINDIGKEIT 10
-// #define BESCHLEUNIGUNG 50
-// #define WINDVERAENDERUNG 30
-//Beschleunigung -> Traegheit: bei groesseren Werten reagiert das Schiff langsamer
-// #define PRODUKTION 1000
 
 // #define _RELEASE_
 #define _NO_CONTROL_LABEL_
@@ -36,15 +27,12 @@
 #include "schiff.h"
 
 #include <math.h>
-// #include <time.h>
 
 #include <QtGui/QGraphicsScene>
 #include <QtGui/QGraphicsItem>
 
 #include <QtGui/QImage>
 #include <QtGui/QBrush>
-
-
 
 #include <QtCore/QTimer>
 
@@ -66,46 +54,20 @@
 hauptfenster::hauptfenster(DataClass *dc)
 {
 	gamedata = dc;
-// 	gamedata->active_ship = new ShipClass();
-// 	gamedata->active_ship->init();
 
 	qWarning() << "Schiffstyp" << gamedata->active_ship->type;
 
-	gamedata->anbord=true;
+	gamedata->anbord = true;
 	pause = false;
-// 	uhra=false;
-// 	tageslaenge = 2000;
-// 	tag = 0;
-// 	stunde = 0;
-// 	minute = 0;
 	gamedata->gametime.init();
-// 	spielzeit.setYear(1350);
-// 	spielzeit.setMonth(4);
-// 	spielzeit.setDay(1);
-// 	spielzeit.setHour(12);
-// 	spielzeit.setMinute(0);
-// 	spielzeit.setDayLength(2000);
-
 	gamedata->wind.init();
-// 	int randint = rand()%7;
-// 	windrichtung = randint;
-// 	windgeschwindigkeit = rand() %30 +5;
-// 	qWarning() << "clear";
-// 	szene[as = new QGraphicsScene();
-// 	aszene=1;
-					// 	szene[aszene]= new QGraphicsScene();
 	szene = new QGraphicsScene();
-// 	qWarning() << "Szene:" <<aszene;
-
 
 // 	kartegeladen=true;
 // 	setScene(szene);
 // 	setSceneRect(20,20,mapprops.breite-40, mapprops.hoehe-40);
 
 
-// 	bewegung = new QTimer;
-// 	bewegung->start(AKTUALISIERUNGSINTERVALL);
-// 	/*QObject::*/connect(bewegung,SIGNAL(timeout()),this,SLOT(aktualisieren()));
 	setFocus();
 // 	centerOn(testschiff->x(),testschiff->y());
 // 	centerOn(testschiff);
@@ -232,12 +194,18 @@ if(!pause)
 		gamedata->landingstruct.correctOrientation = false;
 		return;
 		}
+		else if(it->data(0).toString() == QString("ship")){
+				// Iterator, that find
+// 		foreach(gamedata->active_ship, gamedata->currentMap.ships)
+		
+		}
 	}
 	
 	
 	}
 	if(!gamedata->anbord && gamedata->landingstruct.landingstate == LandingProcess::AtLand)
 	{
+//	if(QLine(clickpoint, active_person->ortblah).lenght < 100)
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
 		if(ort==0)
 		{
@@ -248,46 +216,53 @@ if(!pause)
 
 		else
 		{
-			if(ort->toolTip() == "Name")
+// 			if(ort->toolTip() == "Name")
+// 			{
+// #ifndef _RELEASE_
+// 			qWarning() << "Item Name getroffen";
+// #endif
+// 			}
+			if(ort == gamedata->landingstruct.landingShip_gi)
 			{
+			gamedata->landingstruct.landingstate = LandingProcess::WaitingForDestination;
+			}
+			switch (ort->data(0).toInt())
+			{
+				case ObjectType::Market:
+				{
 #ifndef _RELEASE_
-			qWarning() << "Item Name getroffen";
+					qWarning() << "Man begibt sich auf den Markt ...";
 #endif
+					emit handel();
+					break;
+				}
+				case ObjectType::Townhall:
+				{
+					break;
+				}
+				
+				case ObjectType::Church:
+				{
+					break;
+				}
+				case ObjectType::Port:
+				{
+					break;
+				}
+				case ObjectType::Kontor:
+				{
+					break;
+				}
+				case ObjectType::Bank:
+				{
+					break;
+				}
+				case ObjectType::Tavern:
+				{
+					emit enterBuilding(ObjectType::Tavern);
+					break;
+				}
 			}
-
-			if(ort->data(0).toInt() == ObjectType::Market)
-			{
-#ifndef _RELEASE_
-			qWarning() << "Man begibt sich auf den Markt ...";
-#endif
-			emit handel();
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Townhall)
-			{
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Church)
-			{
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Port)
-			{
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Kontor)
-			{
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Bank)
-			{
-			}
-
-			if(ort->data(0).toInt() == ObjectType::Tavern)
-			{
-				emit enterBuilding(ObjectType::Tavern);
-			}
-
 /*			if(ort->toolTip() == "Uhr" || ort->toolTip() == "grosser Zeiger" || ort->toolTip() == "kleiner Zeiger")
 			{
 #ifndef _RELEASE_
@@ -318,12 +293,10 @@ if(!pause)
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
 
-// 	int mposx = int(testschiff->x() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite/2 + sin(gamedata->active_ship->ret_Dir())* gamedata->active_ship->schifflange / 2);
-
-// 	int mposy = int(testschiff->y() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schifflange/2 + sin(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite /2);
 	PositioningStruct ship_pos = gamedata->active_ship->ret_currentPosition();
-  int mposx = ship_pos.m_position.x();
-  int mposy = ship_pos.m_position.y();
+	
+	int mposx = ship_pos.m_position.x();
+	int mposy = ship_pos.m_position.y();
 
 #ifndef _RELEASE_
 	qWarning() << "Maussteuerung" << x << y << mposx << mposy;
@@ -347,7 +320,7 @@ if(!pause)
 #endif
 	}
 
-	if(x < mposx && y < mposy)			// Klick im II. Quadrant
+	else if(x < mposx && y < mposy)			// Klick im II. Quadrant
 	{
 		int diffx = (mposx - x);
 		int diffy = (mposy - y);
@@ -363,7 +336,7 @@ if(!pause)
 #endif
 	}
 
-	if(x < mposx && y > mposy)			// Klick im III. Quadrant
+	else if(x < mposx && y > mposy)			// Klick im III. Quadrant
 	{
 		int diffx = (mposx - x);
 		int diffy = (y - mposy);
@@ -379,7 +352,7 @@ if(!pause)
 #endif
 	}
 
-	if(x > mposx && y > mposy)			// Klick im IV. Quadrant
+	else if(x > mposx && y > mposy)			// Klick im IV. Quadrant
 	{
 		int diffx = (x - mposx);
 		int diffy = (y - mposy);

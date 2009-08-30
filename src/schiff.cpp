@@ -48,7 +48,7 @@ void ShipClass::calcMovement(int windv, double winddir)
 	{
 		if(control_difficulty == 0)
 		{
-			double accelerationv = windv * (0.8 + cos(dir - winddir))/2 ;
+			double accelerationv = windv * (0.9 + cos(dir - winddir))/2 ;
 // 			if(accelerationv > v)
 			{
 // 				v += (ceil((accelerationv - v)/4));
@@ -281,6 +281,7 @@ g_height2 = g_height / 2;
 
 g_width = param_item->boundingRect().width();
 g_width2 = g_width / 2;
+graphicsitem->setData(0,QString("ship"));
 }
 
 bool ShipClass::moveGraphics()
