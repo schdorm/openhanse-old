@@ -120,6 +120,17 @@ gesamtbild::gesamtbild()
 	connect(Error,SIGNAL(rejected()),this, SLOT(close()));
 
 }
+gesamtbild::~gesamtbild()
+{
+delete rahmen;
+delete hf;
+delete hwin;
+delete okbutton;
+delete schwierigkeitsauswahl;
+delete menupanel;
+delete konsolenwidget;
+delete gamedata;
+}
 
 
 void gesamtbild::hauptmenu()
@@ -151,10 +162,10 @@ void gesamtbild::hauptmenu()
 // 	QPushButton *toggler = new QPushButton (tr("Toggle"),rahmen);	//Testsache
 // 	connect(toggler,SIGNAL(clicked()),laden,SLOT(toggle()));
 
-	schwierigkeitauswahl = new QComboBox(rahmen);
-	schwierigkeitauswahl -> addItem(tr("Einfach"));
-	schwierigkeitauswahl -> addItem(tr("Schwierig"));
-	schwierigkeitauswahl -> move(50,90);
+	schwierigkeitsauswahl = new QComboBox(rahmen);
+	schwierigkeitsauswahl -> addItem(tr("Einfach"));
+	schwierigkeitsauswahl -> addItem(tr("Schwierig"));
+	schwierigkeitsauswahl -> move(50,90);
 	rahmen->show();
 }
 
@@ -174,7 +185,7 @@ void gesamtbild::keyPressEvent(QKeyEvent *event)
 			return;
 		}
 
-		if(event->key() == Qt::Key_Q && (event->modifiers() == Qt::ControlModifier || event->text() == "Q"))
+		else if(event->key() == Qt::Key_Q && (event->modifiers() == Qt::ControlModifier || event->text() == "Q"))
 		{
 			close();
 			return;

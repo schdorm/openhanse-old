@@ -18,7 +18,6 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 #include "gesamtbild.h"
-#include "stadtklasse.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QXmlStreamReader>
@@ -196,9 +195,10 @@ void gesamtbild::startNewGame()
 	qWarning() << "Stadtliste erzeugt";
 // 	if(!load)
 // 	{
-	schwierigkeitsgrad = schwierigkeitauswahl->currentIndex();
+	schwierigkeitsgrad = schwierigkeitsauswahl->currentIndex();
 	qWarning() << "Schwierigkeitsgrad" <<schwierigkeitsgrad;
-	schwierigkeitauswahl->deleteLater();
+	delete schwierigkeitsauswahl;
+	schwierigkeitsauswahl = 0;
 // 	}
 
 
@@ -214,13 +214,13 @@ void gesamtbild::startNewGame()
 // 	konsolenwidget->debug("Timepointer set");
 	hf->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
-	gamedata->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
+/// 	gamedata->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
 // 					  ":img/schiffe/schiff_gerade_skaliert2.png"
 	gamedata->active_ship->control_difficulty = schwierigkeitsgrad;
 	hf->karteladen("testmap001.ohm");
 // 	hf->testschiff->setPos(1500,900);
-	gamedata->active_ship->graphicsitem->setPos(1500, 900);
-	hf->centerOn(gamedata->active_ship->graphicsitem);
+/// 	gamedata->active_ship->graphicsitem->setPos(1500, 900);
+/// 	hf->centerOn(gamedata->active_ship->graphicsitem);
 //  	qWarning() << "StartTimer";
 	hf->starttimer();
  	qWarning() << "Timer gestartet";

@@ -21,7 +21,7 @@
 #include "gesamtbild.h"
 #include "waren.h"
 #include "stadtklasse.h"
-#include "kontorklasse.h"
+#include "kontordata.h"
 #include <QtDebug>
 
 void gesamtbild::produktion(int durchlauf)
@@ -722,7 +722,7 @@ void CityClass::production(int durchlauf)
 // }
 // }
 
-void KontorClass::productGoods()
+void KontorData::productGoods()
 {
 double production_param[const_warenanzahl];
 

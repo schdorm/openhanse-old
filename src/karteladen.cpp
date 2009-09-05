@@ -544,7 +544,7 @@ qWarning() << "Mapdir does not exist. Exiting.";
 // 	setSceneRect(20,20,gamedata->currentMap.breite-40, gamedata->currentMap.hoehe-40);
 
 
-
+/*
 	if(gamedata->anbord)
 {
 QGraphicsPixmapItem *testschiff;
@@ -579,7 +579,7 @@ QGraphicsPixmapItem *testschiff;
 	emit sig_anlegbar(false);
 // 	qWarning() << "nicht anlegbar";
 	}
-}
+}*/
 
 
 
@@ -622,10 +622,10 @@ QGraphicsPixmapItem *testschiff;
 	
 	
 	setScene(szene);
-if(gamedata->anbord)
-{
-	centerOn(gamedata->active_ship->graphicsitem);
-}
+// if(gamedata->anbord)
+// {
+// 	centerOn(gamedata->active_ship->graphicsitem);
+// }
 	tempsc->deleteLater();
 
 // maphandlingimg= QImage(":img/testimg/gros.gif");

@@ -17,86 +17,42 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _schiffsklasse_h
-#define _schiffsklasse_h
+#ifndef _SHIPDATA_H
+#define _SHIPDATA_H
 
-// #include "waren.h"
 #include "definitions.h"
-#include <QtGui/QGraphicsItem>
 
-class ShipClass 
+class ShipData
 {
-
-private:
-double v;
-double control_velocity;		//describes, how fast a ship can turn; drops, if the ship is spoilt / damaged ..
-double settedSails;
-double toSettedSails;
-bool hasMoved;
-
-double dir;
-double toDir;	// mouse-control
-double rudderDir;	//keyboard-control
-double toRudderDir;	// 	''
-
-// control-difficulty +
-double sailDir;
-// double toSailDir;
-
-int g_height, g_height2;	// graphicsitem - height -> laenge
-int g_width, g_width2;		// graphicsitem - width -> breite
-
-PositioningStruct currentPosition;
-
-
-
-/*struct desc
-{
-int xpos, xposm;
-int ypos, yposm;
-QString map;
-QString stadt;
-
-////////////////Steuerung: ////////////////////////////
-qint16 geschwindigkeit, sollgeschwindigkeit;		//aktuelle Geschwindigkeit -> Sollgeschwindigkeit bei Maussteuerung
-float prozentgesetzteSegel, sollprozentgesetzteSegel;
-
-qint16 steuergeschwindigkeit;
-
-float segelausrichtung;
-float ausrichtung, sollausrichtung;			//aktueller Winkel -> Sollwinkel bei Maussteuerung
-float steuerruderausrichtung, sollsteuerruderausrichtung;				//aktueller Winkel des Ruders
-// QPoint ecke_obenlinks, ecke_obenrechts, ecke_untenlinks, ecke_untenrechts;
-};*/
 
 public:
-QGraphicsPixmapItem *graphicsitem;
 
-// desc attribute;
+
+enum ShipTypes
+	{
+	Kraier,
+	Kogge,
+	Holk
+	};
+
 Warenstruct cargo;			//Ladung
-
 QString schiffsname;
-int id;
-ShipType::schiffstypen type;
-int zustand;
-int manvzustand;		//Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
-int besatzung;
+
+
+
 // quint16 ladekapazitaet;
 
-QString filename;
-int schifflange;	//entspricht SchiffsBildY
-int schiffbreite;	//entspricht SchiffsBildX
+// QString filename;
+// int schifflange;	//entspricht SchiffsBildY
+// int schiffbreite;	//entspricht SchiffsBildX
 
 int control_difficulty;
 bool mouse_control;
 
 
-~ShipClass()
-{
-delete graphicsitem;
-}
 
-ShipClass()					///== RESET
+
+ShipData()					///== RESET
 {
 	static int idzuweisung;
 	id = idzuweisung;
@@ -110,8 +66,8 @@ ShipClass()					///== RESET
 	}
 	cargo.fuellung=0;
 
-	zustand = 100;
-	type = ShipType::Kogge;
+	condition = 100;
+	type = Kogge;
 	v = 0;
 	dir = 0;
 	toDir = 0;
@@ -123,24 +79,14 @@ ShipClass()					///== RESET
 	control_velocity = 1;
 	
 	control_difficulty = 0;
-	/*
-	attribute.sollsteuerruderausrichtung=0;
-	attribute.steuerruderausrichtung=0;
-	attribute.sollausrichtung=0;
-	attribute.ausrichtung=0;
-
-	attribute.steuergeschwindigkeit = 1;
-
-	attribute.geschwindigkeit=0;
-	attribute.sollgeschwindigkeit=0;
-	attribute.prozentgesetzteSegel=0;
-	attribute.sollprozentgesetzteSegel=0;
-	attribute.segelausrichtung=0;*/
-	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
+// 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
 	cargo.kapazitaet = rand()%2001;
 }
+~ShipData()
+{
+}
 
-void setGraphicsItem(QGraphicsPixmapItem*);
+int ret_Condition();
 
 // control: set - fct.
 void set_ToSettedSails(double);
@@ -161,16 +107,43 @@ double ret_ToDir();
 double ret_RudderDir();
 double ret_ToRudderDir();
 
-PositioningStruct ret_currentPosition();
+PositioningStruct ret_CurrentPosition();
 int ret_MPos_X();
 int ret_MPos_Y();
 
 
-// void bewegungsbeschreibung();
+// void bewegungsbeschreibung() --> calculate movement-things ...
 void calcMovement(int, double);
-bool moveGraphics();
 
-void rotateGraphics();
+protected:
+
+int id;
+ShipTypes type;
+
+
+double v;
+double control_velocity;		//describes, how fast a ship can turn; drops, if the ship is spoilt / damaged ..
+double settedSails;
+double toSettedSails;
+bool hasMoved;
+
+double dir;
+double toDir;	// mouse-control
+double rudderDir;	//keyboard-control
+double toRudderDir;	// 	''
+
+// control-difficulty +
+double sailDir;
+// double toSailDir;
+
+// int g_height, g_height2;	// graphicsitem - height -> laenge		|| Not needed (Model-Data-concept)
+// int g_width, g_width2;		// graphicsitem - width -> breite	||
+
+PositioningStruct currentPosition;
+
+int condition;
+int controlcondition;		// Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
+int seamen;			// Matrosen
 
 };
 

@@ -17,62 +17,27 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef _BUILDINGDATA_H
+#define _BUILDINGDATA_H
 
-#ifndef _kontorklasse_h
-#define _kontorklasse_h
+#include "definitions.h"
 
-#include "waren.h"
-#include "buildingclass.h"
-class KontorClass : public BuildingClass
+class BuildingData		//Gebaudeklasse
 {
-private:
-int id;
 public:
+// QString name;
 
-KontorClass(){
-static int idzaehler;
-	id=idzaehler;
-	idzaehler++;
+// void set_GraphicsItem(QGraphicsItem *);
 
-
-	for(int i=0; i< const_warenanzahl; i++)
-	{
-		storage.ware[i] = 0;
-		production.ware[i] = 0;
-	}
-
-	storage.kapazitaet = 800;
-	storage.fuellung = 0;
-	storage.taler = 0;
-	storage.mengenbilanz = 0;
-	production.taler = 0;
-	}
-
-
-int ret_ID()		{	return id;	}
-int ret_CityID()	{	return cityID;	}
-// int cityid;
-// QString stadt; --> inherited from BuildingClass --> cityname + cityID
-
-Warenstruct storage;
-Warenstruct production;
-///
-void productGoods();
-
-
-
-void build(const QString param_cityname, int param_cityid)
-{
-	cityname = param_cityname;
-	cityID = param_cityid;
-	tax_level = Tax::midhighLevel;
-}
-
+protected:
+int buildingid;
+QString cityname;
+int cityID;
+int workers;
+Tax::levels tax_level;
+// QGraphicsItem *graphicsitem;
+ObjectType::object_types_def type;
+double state;
 };
-
-
-
-
-
 
 #endif

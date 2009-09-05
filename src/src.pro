@@ -11,30 +11,33 @@ SOURCES += main.cpp \
  konsole.cpp \
  zeit.cpp \
  wind.cpp \
- schiff.cpp \
+ shipdata.cpp \
  quests.cpp \
  buildings.cpp \
  dataclass.cpp \
- person.cpp
-
+ person.cpp \
+ objectgraphicsitem.cpp
 
 TEMPLATE = app
 CONFIG += warn_on \
 	  thread \
           qt
+
 TARGET = OpenHanse
+
 DESTDIR = ../bin
+
 RESOURCES += img.qrc \
  maps.qrc \
  objekte.qrc
 
-HEADERS += schiff.h \
+HEADERS += shipdata.h \
  hauptfenster.h \
  gesamtbild.h \
  stadtklasse.h \
  handelsfenster.h \
  waren.h \
- kontorklasse.h \
+ kontordata.h \
  tabpanel.h \
  konsole.h \
  zeit.h \
@@ -44,9 +47,10 @@ HEADERS += schiff.h \
   definitions.h \
  dataclass.h \
  build_menu.h \
- buildingclass.h \
+ buildingdata.h \
  map.h \
- person.h
+ person.h \
+ objectgraphicsitem.h
 
 
 QMAKE_CXXFLAGS_RELEASE += -Wall

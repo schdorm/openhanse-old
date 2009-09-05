@@ -26,11 +26,11 @@
 #include <QtGui/QWidget>
 #include <QtGui/QFrame>
 
-#include "waren.h"
-#include "zeit.h"
+// #include "waren.h"
+// #include "zeit.h"
 
-#include "stadtklasse.h"
-#include "kontorklasse.h"
+// #include "stadtklasse.h"
+// #include "kontorklasse.h"
 
 #include "hauptfenster.h"
 #include "handelsfenster.h"
@@ -46,12 +46,16 @@
 
 #include <QtGui/QComboBox>
 
+
+#define _NO_SAVE__
+
 class gesamtbild : public QWidget
 {
 Q_OBJECT
 public:
 //  QString binfilepath;
 gesamtbild();
+~gesamtbild();
 // void init(QString);
 void spielfensteraufbau();
 
@@ -77,6 +81,7 @@ void seemenu();
 
 void zeitanzeige();
 
+#ifndef _NO_SAVE__
 void speichern();
 void speicherndialog();
 void speichername(QString);
@@ -84,6 +89,7 @@ void speichern(QListWidgetItem*);
 
 void laden(QListWidgetItem*);
 void lademenu();
+#endif
 
 private:
 bool spielbool;
@@ -102,7 +108,7 @@ QFrame *rahmen;
 // QLabel *taler;
 // QTabWidget *menutabs;
 // QWidget *tab[3];
-QComboBox *schwierigkeitauswahl;
+QComboBox *schwierigkeitsauswahl;
 QPushButton *okbutton;
 QString filename;			// fuer Savegame 
 

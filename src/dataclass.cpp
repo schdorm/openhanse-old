@@ -22,15 +22,34 @@
 
 DataClass::DataClass()
 {
-active_ship = new ShipClass();
+active_ship = new ShipData();
 // active_ship->init();
 active_city = new CityClass();
-active_kontor = new KontorClass();
+active_kontor = new KontorData();
 active_char = new Person();
 
 landingstruct.landingstate = LandingProcess::NotActive;
+connect(&calc_data_timer, SIGNAL(timeout()), this, SLOT(calcData()));
 }
 
+DataClass::~DataClass()
+{
+delete active_ship;
+delete active_city;
+delete active_kontor;
+delete active_char;
+
+}
+
+void DataClass::startTimer()
+{
+calc_data_timer.start(const_calc_data_delay);
+}
+
+void DataClass::calcData()
+{
+
+}
 
 
 void DataClass::addBuilding(BuildingClass *param_building)
@@ -38,12 +57,12 @@ void DataClass::addBuilding(BuildingClass *param_building)
 BuildingList << *param_building;
 }
 
-void DataClass::addShip(ShipClass *param_ship)
+void DataClass::addShip(ShipData *param_ship)
 {
 ShipList << *param_ship;
 }
 
-void DataClass::addKontor(KontorClass *param_kontor)
+void DataClass::addKontor(KontorData *param_kontor)
 {
 KontorList << *param_kontor;
 }
@@ -80,11 +99,11 @@ QList<CityClass> DataClass::ret_CityList()
 {
 return CityList;
 }
-QList<ShipClass> DataClass::ret_ShipList()
+QList<ShipData> DataClass::ret_ShipList()
 {
 return ShipList;
 }
-QList<KontorClass> DataClass::ret_KontorList()
+QList<KontorData> DataClass::ret_KontorList()
 {
 return KontorList;
 }

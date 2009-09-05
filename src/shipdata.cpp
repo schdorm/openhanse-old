@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "schiff.h"
+#include "shipdata.h"
 #include <math.h>
 
 // #define _debug_
@@ -26,7 +26,7 @@
 #include <QtDebug>
 #endif
 
-void ShipClass::calcMovement(int windv, double winddir)
+void ShipData::calcMovement(int windv, double winddir)
 {
 	if(settedSails > toSettedSails)
 	{
@@ -159,77 +159,79 @@ void ShipClass::calcMovement(int windv, double winddir)
 			}
 		}
 	}
+	currentPosition.generic_position.setX(currentPosition.generic_position.x() - (v * sin(dir))/10);
+	currentPosition.generic_position.setY(currentPosition.generic_position.y()  - (v * cos(dir))/10);
 }
 
-void ShipClass::brake(double param_brakefactor)
+void ShipData::brake(double param_brakefactor)
 {
 	v = v * (1 - param_brakefactor);
 
 }
 
-double ShipClass::ret_V()
+double ShipData::ret_V()
 {
 return v;
 }
 
-double ShipClass::ret_SettedSails()
+double ShipData::ret_SettedSails()
 {
 return settedSails;
 }
 
-double ShipClass::ret_ToSettedSails()
+double ShipData::ret_ToSettedSails()
 {
 return toSettedSails;
 }
 
-double ShipClass::ret_SailDir()
+double ShipData::ret_SailDir()
 {
 return sailDir;
 }
 
-// double ShipClass::ret_ToSailDir()
+// double ShipData::ret_ToSailDir()
 // {
 // return toSailDir;
 // }
 
-double ShipClass::ret_Dir()
+double ShipData::ret_Dir()
 {
 return dir;
 }
 
-double ShipClass::ret_ToDir()
+double ShipData::ret_ToDir()
 {
 return toDir;
 }
 
-double ShipClass::ret_RudderDir()
+double ShipData::ret_RudderDir()
 {
 return rudderDir;
 }
 
-double ShipClass::ret_ToRudderDir()
+double ShipData::ret_ToRudderDir()
 {
 return toRudderDir;
 }
 
-PositioningStruct ShipClass::ret_currentPosition()
+PositioningStruct ShipData::ret_CurrentPosition()
 {
 return currentPosition;
 }
 
-int ShipClass::ret_MPos_X()
+int ShipData::ret_MPos_X()
 {
 return currentPosition.m_position.x();
 }
 
 
-int ShipClass::ret_MPos_Y()
+int ShipData::ret_MPos_Y()
 {
 return currentPosition.m_position.y();
 }
 
 
-void ShipClass::set_ToSettedSails(double param_amount)
+void ShipData::set_ToSettedSails(double param_amount)
 {
 
 	if(param_amount >= 0 && param_amount <= 1)
@@ -243,13 +245,13 @@ void ShipClass::set_ToSettedSails(double param_amount)
 			toSettedSails = param_amount;
 		
 		#ifdef _debug_
-		qWarning() << "void ShipClass::set_ToSettedSails(double param_amount)" << param_amount;
+		qWarning() << "void ShipData::set_ToSettedSails(double param_amount)" << param_amount;
 		#endif
 	}
 }
 
 
-void ShipClass::set_SailDir(double param_dir)
+void ShipData::set_SailDir(double param_dir)
 {
 	if(param_dir <= 0.3 && param_dir >= -0.3)
 	{
@@ -257,7 +259,7 @@ void ShipClass::set_SailDir(double param_dir)
 	}
 }
 
-void ShipClass::set_ToRudderDir(double param_dir)
+void ShipData::set_ToRudderDir(double param_dir)
 {
 	if(param_dir <= const_max_rudder_deflection && param_dir >= - const_max_rudder_deflection)
 	{
@@ -265,7 +267,7 @@ void ShipClass::set_ToRudderDir(double param_dir)
 	}
 }
 
-void ShipClass::set_ToDir(double param_dir)
+void ShipData::set_ToDir(double param_dir)
 {
 	if(param_dir <= 2 * M_PI && param_dir >= 0)
 	{
@@ -273,73 +275,7 @@ void ShipClass::set_ToDir(double param_dir)
 	}
 }
 
-void ShipClass::setGraphicsItem(QGraphicsPixmapItem *param_item)
+int ShipData::ret_Condition()
 {
-graphicsitem = param_item;
-g_height = param_item->boundingRect().height();
-g_height2 = g_height / 2;
-
-g_width = param_item->boundingRect().width();
-g_width2 = g_width / 2;
-graphicsitem->setData(0,QString("ship"));
+return condition;
 }
-
-bool ShipClass::moveGraphics()
-{
-	bool moved = false;
-	if(v != 0)
-	{
-		graphicsitem->moveBy(- (v * sin(dir))/10, - (v * cos(dir))/10);
-/*		static int wait;
-		wait ++;
-		if(v < 1 && v > -1 && wait%10 == 0 )
-		{
-		wait = 1;
-		graphicsitem->moveBy((rand()%3-1)/2, (rand()%3-1)/2);
-		}*/
-		moved = true;
-	}
-	static double last_dir;
-	if(last_dir != dir)
-	{
-		last_dir = dir;
-		moved = true;
-		graphicsitem->resetTransform();
-		QTransform t;
-		t.translate( g_width2, g_height2 );
-		t.rotateRadians(- dir);
-		t.translate( -g_width2, -g_height2 );
-		graphicsitem->setTransform( t );
-	}
-	if(moved)
-	{
-	currentPosition.generic_position = graphicsitem->pos();
-	
-	currentPosition.m_position.setX(currentPosition.generic_position.x() + g_width2 );
-	currentPosition.m_position.setY(currentPosition.generic_position.y() + g_height2);
-	
-// 	currentPosition.m_position.setX(currentPosition.generic_position.x() + /*cos(dir) **/ g_width2 /*+ sin(dir) * g_height2*/);
-// 	currentPosition.m_position.setY(currentPosition.generic_position.y() +/* cos(dir) **/ g_height2 /*+ sin(dir) * g_width2*/);
-	
-// 	currentPosition.m_position.setX(currentPosition.generic_position.x() + sin(dir) * g_width2 + cos(dir) * g_height2);
-// 	currentPosition.m_position.setY(currentPosition.generic_position.y() + sin(dir) * g_height2 + cos(dir) * g_width2);
-// 	int mposx = int(testschiff->x() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite/2 + sin(gamedata->active_ship->ret_Dir())* gamedata->active_ship->schifflange / 2);
-
-// 	int mposy = int(testschiff->y() + cos(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schifflange/2 + sin(gamedata->active_ship->ret_Dir()) * gamedata->active_ship->schiffbreite /2);
-	
-	}
-	return moved;
-}
-
-void ShipClass::rotateGraphics()
-{
-int temp_v = v;
-v = 0;
-dir -= 0.000001;
-moveGraphics();
-dir += 0.000001;
-v = temp_v;
-}
-
-
-

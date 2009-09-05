@@ -33,16 +33,17 @@
 
 #include "konsole.h"
 
-#include "schiff.h"
-
-#include "zeit.h"
-
-#include "wind.h"
+// #include "shipdata.h"
+#include "dataclass.h"
+// #include "zeit.h"
+// #include "wind.h"
 
 #include "definitions.h"
 
-#include "dataclass.h"
 
+
+
+#include "objectgraphicsitem.h"
 
 // #include "gebaude.h"
 // #include "stadtklasse.h"
@@ -51,13 +52,12 @@
 
 // const int const_mhiscale = 5;
 
-	
-
 class hauptfenster : public QGraphicsView
 {
 Q_OBJECT
 public:
 	hauptfenster(DataClass *);
+	~hauptfenster();
 
 	void karteladen(QString);
 
@@ -75,22 +75,19 @@ public:
 	void rotateItem(QGraphicsItem *, double);
 // 	void questHandler(QString);
 
-// zeit spielzeit;
 // schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
 	void setDataClass(DataClass *);
-DataClass *gamedata;
 
-// windclass wind;
+DataClass *gamedata;
 
 int schwierigkeit;
 bool tastatur;
 
 bool anlegbar;
-// bool anbord;
-// bool uhra;
 
 bool uhr;
 
+ObjectGraphicsItem *activeship_ogi;
 
 // int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
 
@@ -171,19 +168,17 @@ public slots:
 
 private:
 
+QList <ObjectGraphicsItem> modellist;
+
+
 QImage maphandlingimg;
 int zoomlvl;
 
-// qint8 aszene;
-// Gebaude *gebaude[50];
-// QGraphicsScene *szene[2];
 QGraphicsScene *szene;
 
-
-// QGraphicsPixmapItem *background;
+QGraphicsItem *graphicsitem_it;
 QList <QGraphicsPixmapItem*> wolkenliste;
 QGraphicsPixmapItem *wolke;
-// QGraphicsItem *wolken[15];
 // QGraphicsItem *objekte;
 
 // QImage *img;

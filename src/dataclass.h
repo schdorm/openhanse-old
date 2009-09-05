@@ -21,24 +21,32 @@
 #ifndef _DATA_CLASS_H
 #define _DATA_CLASS_H
 
+#include <QtCore/QObject>
+#include <QtCore/QTimer>
+
 #include "stadtklasse.h"
-#include "kontorklasse.h"
-#include "schiff.h"
+#include "kontordata.h"
+#include "shipdata.h"
 #include "wind.h"
 #include "zeit.h"
 #include "buildingclass.h"
 #include "person.h"
 #include "map.h"
 
-class DataClass 
+class DataClass : public QObject
 {
+Q_OBJECT
+public slots:
+void calcData();
+void startTimer();
 
 public:
 DataClass();
+~DataClass();
 
 CityClass *active_city;
-KontorClass *active_kontor;
-ShipClass *active_ship;
+KontorData *active_kontor;
+ShipData *active_ship;
 Person *active_char;
 
 zeit gametime;
@@ -46,8 +54,8 @@ windclass wind;
 MapClass currentMap;
 
 void addBuilding(BuildingClass *);		// add a Building .... to the Building .... List
-void addShip(ShipClass *);
-void addKontor(KontorClass *);
+void addShip(ShipData *);
+void addKontor(KontorData *);
 void addCity(CityClass *);
 void addPerson(Person *);
 
@@ -59,17 +67,18 @@ LandingProcess::landingstructure landingstruct;
 
 
 QList<CityClass> ret_CityList();
-QList<ShipClass> ret_ShipList();
-QList<KontorClass> ret_KontorList();
+QList<ShipData> ret_ShipList();
+QList<KontorData> ret_KontorList();
 
 private:
+QTimer calc_data_timer;
 int schwierigkeit;
 
 
 QList <CityClass> CityList;
-QList <ShipClass> ShipList;
+QList <ShipData> ShipList;
 QList <BuildingClass> BuildingList;
-QList <KontorClass> KontorList;
+QList <KontorData> KontorList;
 QList <Person> PersonList;
 
 

@@ -228,14 +228,14 @@ stat_color->setPixmap(blah);
 #endif
 
 QPixmap stat_color_pm = *stat_color->pixmap();
-int *tempint = &gamedata->active_ship->zustand;
-if(*tempint >50)
+int tempint = gamedata->active_ship->ret_Condition();
+if(tempint >50)
 {
-stat_color_pm.fill(QColor(5.1 * (100 - *tempint), 255, 0));
+stat_color_pm.fill(QColor(5.1 * (100 - tempint), 255, 0));
 }
 else
 {
-stat_color_pm.fill(QColor(255, 5.1 * (*tempint), 0));
+stat_color_pm.fill(QColor(255, 5.1 * (tempint), 0));
 }
 
 stat_color->setPixmap(stat_color_pm);

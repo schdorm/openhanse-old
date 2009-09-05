@@ -375,7 +375,7 @@ if(gamedata->active_kontor->ret_CityID() == gamedata->active_city->id && gamedat
 htyp [1]->setEnabled(true);
 htyp[1]->animateClick();
 }
-if(gamedata->active_ship->ret_currentPosition().mapcoords == gamedata->currentMap.coordinate && gamedata->currentMap.cityname == gamedata->active_city->cityname)
+if(gamedata->active_ship->ret_CurrentPosition().mapcoords == gamedata->currentMap.coordinate && gamedata->currentMap.cityname == gamedata->active_city->cityname)
 {
 htyp [0]->setEnabled(true);
 htyp[0]->animateClick();

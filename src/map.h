@@ -37,7 +37,7 @@ QString mapsouth;
 QString mapwest;
 MapType::mtyp maptyp;
 
-QList <ShipClass *> ships;
+// QList <ShipClass *> ships;
 private:
 
 

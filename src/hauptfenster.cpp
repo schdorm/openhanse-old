@@ -24,7 +24,6 @@
 #define _NO_CONTROL_LABEL_
 
 #include "hauptfenster.h"
-#include "schiff.h"
 
 #include <math.h>
 
@@ -55,7 +54,7 @@ hauptfenster::hauptfenster(DataClass *dc)
 {
 	gamedata = dc;
 
-	qWarning() << "Schiffstyp" << gamedata->active_ship->type;
+// 	qWarning() << "Schiffstyp" << gamedata->active_ship->type;
 
 	gamedata->anbord = true;
 	pause = false;
@@ -73,7 +72,7 @@ hauptfenster::hauptfenster(DataClass *dc)
 // 	centerOn(testschiff);
 // 	gamedata->active_ship->schiffbreite = testschiff->boundingRect().width();
 // 	gamedata->active_ship->schifflange = testschiff->boundingRect().height();
-	gamedata->active_ship->schiffsname = tr("Seeadler");
+ 	gamedata->active_ship->schiffsname = tr("Seeadler");
 
 #ifndef _NO_CONTROL_LABEL_
 
@@ -143,7 +142,20 @@ hauptfenster::hauptfenster(DataClass *dc)
 	status->setParent(this,Qt::Tool);
 	status->move(1100,400);
 	status->show();
+	connect(this, SIGNAL(destroyed(QObject)), status, SIGNAL(deleteLater()));
 #endif
+}
+
+
+hauptfenster::~hauptfenster()
+{
+QList<QGraphicsItem*> dellist = szene->items();
+foreach(graphicsitem_it, dellist)
+{
+delete graphicsitem_it;
+}
+delete szene;
+delete bewegung;
 }
 
 void hauptfenster::setDataClass(DataClass *param_dc)
@@ -293,7 +305,7 @@ if(!pause)
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
 
-	PositioningStruct ship_pos = gamedata->active_ship->ret_currentPosition();
+	PositioningStruct ship_pos = gamedata->active_ship->ret_CurrentPosition();
 	
 	int mposx = ship_pos.m_position.x();
 	int mposy = ship_pos.m_position.y();
@@ -578,7 +590,7 @@ switch (event->key())
 #ifndef _RELEASE_
 	case Qt::Key_C:
 	{
-		centerOn(gamedata->active_ship->graphicsitem);
+// 		centerOn(gamedata->active_ship->graphicsitem);
 		break;
 	}
 	case Qt::Key_L:
@@ -733,7 +745,7 @@ if(gamedata->gametime.refreshTime())			//returns true, when a new day starts ...
 if(durchlauf % WINDVERAENDERUNG == 0)
 {
 	qWarning() << "Windsetzen ...";
-	gamedata->wind.refresh();
+///	gamedata->wind.refresh();
 
 #ifndef _NO_CONTROL_LABEL_
 	double windrichtung = gamedata->wind.retDir();
@@ -843,7 +855,7 @@ else if(gamedata->anbord)
 #ifdef _DEBUG_REFRESH_
  	qWarning() << "Calc Movement";
 #endif
-	gamedata->active_ship->calcMovement(gamedata->wind.retV(), gamedata->wind.retDir());
+///	gamedata->active_ship->calcMovement(gamedata->wind.retV(), gamedata->wind.retDir());
 #ifdef _DEBUG_REFRESH_
 	qWarning() << "End: Calc Movement, move Graphics";
 #endif
@@ -854,7 +866,7 @@ else if(gamedata->anbord)
 // qWarning() << "Schiffbar?";
 
 // if(0==1)
-if(gamedata->active_ship->moveGraphics())
+if(activeship_ogi->setShipPos())
  {
 #ifdef _DEBUG_REFRESH_
 	qWarning() << "End moveGraphics()";

@@ -18,107 +18,58 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _DEFINITIONS_H
-#define _DEFINITIONS_H
+#ifndef _kontorklasse_h
+#define _kontorklasse_h
+
 #include "waren.h"
-#include <QtCore/QLineF>
-#include <QtCore/QPoint>
-#include <QtGui/QGraphicsPixmapItem>
+#include "buildingdata.h"
 
-namespace ObjectType
+class KontorData : public BuildingData
 {
-	enum object_types_def
+private:
+int kontorid;
+public:
+
+KontorData(){
+static int idzaehler;
+	kontorid=idzaehler;
+	idzaehler++;
+
+
+	for(int i=0; i< const_warenanzahl; i++)
 	{
-		Townhall,
-		Market,
-		Church,
-		Port,
-		Kontor,
-		Bank,
-		Tavern,
-		namespacexyz,
-		Factories,			// Werkstaetten
-		Building_lot			// Baustelle
-	};
+		storage.ware[i] = 0;
+		production.ware[i] = 0;
+	}
+
+	storage.kapazitaet = 800;
+	storage.fuellung = 0;
+	storage.taler = 0;
+	storage.mengenbilanz = 0;
+	production.taler = 0;
+	}
+
+
+int ret_ID()		{	return kontorid;	}
+int ret_CityID()	{	return cityID;		}
+// int cityid;
+// QString stadt; --> inherited from BuildingClass --> cityname + cityID
+
+Warenstruct storage;
+Warenstruct production;
+///
+void productGoods();
+
+
+
+void build(const QString param_cityname, int param_cityid)
+{
+	cityname = param_cityname;
+	cityID = param_cityid;
+	tax_level = Tax::midhighLevel;
 }
 
-namespace Direction
-{
-	enum directions
-	{
-	Up,
-	Down,
-	Left,
-	Right
-	
-	};
-}
-
-const int _oh_version = 35;
-namespace MapType
-{
-	enum mtyp
-	{
-		 sea,			// 001
-		 coast,			// 010 || -> | -> 110
-		 land,			// 011 || -> | -> 111
-		 coast_city,			// 100
-		 land_city
-	};
-}
-
-namespace LandingProcess
-{
-	enum landing_process_states
-	{
-		NotActive,
-		WaitingForDestination,
-		ActiveLanding,
-		AtLand
-	};
-	struct landingstructure{
-		landing_process_states landingstate;
-		QLineF landing_line;
-		bool correctOrientation;
-		double l_orientation;
-		double orientation;
-		double vx, vy;
-		QGraphicsPixmapItem *landingShip_gi;
-	};
-}
-
-namespace Tax
-{
-	enum levels
-	{
-		lowLevel,
-		midlowLevel,
-		midLevel,
-		midhighLevel,
-		highLevel
-	};
-}
-
-
-
-struct PositioningStruct
-{
-QPointF generic_position;
-// int x_posm, y_posm;
-// int x_pos, y_pos;
-QPointF m_position;
-QString mapname;
-QPoint mapcoords;
 };
-
-const int AKTUALISIERUNGSINTERVALL = 30;
-const int WENDEGESCHWINDIGKEIT = 10;
-const int BESCHLEUNIGUNG = 50;
-const int WINDVERAENDERUNG = 30;
-
-const float const_max_rudder_deflection = 0.04;
-
-const int const_calc_data_delay = 100;
 
 
 #endif

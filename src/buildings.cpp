@@ -29,8 +29,8 @@
 // // signaler->deleteLater();
 // }
 
-void BuildingClass::set_GraphicsItem(QGraphicsItem *param_item)
-{
-graphicsitem = param_item;
-
-}
+// void BuildingClass::set_GraphicsItem(QGraphicsItem *param_item)
+// {
+// graphicsitem = param_item;
+// 
+// }

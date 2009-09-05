@@ -21,6 +21,8 @@
 #include "gesamtbild.h"
 #include "zeit.h"
 
+#ifndef _NO_SAVE__
+
 #include <QtCore/QFile>
 #include <QtCore/QDir>
 
@@ -483,3 +485,4 @@ void gesamtbild::lademenu()
 
 // 	lademenu->show();
 }
+#endif

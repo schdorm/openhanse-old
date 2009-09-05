@@ -21,8 +21,12 @@
 #ifndef _waren_h
 #define _waren_h
 
+
+
 const int const_warenanzahl = 30;
 const int const_waffen = 15;
+
+const int const_grundpreis[const_warenanzahl] = {50, 95, 84, 67, 10000, 350, 950, 168, 270, 400, 107, 60, 130, 210, 30, 50, 300, 190, 3800, 5100, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
 struct Warenstruct{
 int taler;

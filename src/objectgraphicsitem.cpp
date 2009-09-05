@@ -17,108 +17,52 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+ 
+#include "objectgraphicsitem.h"
 
-#ifndef _DEFINITIONS_H
-#define _DEFINITIONS_H
-#include "waren.h"
-#include <QtCore/QLineF>
-#include <QtCore/QPoint>
-#include <QtGui/QGraphicsPixmapItem>
-
-namespace ObjectType
-{
-	enum object_types_def
+ObjectGraphicsItem::ObjectGraphicsItem(ShipData *param_shipdata)
+{/*
+	shipdata = 0;
+	buildingdata = 0;
+	switch(type)
 	{
-		Townhall,
-		Market,
-		Church,
-		Port,
-		Kontor,
-		Bank,
-		Tavern,
-		namespacexyz,
-		Factories,			// Werkstaetten
-		Building_lot			// Baustelle
-	};
+		case Ship:
+		{
+			shipdata = new ShipData();
+			break;
+		}
+		default:
+			break;
+	}*/
+	shipdata = param_shipdata;
+	type = Ship;
 }
 
-namespace Direction
+ObjectGraphicsItem::~ObjectGraphicsItem()
 {
-	enum directions
-	{
-	Up,
-	Down,
-	Left,
-	Right
-	
-	};
-}
-
-const int _oh_version = 35;
-namespace MapType
-{
-	enum mtyp
-	{
-		 sea,			// 001
-		 coast,			// 010 || -> | -> 110
-		 land,			// 011 || -> | -> 111
-		 coast_city,			// 100
-		 land_city
-	};
-}
-
-namespace LandingProcess
-{
-	enum landing_process_states
-	{
-		NotActive,
-		WaitingForDestination,
-		ActiveLanding,
-		AtLand
-	};
-	struct landingstructure{
-		landing_process_states landingstate;
-		QLineF landing_line;
-		bool correctOrientation;
-		double l_orientation;
-		double orientation;
-		double vx, vy;
-		QGraphicsPixmapItem *landingShip_gi;
-	};
-}
-
-namespace Tax
-{
-	enum levels
-	{
-		lowLevel,
-		midlowLevel,
-		midLevel,
-		midhighLevel,
-		highLevel
-	};
+// delete shipdata;
+// delete buildingdata;
 }
 
 
-
-struct PositioningStruct
+void ObjectGraphicsItem::addMemberItem(QGraphicsItem *param_MemberItem, QPointF param_DestinationCoords)	// adds a graphicsItem to itself --> e.g. adds the body of the ship / the sails of the ship to the "Ship-Item"
 {
-QPointF generic_position;
-// int x_posm, y_posm;
-// int x_pos, y_pos;
-QPointF m_position;
-QString mapname;
-QPoint mapcoords;
-};
+param_MemberItem->setParentItem(this);
+param_MemberItem->setPos(param_DestinationCoords);
+}
 
-const int AKTUALISIERUNGSINTERVALL = 30;
-const int WENDEGESCHWINDIGKEIT = 10;
-const int BESCHLEUNIGUNG = 50;
-const int WINDVERAENDERUNG = 30;
+bool ObjectGraphicsItem::setShipPos()
+{
+QPointF destinationpoint = shipdata->ret_CurrentPosition().generic_position;
+if(destinationpoint != pos())
+{
+setPos(destinationpoint);
+return true;
+}
+else return false;
+}
 
-const float const_max_rudder_deflection = 0.04;
+void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
 
-const int const_calc_data_delay = 100;
-
-
-#endif
+}

@@ -21,7 +21,7 @@
 
 #include <QApplication>
 
-	#include <QtDebug>
+// 	#include <QtDebug>
  #include <QDir>
 
 #include "gesamtbild.h"
@@ -32,7 +32,7 @@ QStringList application_parameters;
 for(int i = 0; i < argc; i++)
 {
 application_parameters << QString(argv[i]);
-qWarning() << QString(argv[i]) << i;
+// qWarning() << QString(argv[i]) << i;
 }
 
 if(!application_parameters.contains(QString("noopengl")))
@@ -50,6 +50,8 @@ if(!application_parameters.contains(QString("noopengl")))
 
 	gesamtbild gb;
 	gb.showFullScreen();
+// 	QWidget blah;
+// 	blah.show();
 
       return app.exec();
 }
