@@ -16,7 +16,8 @@ SOURCES += main.cpp \
  buildings.cpp \
  dataclass.cpp \
  person.cpp \
- objectgraphicsitem.cpp
+ objectgraphicsitem.cpp \
+ settings.cpp
 
 TEMPLATE = app
 CONFIG += warn_on \
@@ -50,7 +51,8 @@ HEADERS += shipdata.h \
  buildingdata.h \
  map.h \
  person.h \
- objectgraphicsitem.h
+ objectgraphicsitem.h \
+ settings.h
 
 
 QMAKE_CXXFLAGS_RELEASE += -Wall

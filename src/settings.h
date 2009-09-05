@@ -18,48 +18,26 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-
-#include <QApplication>
-
-// 	#include <QtDebug>
- #include <QDir>
-
-#include "gesamtbild.h"
-#include "settings.h"
-
-int main(int argc, char *argv[])
+#ifndef _SETTINGS_H
+#define _SETTINGS_H
+#include <QtCore/QSize>
+class Settings
 {
-		QStringList application_parameters;		//list of command-line-arguments
-		for(int i = 0; i < argc; i++)
-		{
-			application_parameters << QString(argv[i]);
-				// qWarning() << QString(argv[i]) << i;
-		}
-		
-		Settings mainsettings;
-		mainsettings.readConfigs(QDir().home().absolutePath().append("/.OpenHanse/cfg.ohc"));	//reads the configuration file in ~/.OpenHanse/cfg.ohc
-		
-		if( (!application_parameters.contains(QString("noopengl"))) && mainsettings.ret_OpenGL())
-		{
-			QApplication::setGraphicsSystem("opengl");		// graphics-things for the graphiccard, if there's no other order
-		}
+public:
+void readConfigs(QString);
+bool ret_OpenGL()	{	return opengl;		}
+bool ret_Fullscreen()	{	return fullscreen;	}
+QSize ret_Resolution()	{	return resolution;	}
+int ret_FPS()		{	return fps;		}
 
-    QApplication app(argc, argv);		// start of the main-event-loop
-	QDir dir;
 
-	dir.setCurrent(QFileInfo(QString(argv[0])).absolutePath());
+private:
+QSize resolution;
+bool fullscreen;
+bool opengl;
+int fps;
+float misc_volume;
+float music_volume;
+};
 
-	gesamtbild gb;
-	gb.currentSettings = mainsettings;
-	if(gb.currentSettings.ret_Fullscreen())
-	{
-	gb.showFullScreen();
-	}
-	else
-	{
-	gb.show();
-	gb.resize(gb.currentSettings.ret_Resolution());
-	}
-    return app.exec();
-}
-
+#endif

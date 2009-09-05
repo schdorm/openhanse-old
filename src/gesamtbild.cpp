@@ -31,7 +31,7 @@
 // #include <math.h>
 
 #include <QtCore/QtDebug>
-#include <QtCore/QFile>
+// #include <QtCore/QFile>
 #include <QtCore/QDir>
 
 //  #include "udbutton.h"
@@ -50,7 +50,7 @@ gesamtbild::gesamtbild()
 	QTextStream errorstream(&dbf);
 	errorstream << dir.path();
 	errorstream << "\nStarting Log on ";
-	errorstream << dt.toString(QString("ddd, MMM, dd., yyyy, hh:mm:ss ")) << "\n";
+	errorstream << dt.toString(QString("ddd MMM dd. yyyy hh:mm:ss ")) << "\n";
 	dbf.close();
 }
 	qWarning() << dir.path();
@@ -58,32 +58,36 @@ gesamtbild::gesamtbild()
 	{
 		if(dir.count() > 0)
 		{
-		dir = QDir().home();
-		QFile cfg(dir.absolutePath().append("/.OpenHanse/cfg.ohc"));
-		if(!cfg.exists())
-		{
-			cfg.open(QIODevice::WriteOnly);
-			QTextStream cfgstream(&cfg);
-			cfgstream << "1\n";
-			cfg.close();
-			resize(1024,768);
-		}
-		else
-		{
-			cfg.open(QIODevice::ReadOnly);
-			QTextStream cfgstream(&cfg);
-			QString res;
-			res = cfgstream.readLine();
-			if(res == "1")
-			{
-				resize(1024,768);
-			}
-			if(res == "2")
-			{
-				resize(1280,1024);
-			}
-			cfg.close();
-		}
+// 		dir = QDir().home();
+// 		QFile cfg();
+/// 		if(!currentSettings.readConfigs(dir.absolutePath().append("/.OpenHanse/cfg.ohc")))
+// 		{
+// 		resize(800,600);
+/// 		}
+// 		if(!cfg.exists())
+// 		{
+// 			cfg.open(QIODevice::WriteOnly);
+// 			QTextStream cfgstream(&cfg);
+// 			cfgstream << "1\n";
+// 			cfg.close();
+// 			resize(1024,768);
+// 		}
+// 		else
+// 		{
+// 			cfg.open(QIODevice::ReadOnly);
+// 			QTextStream cfgstream(&cfg);
+// 			QString res;
+// 			res = cfgstream.readLine();
+// 			if(res == "1")
+// 			{
+// 				resize(1024,768);
+// 			}
+// 			if(res == "2")
+// 			{
+// 				resize(1280,1024);
+// 			}
+// 			cfg.close();
+// 		}
 
 // #ifndef _RELEASE_
 		srand(time(NULL));

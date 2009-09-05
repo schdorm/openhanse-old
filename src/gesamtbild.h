@@ -32,6 +32,8 @@
 // #include "stadtklasse.h"
 // #include "kontorklasse.h"
 
+#include "settings.h"
+
 #include "hauptfenster.h"
 #include "handelsfenster.h"
 #include "tabpanel.h"
@@ -58,6 +60,8 @@ gesamtbild();
 ~gesamtbild();
 // void init(QString);
 void spielfensteraufbau();
+
+Settings currentSettings;
 
 public slots:
 // void mmenuslot();
