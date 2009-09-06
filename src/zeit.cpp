@@ -20,113 +20,113 @@
 
 #include "zeit.h"
 
-// zeit::zeit()
-// {
-// existingClock = false;
-// day_length = 2000;
-// year = 1350;
-// month = 4;
-// day = 1;
-// hour = 12;
-// minute = 0;
-// }
+zeit::zeit()
+{
+ m_existingClock = false;
+ m_day_length = 2000;
+ m_year = 1350;
+ m_month = 4;
+ m_day = 1;
+ m_hour = 12;
+ m_minute = 0;
+}
 
 void zeit::init()
 {
-existingClock = false;
-day_length = 2000;
-year = 1350;
-month = 4;
-day = 1;
-hour = 12;
-minute = 0;
+m_existingClock = false;
+m_day_length = 2000;
+m_year = 1350;
+m_month = 4;
+m_day = 1;
+m_hour = 12;
+m_minute = 0;
 }
 
-double zeit::retMinute()
+double zeit::minute() const
 {
-	return minute;
+	return m_minute;
 }
 
-int zeit::retHour()
+int zeit::hour() const
 {
-	return hour;
+	return m_hour;
 }
 
-int zeit::retDay()
+int zeit::day() const
 {
-	return day;
+	return m_day;
 }
 
-int zeit::retMonth()
+int zeit::month() const
 {
-	return month;
+	return m_month;
 }
 
-int zeit::retYear()
+int zeit::year() const
 {
-	return year;
+	return m_year;
 }
 
-int zeit::retDayLength()
+int zeit::dayLength() const
 {
-return day_length;
+	return m_day_length;
 }
 
 
 void zeit::setDayLength(int dlparam)
 {
-	day_length = dlparam;
+	m_day_length = dlparam;
 }
 
-void zeit::setMinute(double min)
+void zeit::setMinute(const double &min)
 {
-	minute = min;
+	m_minute = min;
 }
 
 void zeit::setHour(int hr_param)
 {
-	hour = hr_param;
+	m_hour = hr_param;
 }
 
 void zeit::setDay(int dayparam)
 {
-	day = dayparam;
+	m_day = dayparam;
 }
 
 void zeit::setMonth(int monthparam)
 {
-	month = monthparam;
+	m_month = monthparam;
 }
 
 void zeit::setYear(int yearparam)
 {
-	year = yearparam;
+	m_year = yearparam;
 }
 
 bool zeit::refreshTime()		//bool -> new Day ?
 {
 
-if(existingClock)
+if(m_existingClock)
 {
 	refreshClock();
 }
 
-minute += day_length/1440;
-if(minute>=60)
+m_minute += m_day_length/1440;
+if(m_minute>=60)
 {
-	minute = 0;
-	hour ++;
-	if(hour >=24)
+	m_minute = 0;
+	m_hour ++;
+	if(m_hour >=24)
 	{
-		day++;
-		hour = 0;
+		m_day++;
+		m_hour = 0;
 		
-		if((day > 31 && (month == 1 || month == 3 || month == 5 || month == 7 || month == 8 || month == 10 || month == 12)) ||
-		(day > 30 && ( month == 4 || month == 6 || month == 9 || month == 11)) ||
-		(month == 2 && ((day > 28 && (year%4 != 0 || year%100 == 0)) || (day > 29 && year%4 == 0))))
+		if((m_day > 31 && (m_month == 1 || m_month == 3 || m_month == 5 || m_month == 7 || m_month == 8 || m_month == 10 || m_month == 12)) ||
+		(m_day > 30 && ( m_month == 4 || m_month == 6 || m_month == 9 || m_month == 11)) ||
+		(m_month == 2 && ((m_day > 28 && (m_year%4 != 0 || m_year%100 == 0)) || (m_day > 29 && m_year%4 == 0))))
 		{
-			day = 1;
-			month++;
+			m_day = 1;
+			m_month++;
 		}
 		
 		return true;		//new day is rising
@@ -184,7 +184,7 @@ if(handler->toolTip() == "kleiner Zeiger")
 }
 
 
-void zeit::setClockHands(QGraphicsPixmapItem *sch, QGraphicsPixmapItem *bch)
+void zeit::setClockHands(QGraphicsPixmapItem *sch, QGraphicsPixmapItem *bch)	// Small / Big ClockHand
 {
 	smallclockhand = sch;
 	bigclockhand = bch;

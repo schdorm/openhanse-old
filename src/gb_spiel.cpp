@@ -37,15 +37,15 @@
 /*
 void gesamtbild::initGameData()
 {
-// gamedata = new DataClass();
+// GAMEDATA = new DataClass();
 
 }*/
 
 
 void gesamtbild::startNewGame()
 {
-	gamedata = new DataClass();
-// 	gamedata->active_city = new CityClass();
+// 	GAMEDATA = new DataClass();
+// 	GAMEDATA->active_city = new CityClass();
 	spielbool=true;
 //  	QFile file("");		//Map-XML-Lesen
 //  	if(file.exists())
@@ -53,9 +53,9 @@ void gesamtbild::startNewGame()
 // 		qWarning() << "Datei existiert" ;
 		for(int i = 0; i<5 ; i++)
 		{
-			gamedata->active_city->hproduction[i]=-1;
-			gamedata->active_city->mproduction[i]=-1;
-			gamedata->active_city->lproduction[i]=-1;
+			GAMEDATA->active_city->hproduction[i]=-1;
+			GAMEDATA->active_city->mproduction[i]=-1;
+			GAMEDATA->active_city->lproduction[i]=-1;
 		}
 
 
@@ -133,31 +133,31 @@ void gesamtbild::startNewGame()
 					break;
 				case city_name:
 				{
-				gamedata->active_city->cityname = reader.text().toString();
-				qWarning() << "\tStadt: " << gamedata->active_city->cityname;
+				GAMEDATA->active_city->cityname = reader.text().toString();
+				qWarning() << "\tStadt: " << GAMEDATA->active_city->cityname;
 				break;
 				}
 
 				case city_hproduction:
 				{
-				gamedata->active_city->hproduction[hz] = reader.text().toString().toInt();
-				qWarning() << "\tHohe Produktion: " << gamedata->active_city->hproduction[hz] << "(wird viel produziert)";
+				GAMEDATA->active_city->hproduction[hz] = reader.text().toString().toInt();
+				qWarning() << "\tHohe Produktion: " << GAMEDATA->active_city->hproduction[hz] << "(wird viel produziert)";
 				hz++;
 				break;
 				}
 
 				case city_mproduction:
 				{
-				gamedata->active_city->mproduction[mz] = reader.text().toString().toInt();
-				qWarning() << "\tMittlere Produktion: " << gamedata->active_city->mproduction[mz] << "(wird maessig viel produziert)";
+				GAMEDATA->active_city->mproduction[mz] = reader.text().toString().toInt();
+				qWarning() << "\tMittlere Produktion: " << GAMEDATA->active_city->mproduction[mz] << "(wird maessig viel produziert)";
 				mz++;
 				break;
 				}
 
 				case city_lproduction:
 				{
-				gamedata->active_city->lproduction[nz] = reader.text().toString().toInt();
-				qWarning() << "\tNiedrige Produktion: " << gamedata->active_city->lproduction[nz] << "(wird wenig produziert)";
+				GAMEDATA->active_city->lproduction[nz] = reader.text().toString().toInt();
+				qWarning() << "\tNiedrige Produktion: " << GAMEDATA->active_city->lproduction[nz] << "(wird wenig produziert)";
 				nz++;
 				break;
 				}
@@ -170,12 +170,12 @@ void gesamtbild::startNewGame()
 			case QXmlStreamReader::EndElement:
 			{
 				qWarning() << "Ende :"<< reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() == "stadt" && !gamedata->active_city->cityname.isEmpty())
+				if(reader.qualifiedName().toString() == "stadt" && !GAMEDATA->active_city->cityname.isEmpty())
 				{
-				gamedata->active_city->init();
-				gamedata->addCity(gamedata->active_city);
-				qWarning() << gamedata->active_city->cityname << " zur Liste hinzugefuegt";
-				gamedata->active_city->reset();
+				GAMEDATA->active_city->init();
+				GAMEDATA->addCity(*GAMEDATA->active_city);
+				qWarning() << GAMEDATA->active_city->cityname << " zur Liste hinzugefuegt";
+				GAMEDATA->active_city->reset();
 				}
 				status=null;
 				break;
@@ -204,29 +204,39 @@ void gesamtbild::startNewGame()
 
 	qWarning() << "vor Spielfenster aufgebaut";
 
- 	hf = new hauptfenster(gamedata);
+ 	gameview = new hauptfenster(/*GAMEDATA, currentSettings*/);
 
 	spielfensteraufbau();
 	qWarning() << "Spielfenster aufgebaut";
-// 	hf->setDataClass(gamedata);
+// 	gameview->setDataClass(GAMEDATA);
 	qWarning() << "Data set";
-// 	konsolenwidget->hfgametime = hfgametime;
+// 	konsolenwidget->gameviewgametime = gameviewgametime;
 // 	konsolenwidget->debug("Timepointer set");
-	hf->schwierigkeit = schwierigkeitsgrad;
+	gameview->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
-/// 	gamedata->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
+/// 	GAMEDATA->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
 // 					  ":img/schiffe/schiff_gerade_skaliert2.png"
-	gamedata->active_ship->control_difficulty = schwierigkeitsgrad;
-	hf->karteladen("testmap001.ohm");
-// 	hf->testschiff->setPos(1500,900);
-/// 	gamedata->active_ship->graphicsitem->setPos(1500, 900);
-/// 	hf->centerOn(gamedata->active_ship->graphicsitem);
+	GAMEDATA->active_ship->control_difficulty = schwierigkeitsgrad;
+	
+	GAMEDATA->currentMap = new Map();
+	GAMEDATA->currentMap->loadStartMap("testmap001.ohm");
+	gameview->karteladen(Map::null);
+// 	gameview->karteladen("testmap001.ohm");
+// 	gameview->testschiff->setPos(1500,900);
+/// 	GAMEDATA->active_ship->graphicsitem->setPos(1500, 900);
+/// 	gameview->centerOn(GAMEDATA->active_ship->graphicsitem);
 //  	qWarning() << "StartTimer";
-	hf->starttimer();
- 	qWarning() << "Timer gestartet";
-// 	hf->show();
-// 	hf->centerOn(hf->testschiff);
+	PositioningStruct destination_pos;
+	destination_pos.mapcoords = GAMEDATA->currentMap->ret_Coordinate();
+	destination_pos.generic_position = QPoint(1500, 800);
+	GAMEDATA->active_ship->setPos(destination_pos);
+	
+	gameview->starttimer(1000/SETTINGS->fps());
+	
+	qWarning() << "Timer gestartet";
+// 	gameview->show();
 	aktiv=true;
+	GAMEDATA->startTimer();
 }
 
 void gesamtbild::spielfensteraufbau()
@@ -234,19 +244,19 @@ void gesamtbild::spielfensteraufbau()
 	qWarning() << "spielfensteraufbau";
 	QGridLayout *gridlayout = new QGridLayout(this);		//Fuer Hauptfenster
 
-	hf->setParent(this);
-// 	hf->resize(700,700);
-	hf->move(0,0);
-	hf->setFocus();
-	gridlayout->addWidget(hf,0,0,1,1);
+	gameview->setParent(this);
+// 	gameview->resize(700,700);
+	gameview->move(0,0);
+	gameview->setFocus();
+	gridlayout->addWidget(gameview,0,0,1,1);
 
 // 	{
 // 	QImage *img = new QImage(":img/sonstige/mapfarbdef.png");
-// 	hf->schiffbar = img->pixel(0,0);
-// 	hf->anlegestelle = img->pixel(0,1);
-// 	hf->strand_weich = img->pixel(0,2);
-// 	hf->strand_hart = img->pixel(0,3);
-// 	hf->nschiffbar = img->pixel(0,4);
+// 	gameview->schiffbar = img->pixel(0,0);
+// 	gameview->anlegestelle = img->pixel(0,1);
+// 	gameview->strand_weich = img->pixel(0,2);
+// 	gameview->strand_hart = img->pixel(0,3);
+// 	gameview->nschiffbar = img->pixel(0,4);
 // 	delete img;
 // 	}
 // 	QImage testimg = QImage(":img/testimg/gros.gif");
@@ -254,76 +264,73 @@ void gesamtbild::spielfensteraufbau()
 
 	qWarning() << "SFA1";
 	menupanel = new SeaTabPanel();
-	menupanel->create();
+// 	menupanel->create();
 	qWarning() << "created";
 // 	menupanel->setParent(this);
 	gridlayout->addWidget(menupanel,0,1,1,1);
 
-	qWarning()<< "hf->setFocus(); (gb->spiel)";
+	qWarning()<< "gameview->setFocus(); (gb->spiel)";
 
 
 // // 	qWarning() << "Vor Ladungszeugs";
 
 	for(int i = 0; i < const_warenanzahl; i++)
  	{
-		menupanel->ware[i]->setText(QString("%1").arg(gamedata->active_ship->cargo.ware[i]));
+		menupanel->ware[i]->setText(QString("%1").arg(GAMEDATA->active_ship->cargo.ware[i]));
  	}
-// // 	qWarning() << "Nach Ladungszeugs";
-// 	taler = new QLabel(Ladung);
-// 
 
-// // 	fuellung->setText(QString("Belegt: %1 von %2").arg(gamedata->active_ship->cargo.gesamtladung, gamedata->active_ship->ladekapazitaet));
+// // 	fuellung->setText(QString("Belegt: %1 von %2").arg(GAMEDATA->active_ship->cargo.gesamtladung, GAMEDATA->active_ship->ladekapazitaet));
 	{
- 	menupanel->taler->setText(QString("%1").arg(gamedata->active_ship->cargo.taler).prepend(tr("Geladenes Geld: ")));
-	QString flstring = QString("%1").arg(gamedata->active_ship->cargo.fuellung);
-	flstring.append(QString("/%1 belegt").arg(gamedata->active_ship->cargo.kapazitaet));
+ 	menupanel->taler->setText(QString("%1").arg(GAMEDATA->active_ship->cargo.taler).prepend(tr("Money: ")));
+	QString flstring = QString("%1").arg(GAMEDATA->active_ship->cargo.fuellung);
+	flstring.append(QString("/%1 belegt").arg(GAMEDATA->active_ship->cargo.kapazitaet));
 	menupanel->fuellung->setText(flstring);
 	}
-	menupanel->setGameData(gamedata);
+// 	menupanel->setGameData(GAMEDATA);
 	menupanel->show();
 
 	gridlayout->setColumnStretch(0,7);
 	gridlayout->setColumnStretch(1,2);
 
-	connect(hf,SIGNAL(destroyed()),this,SLOT(close()));
+	connect(gameview,SIGNAL(destroyed()),this,SLOT(close()));
 
-	connect(hf,SIGNAL(handel()),this,SLOT(handel()));
-// 	connect(hf,SIGNAL(handel()),hf,SLOT(hide()));
+	connect(gameview,SIGNAL(handel()),this,SLOT(handel()));
+// 	connect(gameview,SIGNAL(handel()),gameview,SLOT(hide()));
 
-	connect(hf, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
+	connect(gameview, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
 
-	connect(hf, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
+	connect(GAMEDATA, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
 
-	connect(hf, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
+	connect(gameview, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
 
-	connect(hf, SIGNAL(zeitsig()),this,SLOT(zeitanzeige()));
+	connect(gameview, SIGNAL(zeitsig()),this,SLOT(zeitanzeige()));
 
-	connect(hf, SIGNAL(savesig()),this,SLOT(speicherndialog()));
+	connect(gameview, SIGNAL(savesig()),this,SLOT(speicherndialog()));
 
-	connect(hf, SIGNAL(menusig()), this, SLOT(spielmenu()));
+	connect(gameview, SIGNAL(menusig()), this, SLOT(spielmenu()));
 
 	connect(menupanel->anlegen, SIGNAL(clicked()), this, SLOT(landmenu()));
-	connect(menupanel->schuss, SIGNAL(clicked()), hf, SLOT(schuss()));
-// 	connect(menupanel->anlegen, SIGNAL(clicked()), hf, SLOT(landgang()));
+	connect(menupanel->schuss, SIGNAL(clicked()), gameview, SLOT(schuss()));
+// 	connect(menupanel->anlegen, SIGNAL(clicked()), gameview, SLOT(landgang()));
 // 	connect(anlegen, SIGNAL(clicked()), anlegen, SLOT(hide()));
 // 	connect(menupanel->anlegen, SIGNAL(clicked()), menupanel->ablegen, SLOT(show()));
 
 // 	connect(menupanel->ablegen, SIGNAL(clicked()), this, SLOT(seemenu()));
-// 	connect(menupanel->ablegen, SIGNAL(clicked()), hf, SLOT(ablegen()));
+// 	connect(menupanel->ablegen, SIGNAL(clicked()), gameview, SLOT(ablegen()));
 // 	connect(ablegen, SIGNAL(clicked()), anlegen, SLOT(show()));
 // 	connect(ablegen, SIGNAL(clicked()), ablegen, SLOT(hide()));
 
-	connect(menupanel->geschwindigkeitsregler,SIGNAL(valueChanged(int)), hf, SLOT(segelsetzen(int)));
+	connect(menupanel->geschwindigkeitsregler,SIGNAL(valueChanged(int)), gameview, SLOT(segelsetzen(int)));
 	
 	konsolenwidget = new konsole();
 	konsolenwidget->resize(width(), height()/2);
 	konsolenwidget->setParent(this);
 	konsolenwidget->setWindowFlags(Qt::Popup);
 	konsolenwidget->hide();
-	connect(hf, SIGNAL(sig_konsole()), konsolenwidget, SLOT(show()));
-// 	connect(konsolenwidget, SIGNAL(sig_loadMap(QString)), hf, SLOT(karteladen(QString)));
+	connect(gameview, SIGNAL(sig_konsole()), konsolenwidget, SLOT(show()));
+// 	connect(konsolenwidget, SIGNAL(sig_loadMap(QString)), gameview, SLOT(karteladen(QString)));
 	connect(konsolenwidget, SIGNAL(sig_command(QString)), this, SLOT(execCommand(QString)));
-	hf->konsolenwidget = konsolenwidget;
+	gameview->konsolenwidget = konsolenwidget;
 }
 
 
@@ -335,10 +342,10 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 			QDialog *zeitw = new QDialog(this);
 			QVBoxLayout layout(zeitw);
-			QLabel *anzeige = new QLabel(tr("Zeit: Tag %1,").arg(gamedata->gametime.retDay()).append(QString("%1 Uhr").arg(gamedata->gametime.retHour())), zeitw);
+			QLabel *anzeige = new QLabel(tr("Time: Day %1,").arg(GAMEDATA->gametime.day()).append(QString("%1 hours").arg(GAMEDATA->gametime.hour())), zeitw);
 
-// 			anzeige->setText(anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute)));hf->stunde
-// 			qWarning() << anzeige->text().append(QString(", %2 Uhr %3").arg( hf->stunde, hf->minute));
+// 			anzeige->setText(anzeige->text().append(QString(", %2 Uhr %3").arg( gameview->stunde, gameview->minute)));gameview->stunde
+// 			qWarning() << anzeige->text().append(QString(", %2 Uhr %3").arg( gameview->stunde, gameview->minute));
 
 			QPushButton *ok = new QPushButton("Ok",zeitw);
 			ok->move(50, 50);
@@ -347,11 +354,11 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 // 			zeitw->setGeometry(width()/2,height()/2,200,100);
 			zeitw->setLayout(&layout);
 			zeitw->setAutoFillBackground(true);
-			zeitw->move(hf->width()/2,hf->height()/2);
+			zeitw->move(gameview->width()/2,gameview->height()/2);
   			zeitw->raise();
 			zeitw->show();
 
-			connect(ok, SIGNAL(clicked()), hf, SLOT(endePause()));
+			connect(ok, SIGNAL(clicked()), gameview, SLOT(endePause()));
 			connect(ok, SIGNAL(clicked()), zeitw, SLOT(close()));
 			connect(ok, SIGNAL(clicked()), zeitw, SLOT(deleteLater()));
 }
@@ -359,21 +366,21 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 void gesamtbild::spielmenu()
 {
-hf->startPause();
-hf->setEnabled(false);
+gameview->startPause();
+gameview->setEnabled(false);
 menupanel->setEnabled(false);
 aktiv = false;
 
 qWarning() << "Spielmenu";
-// hf->hide();
+// gameview->hide();
 
 QWidget *menuw = new QWidget(this);
 QVBoxLayout layout;
 QGroupBox *gb = new QGroupBox(menuw);
-QPushButton *fortfahren = new QPushButton(tr("Fortfahren"),menuw);
-QPushButton *speichern = new QPushButton(tr("Speichern"),menuw);
-QPushButton *laden = new QPushButton(tr("Laden"),menuw);
-QPushButton *verlassen = new QPushButton(tr("Verlassen"),menuw);
+QPushButton *fortfahren = new QPushButton(tr("Resume"),menuw);
+QPushButton *speichern = new QPushButton(tr("Save"),menuw);
+QPushButton *laden = new QPushButton(tr("Load"),menuw);
+QPushButton *verlassen = new QPushButton(tr("Quit"),menuw);
 
 layout.addWidget(fortfahren);
 layout.addWidget(speichern);
@@ -381,7 +388,7 @@ layout.addWidget(laden);
 layout.addWidget(verlassen);
 
 connect(fortfahren, SIGNAL(clicked()), menuw, SLOT(close()));
-// connect(fortfahren, SIGNAL(clicked()), hf, SLOT(endePause()));
+// connect(fortfahren, SIGNAL(clicked()), gameview, SLOT(endePause()));
 connect(fortfahren, SIGNAL(clicked()), this, SLOT(aktivieren()));
 
 connect(speichern, SIGNAL(clicked()), menuw, SLOT(close()));
@@ -393,7 +400,7 @@ connect(verlassen, SIGNAL(clicked()), this, SLOT(close()));
 // QSignalMapper *sigm = new QSignalMapper(this);
 // sigm->setMapping(fortfahren, true);
 // connect(fortfahren, SIGNAL(clicked()), this, SLOT(setEnabled(bool)));
-// connect(sigm, SIGNAL(mapped(int)), hf, SLOT(setEnabled(int)));
+// connect(sigm, SIGNAL(mapped(int)), gameview, SLOT(setEnabled(int)));
 // connect(sigm, SIGNAL(mapped(int)), menupanel, SLOT(setEnabled(int)));
 
 
@@ -407,9 +414,9 @@ menuw->raise();
 void gesamtbild::aktivieren()
 {
 aktiv=true;
-hf->setEnabled(true);
+gameview->setEnabled(true);
 menupanel->setEnabled(true);
-hf->endePause();
+gameview->endePause();
 }
 
 
@@ -453,7 +460,7 @@ void gesamtbild::landmenu()
 // menupanel->landmenu();
 execCommand(QString("hide sidemenu"));		//lets the sidebar disappear, isn't needed for a landwalk.
 
-hf->landing();
+gameview->landing();
 // 	tab[0]->hide();
 // 	tab[1]->hide();
 // 	tab[2]->hide();

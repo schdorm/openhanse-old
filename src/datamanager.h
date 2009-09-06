@@ -17,26 +17,58 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _wind_h
-#define _wind_h
+#ifndef _DATA_MANAGER_H
+#define _DATA_MANAGER_H
 
-class Wind
+#define DMP dataManager::instance()			// Data-Manager-Pointer
+#define GAMEDATA dataManager::instance()->gamedata()	// Game-Data-Pointer
+#define SETTINGS dataManager::instance()->settings()	// Settings-Pointer
+
+#include "dataclass.h"
+#include "settings.h"
+
+class dataManager
 {
-
-int m_v;
-double m_dir;
-
 public:
+	dataManager()		// Konstruktor: erzeugt neue Instanzen fuer private Pointer 
+	{
+		m_gamedata = new DataClass();
+		m_globalSettings = new Settings();
+	}
 
-Wind();
+	static dataManager *instance()
+		// statische Funktion: erzeugt neue Instanz dieser Klasse, falls keine besteht und gibt diese zurück
+	{
+		if( m_instance == NULL )
+		{
+			m_instance = new dataManager();
+		}
+		return m_instance;
+	}
+	
+	void recreateGamedata()		// loescht alte Spieldaten und erzeugt neue Instanz der Spieldaten
+	{
+		delete m_gamedata;
+		m_gamedata = new DataClass();
+	}
+	
+	Settings *settings()		// gibt die Settings zurueck
+	{
+		return m_globalSettings;
+	}
 
-void refresh();
+	DataClass *gamedata()		// gibt die Spieldaten zurueck
+	{
+		return m_gamedata;
+	};
 
-void setDir(double);
-double dir();
+private:
 
-void setV(int);
-int v();
+	DataClass *m_gamedata;
+	Settings *m_globalSettings;
+	static dataManager * m_instance;
+
 };
+
 
 #endif

@@ -26,8 +26,8 @@
 
 void gesamtbild::produktion(int durchlauf)
 {
-	CityClass *cityit;
-	QList <CityClass> cityList = gamedata->ret_CityList();
+	CityClass *cityit = 0;
+	QList <CityClass> cityList = GAMEDATA->ret_CityList();
 	foreach(*cityit, cityList)
 	{
 	cityit->production(durchlauf);

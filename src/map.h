@@ -20,11 +20,62 @@
 
 #ifndef _MAPCLASS_H
 #define _MAPCLASS_H
-#include "definitions.h"
 
-class MapClass
+
+#include "definitions.h"
+#include "mapobject.h"
+
+
+class Map
 {
 public:
+
+	Map();
+	~Map();
+
+	enum MapType
+	{
+		 sea,			// 001
+		 coast,			// 010 || -> | -> 110
+		 land,			// 011 || -> | -> 111
+		 coast_city,			// 100
+		 land_city
+	};
+	enum Orientations
+	{
+		null,
+		North,
+		East,
+		South,
+		West
+	};
+
+	QList <MapObject*> objectlist;
+// QList <ShipClass *> ships;
+	void loadStartMap(const QString &);
+
+	bool loadMap(const Orientations &);
+
+
+QPoint ret_Coordinate()		{	return coordinate;	}
+QSize ret_Size()		{	return size;		}
+QString ret_Cityname()		{	return cityname;	}
+QString ret_Background()	{	return background;	}
+
+QString ret_Mapnorth()		{	return mapnorth;	}
+QString ret_Mapeast()		{	return mapeast;		}
+QString ret_Mapsouth()		{	return mapsouth;	}
+QString ret_Mapwest()		{	return mapwest;		}
+
+MapType ret_Type()		{	return type;		}
+
+private:
+bool loadMap(QString);
+
+QString m_mapdirectory;
+
+protected:
+
 QString filename;
 QPoint coordinate;
 QSize size;
@@ -35,13 +86,7 @@ QString mapnorth;
 QString mapeast;
 QString mapsouth;
 QString mapwest;
-MapType::mtyp maptyp;
-
-// QList <ShipClass *> ships;
-private:
-
-
-protected:
+MapType type;
 
 };
 

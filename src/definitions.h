@@ -54,18 +54,6 @@ namespace Direction
 	};
 }
 
-const int _oh_version = 35;
-namespace MapType
-{
-	enum mtyp
-	{
-		 sea,			// 001
-		 coast,			// 010 || -> | -> 110
-		 land,			// 011 || -> | -> 111
-		 coast_city,			// 100
-		 land_city
-	};
-}
 
 namespace LandingProcess
 {
@@ -118,7 +106,8 @@ const int WINDVERAENDERUNG = 30;
 
 const float const_max_rudder_deflection = 0.04;
 
-const int const_calc_data_delay = 100;
+const int const_calc_data_delay = 200;
 
+const int _oh_version = 35;
 
 #endif

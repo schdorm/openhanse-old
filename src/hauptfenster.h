@@ -20,6 +20,8 @@
 #ifndef _hauptfenster_h
 #define _hauptfenster_h
 
+#include <QtCore/QObject>
+
 #include <QtGui/QGraphicsView>
 
 #include <QtGui/QGraphicsItem>
@@ -33,15 +35,14 @@
 
 #include "konsole.h"
 
-// #include "shipdata.h"
-#include "dataclass.h"
-// #include "zeit.h"
-// #include "wind.h"
+
+#include "datamanager.h"
 
 #include "definitions.h"
 
-
-
+#include "settings.h"
+// #include "dataclass.h"
+// #include "shipdata.h"
 
 #include "objectgraphicsitem.h"
 
@@ -56,17 +57,15 @@ class hauptfenster : public QGraphicsView
 {
 Q_OBJECT
 public:
-	hauptfenster(DataClass *);
+	hauptfenster(/*DataClass *, Settings **/);
 	~hauptfenster();
 
-	void karteladen(QString);
+	void karteladen(Map::Orientations);
 
-	void starttimer();
-// 	void windsetzen();
-// 	void bewegungsbeschreibung();
+	void starttimer(int);
 	bool schiffskollision(QGraphicsItem *);
 	bool kollision(QGraphicsItem*, QGraphicsItem*);
-	bool isLand(QGraphicsItem *);
+	bool isLand( QGraphicsItem *) const;
 	
 	void landing();
 	void activeLanding();
@@ -76,9 +75,9 @@ public:
 // 	void questHandler(QString);
 
 // schiffsklasse activeship;		//Schiff, auf dem man gerade aktiv ist
-	void setDataClass(DataClass *);
 
-DataClass *gamedata;
+// DataClass *gamedata;
+// Settings *currentSettings;
 
 int schwierigkeit;
 bool tastatur;
@@ -87,30 +86,14 @@ bool anlegbar;
 
 bool uhr;
 
-ObjectGraphicsItem *activeship_ogi;
+bool cacheMaps;
 
 // int tageslaenge;			//Menge an Aktualisierungen fuer einen Spieltag
 
-// int windgeschwindigkeit;
-// float windrichtung;
 
 quint32 durchlauf;
 
 // QRgb schiffbar, nschiffbar, anlegestelle, strand_weich ,strand_hart;
-
-// struct mapfarbdefstruct
-// {
-// int id;
-// QRgb farbe;
-// };
-
-
-// enum mtyp{
-// land,
-// coast,
-// sea
-// };
-
 
 
 
@@ -168,13 +151,15 @@ public slots:
 
 private:
 
-QList <ObjectGraphicsItem> modellist;
+
+ObjectGraphicsItem *activeship_model;
+QList <ObjectGraphicsItem *> modellist;
 
 
-QImage maphandlingimg;
 int zoomlvl;
 
-QGraphicsScene *szene;
+// QGraphicsScene *szene;
+// QGraphicsScene m_scene;
 
 QGraphicsItem *graphicsitem_it;
 QList <QGraphicsPixmapItem*> wolkenliste;
@@ -186,7 +171,8 @@ QGraphicsPixmapItem *wolke;
 // QBrush bgbrush;			//Hintergrundbrushzeugs
 // bool kartegeladen;
 
-QTimer *bewegung;		//regelt neusetzen
+QTimer refreshGraphicsTimer;		//regelt neusetzen
+int graphics_refresh_delay;		// time in ms, until the graphics are moved ...
 
 #ifndef _RELEASE_
 QLabel *knoten;
@@ -221,7 +207,7 @@ void enterBuilding(int);
 void sig_anlegbar(bool);
 // void nichtmehranlegen();
 void handel();
-void sig_newDay(int);
+
 void SIGgeschwindigkeit(int);
 void zeitsig();
 void savesig();

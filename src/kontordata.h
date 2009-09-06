@@ -50,8 +50,8 @@ static int idzaehler;
 	}
 
 
-int ret_ID()		{	return kontorid;	}
-int ret_CityID()	{	return cityID;		}
+int getID()	const	{	return kontorid;	}
+int getCityID()	const	{	return cityID;		}
 // int cityid;
 // QString stadt; --> inherited from BuildingClass --> cityname + cityID
 
@@ -62,7 +62,7 @@ void productGoods();
 
 
 
-void build(const QString param_cityname, int param_cityid)
+void build(const QString &param_cityname, const int &param_cityid)
 {
 	cityname = param_cityname;
 	cityID = param_cityid;

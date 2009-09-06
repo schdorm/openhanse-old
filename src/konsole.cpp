@@ -108,7 +108,7 @@ qWarning() << "Load: " << filestring;
 output->appendPlainText(QString("Load: ").append(filestring));
 if(filestring.endsWith(".ohm"))
 {
-emit sig_command(inputstring);
+emit sig_command(inputstring.simplified());
 return;
 }
 if(filestring.endsWith(".ohs"))		//Savegame
@@ -159,42 +159,44 @@ return;
 
 if(inputstring == QString("gametime"))
 {
-// output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(hfgametime->retDay()), QChar(hfgametime->retMonth()), QChar(hfgametime->retYear()), QChar(hfgametime->retHour()), QChar(int(hfgametime->retMinute()))));
-output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(hfgametime->retDay()), QString("%1").arg(hfgametime->retMonth()), QString("%1").arg(hfgametime->retYear()), QString("%1").arg(hfgametime->retHour()), QString("%1").arg(hfgametime->retMinute())));
+// output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(GAMEDATA->gametime.retDay()), QChar(GAMEDATA->gametime.retMonth()), QChar(GAMEDATA->gametime.retYear()), QChar(GAMEDATA->gametime.retHour()), QChar(int(GAMEDATA->gametime.retMinute()))));
+output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime.day()), QString("%1").arg(GAMEDATA->gametime.month()), QString("%1").arg(GAMEDATA->gametime.year()), QString("%1").arg(GAMEDATA->gametime.hour()), QString("%1").arg(GAMEDATA->gametime.minute())));
 
-qWarning() << QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(hfgametime->retDay()), QString("%1").arg(hfgametime->retMonth()), QString("%1").arg(hfgametime->retYear()), QString("%1").arg(hfgametime->retHour()), QString("%1").arg(hfgametime->retMinute()));
+qWarning() << QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime.day()), QString("%1").arg(GAMEDATA->gametime.month()), QString("%1").arg(GAMEDATA->gametime.year()), QString("%1").arg(GAMEDATA->gametime.hour()), QString("%1").arg(GAMEDATA->gametime.minute()));
 return;
 }
 
 if(!executed)
 {
-output->appendPlainText(tr("Fehler: unbekannter Befehl: \"").append(inputstring).append("\" !"));
+output->appendPlainText(tr("Error: unknown Command \"").append(inputstring).append("\" !"));
 
 }
 }
 
 
-void gesamtbild::execCommand(QString cmd)
+void gesamtbild::execCommand(const QString &cmd)
 {
 QString bu = cmd;
-cmd = cmd.simplified();
+//cmd = cmd.simplified();
 if(cmd == "hide sidemenu")
 {
 // menupanel->hide();
 menupanel->setMaximumWidth(0);
 }
-if(cmd == "show sidemenu")
+else if(cmd == "show sidemenu")
 {
 menupanel->setMaximumWidth(width());
 
 // menupanel->show();
 }
-if(cmd.startsWith("load "))
+else if(cmd.startsWith("load maps/"))
 {
 QString map = cmd;
 if(map.remove("load maps/") != cmd)
 {
-hf->karteladen(map);
+GAMEDATA->currentMap->loadStartMap("false");
+GAMEDATA->currentMap->loadStartMap(map);
+gameview->karteladen(Map::null);
 }
 
 }

@@ -20,7 +20,9 @@
 #ifndef _SHIPDATA_H
 #define _SHIPDATA_H
 
+
 #include "definitions.h"
+#include "map.h"
 
 class ShipData
 {
@@ -49,8 +51,10 @@ QString schiffsname;
 int control_difficulty;
 bool mouse_control;
 
+ int g_height, g_height2;	// graphicsitem - height -> laenge		|| Not needed ?? (Model-Data-concept)
+ int g_width, g_width2;		// graphicsitem - width -> breite	||
 
-
+Map *currentMap;
 
 ShipData()					///== RESET
 {
@@ -58,6 +62,8 @@ ShipData()					///== RESET
 	id = idzuweisung;
 	idzuweisung++;
 
+	m_setPosAllowed = true;
+	
 	cargo.taler = 5000;
 
 	for(int i = 0; i<const_warenanzahl; i++)
@@ -66,7 +72,7 @@ ShipData()					///== RESET
 	}
 	cargo.fuellung=0;
 
-	condition = 100;
+	condition = 100;		// ehemals: "zustand"
 	type = Kogge;
 	v = 0;
 	dir = 0;
@@ -115,6 +121,13 @@ int ret_MPos_Y();
 // void bewegungsbeschreibung() --> calculate movement-things ...
 void calcMovement(int, double);
 
+void calcPos();
+
+void setPos(PositioningStruct);
+
+private:
+bool m_setPosAllowed;
+
 protected:
 
 int id;
@@ -136,8 +149,6 @@ double toRudderDir;	// 	''
 double sailDir;
 // double toSailDir;
 
-// int g_height, g_height2;	// graphicsitem - height -> laenge		|| Not needed (Model-Data-concept)
-// int g_width, g_width2;		// graphicsitem - width -> breite	||
 
 PositioningStruct currentPosition;
 

@@ -17,26 +17,32 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _wind_h
-#define _wind_h
+#ifndef _MAPOBJECT_H
+#define _MAPOBJECT_H
 
-class Wind
+class MapObject
 {
-
-int m_v;
-double m_dir;
-
 public:
 
-Wind();
+// MapObject(int param_role, QString param_filename, QString param_tooltip, QPoint param_position, double param_zvalue)
+ MapObject(const int &, const QString &, const QString &, const QPoint &, const double &);
 
-void refresh();
 
-void setDir(double);
-double dir();
+int	role ()	{	return m_role;		}
+QString	fileName ()	{	return m_filename;	}
+QString	toolTip  ()	{	return m_tooltip;		}
+QPoint	position ()	{	return m_position;	}
+double	zValue ()	{	return m_zValue;		}
 
-void setV(int);
-int v();
+private:
+int m_role;
+QString m_filename;
+QString m_tooltip;
+QPoint m_position;
+double m_zValue;
+
+
+
 };
 
 #endif

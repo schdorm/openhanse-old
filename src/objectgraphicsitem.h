@@ -30,7 +30,7 @@
 #include "kontordata.h"
 // #include ""
 
-class ObjectGraphicsItem : public QGraphicsItem 
+class ObjectGraphicsItem : public QGraphicsPixmapItem 
 {
 
 
@@ -52,7 +52,6 @@ QList<QGraphicsPixmapItem *> GraphicsMembersList;
 
 void addMemberItem(QGraphicsItem *, QPointF);
 
-
 bool setShipPos();
 
 void rotateItem();
@@ -66,6 +65,7 @@ int g_height, g_height2;	// graphicsitem - height -> laenge
 int g_width, g_width2;		// graphicsitem - width -> breite
 
 ObjectTypes type;
+QStringList filenamelist;
 
 protected:
 void mousePressEvent(QGraphicsSceneMouseEvent *event);

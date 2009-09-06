@@ -19,6 +19,8 @@
  ***************************************************************************/
 
 #include "shipdata.h"
+#include "datamanager.h"
+
 #include <math.h>
 
 // #define _debug_
@@ -159,8 +161,7 @@ void ShipData::calcMovement(int windv, double winddir)
 			}
 		}
 	}
-	currentPosition.generic_position.setX(currentPosition.generic_position.x() - (v * sin(dir))/10);
-	currentPosition.generic_position.setY(currentPosition.generic_position.y()  - (v * cos(dir))/10);
+
 }
 
 void ShipData::brake(double param_brakefactor)
@@ -277,5 +278,23 @@ void ShipData::set_ToDir(double param_dir)
 
 int ShipData::ret_Condition()
 {
-return condition;
+	return condition;
+}
+
+void ShipData::calcPos()
+{
+	currentPosition.generic_position.setX(currentPosition.generic_position.x() - (v * sin(dir))/10);
+	currentPosition.generic_position.setY(currentPosition.generic_position.y()  - (v * cos(dir))/10);
+	currentPosition.m_position.setX(currentPosition.generic_position.x() + g_width2);
+	currentPosition.m_position.setY(currentPosition.generic_position.y() + g_height2);
+	
+	
+}
+
+
+void ShipData::setPos(PositioningStruct param_destinationposition)
+{
+if(m_setPosAllowed || ((param_destinationposition.mapcoords.x() + 1 == currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() == currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() - 1 == currentPosition.mapcoords.x()) && (param_destinationposition.mapcoords.y() + 1 == currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() == currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() - 1 == currentPosition.mapcoords.y())))
+currentPosition = param_destinationposition;
+m_setPosAllowed = false;
 }

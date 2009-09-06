@@ -23,12 +23,19 @@
 
 // 	#include <QtDebug>
  #include <QDir>
+ 
+#include "datamanager.h"
 
 #include "gesamtbild.h"
-#include "settings.h"
+
+dataManager *dataManager::m_instance;
+
 
 int main(int argc, char *argv[])
 {
+		QDir dir;
+		dir.setCurrent(QFileInfo(QString(argv[0])).absolutePath());
+	
 		QStringList application_parameters;		//list of command-line-arguments
 		for(int i = 0; i < argc; i++)
 		{
@@ -36,29 +43,27 @@ int main(int argc, char *argv[])
 				// qWarning() << QString(argv[i]) << i;
 		}
 		
-		Settings mainsettings;
-		mainsettings.readConfigs(QDir().home().absolutePath().append("/.OpenHanse/cfg.ohc"));	//reads the configuration file in ~/.OpenHanse/cfg.ohc
+		SETTINGS->readConfigs(QDir().home().absolutePath().append("/.OpenHanse/cfg.ohc"));
+				//reads the configuration file in ~/.OpenHanse/cfg.ohc
 		
-		if( (!application_parameters.contains(QString("noopengl"))) && mainsettings.ret_OpenGL())
+		if( (!application_parameters.contains(QString("noopengl"))) && SETTINGS->openGL())
 		{
-			QApplication::setGraphicsSystem("opengl");		// graphics-things for the graphiccard, if there's no other order
+			QApplication::setGraphicsSystem("opengl");
+				// graphics-things for the graphiccard, if there's no other order
 		}
 
     QApplication app(argc, argv);		// start of the main-event-loop
-	QDir dir;
 
-	dir.setCurrent(QFileInfo(QString(argv[0])).absolutePath());
 
 	gesamtbild gb;
-	gb.currentSettings = mainsettings;
-	if(gb.currentSettings.ret_Fullscreen())
+	if(SETTINGS->fullscreen())
 	{
 	gb.showFullScreen();
 	}
 	else
 	{
 	gb.show();
-	gb.resize(gb.currentSettings.ret_Resolution());
+	gb.resize(SETTINGS->resolution());
 	}
     return app.exec();
 }

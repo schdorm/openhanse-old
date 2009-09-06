@@ -32,7 +32,7 @@ class konsole : public QWidget
 {
 Q_OBJECT
 public:
-zeit *hfgametime;
+// zeit *hfgametime;
 konsole();
 void debug(QString);
 

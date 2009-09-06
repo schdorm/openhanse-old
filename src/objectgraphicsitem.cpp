@@ -49,12 +49,21 @@ void ObjectGraphicsItem::addMemberItem(QGraphicsItem *param_MemberItem, QPointF 
 {
 param_MemberItem->setParentItem(this);
 param_MemberItem->setPos(param_DestinationCoords);
+if(type == Ship)
+{
+shipdata->g_width2 = boundingRect().width()/2;
+shipdata->g_height2 = boundingRect().height()/2;
+shipdata->g_width = boundingRect().width();
+shipdata->g_height = boundingRect().height();
+
+}
 }
 
 bool ObjectGraphicsItem::setShipPos()
 {
-QPointF destinationpoint = shipdata->ret_CurrentPosition().generic_position;
-if(destinationpoint != pos())
+rotateItem();
+QPointF destinationpoint = shipdata->ret_CurrentPosition().generic_position;	// Position in the data-struct
+if(destinationpoint != pos())				//if data-position != graphicsposition (this->pos())
 {
 setPos(destinationpoint);
 return true;
@@ -65,4 +74,19 @@ else return false;
 void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
+}
+
+void ObjectGraphicsItem::rotateItem()
+{
+static float lastdir;
+if(shipdata != 0 && lastdir != shipdata->ret_Dir())
+{
+lastdir = shipdata->ret_Dir();
+		resetTransform();
+		QTransform t;
+		t.translate( boundingRect().width(), boundingRect().height() );
+		t.rotateRadians(- lastdir);
+		t.translate( - boundingRect().width(), - boundingRect().height() );
+		setTransform( t );
+}
 }

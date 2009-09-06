@@ -33,7 +33,7 @@
 #include <QtGui/QSpacerItem>
 
 #include "waren.h"
-#include "dataclass.h"
+// #include "dataclass.h"
 
 // const int const_warenanzahl = 30;
 
@@ -47,11 +47,11 @@ Q_OBJECT
 public:
 handelsfenster();
 ~handelsfenster();
-void setGameData(DataClass *);
+void setGameData(/*DataClass **/);
 
-void setStorage(Warenstruct, int);
+void setStorage(const Warenstruct &, int);
 
-DataClass *gamedata;
+// DataClass *gamedata;
 
 QButtonGroup *htypgroup;
 QRadioButton *htyp[3];		//Handelstyp: Schiff mit Stadt, Kontor mit Stadt, Transfer Kontor->Schiff

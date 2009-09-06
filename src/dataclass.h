@@ -22,6 +22,7 @@
 #define _DATA_CLASS_H
 
 #include <QtCore/QObject>
+#include <QtCore/QThread>
 #include <QtCore/QTimer>
 
 #include "stadtklasse.h"
@@ -33,12 +34,17 @@
 #include "person.h"
 #include "map.h"
 
-class DataClass : public QObject
+class DataClass : public QThread
 {
 Q_OBJECT
 public slots:
 void calcData();
 void startTimer();
+
+void calcShipMovement();
+
+signals:
+void sig_newDay(int);
 
 public:
 DataClass();
@@ -50,39 +56,50 @@ ShipData *active_ship;
 Person *active_char;
 
 zeit gametime;
-windclass wind;
-MapClass currentMap;
+Wind wind;
+Map *currentMap;
 
-void addBuilding(BuildingClass *);		// add a Building .... to the Building .... List
+QList <Map*> maplist;
+
+void addBuilding(const BuildingClass &);		// add a Building .... to the Building .... List
 void addShip(ShipData *);
-void addKontor(KontorData *);
-void addCity(CityClass *);
-void addPerson(Person *);
+void addKontor(const KontorData &);
+void addCity(const CityClass &);
+void addPerson(const Person &);
 
-void setCurrentCity(QString);
+void setCurrentCity();
 void setCurrentCity(CityClass *);
+
+void pause();
+
 bool anbord;
 
 LandingProcess::landingstructure landingstruct;
 
 
-QList<CityClass> ret_CityList();
-QList<ShipData> ret_ShipList();
-QList<KontorData> ret_KontorList();
+QList<CityClass> ret_CityList() const;
+QList<ShipData*> ret_ShipList() const;
+QList<KontorData> ret_KontorList() const;
+
 
 private:
 QTimer calc_data_timer;
+QTimer calc_ship_movement_timer;
+int cycle;
+
+
+
+protected:
+// bool singleplayer;
+void run();
+
 int schwierigkeit;
-
-
 QList <CityClass> CityList;
-QList <ShipData> ShipList;
+QList <ShipData *> ShipList;
 QList <BuildingClass> BuildingList;
 QList <KontorData> KontorList;
 QList <Person> PersonList;
-
-
-
+ShipData *shipiterator;		//pointer for iterating through lists
 };
 
 #endif

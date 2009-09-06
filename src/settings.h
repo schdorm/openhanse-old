@@ -24,20 +24,32 @@
 class Settings
 {
 public:
-void readConfigs(QString);
-bool ret_OpenGL()	{	return opengl;		}
-bool ret_Fullscreen()	{	return fullscreen;	}
-QSize ret_Resolution()	{	return resolution;	}
-int ret_FPS()		{	return fps;		}
+Settings();
+void readConfigs (const QString&);
+bool openGL()		const	{	return m_opengl;	}
+bool fullscreen()	const	{	return m_fullscreen;	}
+QSize resolution()	const	{	return m_resolution;	}
+int fps()		const	{	return m_fps;		}
 
+QString mapdirectory()	const	{	return m_mapdirectory;	}
+
+float miscVolume()	const	{	return m_misc_volume;	}
+float musicVolume()	const	{	return m_music_volume;	}
+
+bool cacheMaps()	const	{	return m_cacheMaps;	}
 
 private:
-QSize resolution;
-bool fullscreen;
-bool opengl;
-int fps;
-float misc_volume;
-float music_volume;
+QSize m_resolution;
+bool m_fullscreen;
+bool m_opengl;
+int m_fps;
+
+QString m_mapdirectory;		//member - mapdirectory
+
+float m_misc_volume;		//miscellaneous
+float m_music_volume;
+
+bool m_cacheMaps;
 };
 
 #endif

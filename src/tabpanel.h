@@ -29,10 +29,9 @@
 #include <QtGui/QSlider>
 #include <QtGui/QProgressBar>
 #include <QtGui/QPushButton>
-// #include <QtGui/
 
 #include "waren.h"
-#include "dataclass.h"
+// #include "datamanager.h"
 
 class SeaTabPanel : public QTabWidget
 {
@@ -40,8 +39,9 @@ Q_OBJECT
 // public slots:
 
 public:
-// TabPanel();
-void create();
+SeaTabPanel();
+~SeaTabPanel();
+// void create();
 void landmenu();
 
 #ifdef __test_
@@ -70,9 +70,9 @@ QProgressBar *geschwindigkeitsanzeige;
 QLabel *stat_color;
 QLabel *stat_icon;
 
-void setGameData(DataClass*);
+// void setGameData(DataClass*);
 private:
-DataClass *gamedata;
+// DataClass *gamedata;
 
 public slots:
 void update();

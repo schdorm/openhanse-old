@@ -24,6 +24,8 @@
 #include "handelsfenster.h"
 #include "waren.h"
 
+#include "datamanager.h"
+
 #include <math.h>
 
 #include <QtGui/QGridLayout>
@@ -40,7 +42,7 @@
 
 handelsfenster::handelsfenster(/*DataClass *dc*/)		//defines and declares all trading-variables
 {
-// gamedata = dc;
+// GAMEDATA = dc;
 QVBoxLayout *gesamtlayout = new QVBoxLayout(this);
 
 QWidget *buttonwidget = new QWidget(this);
@@ -284,12 +286,12 @@ connect(htypgroup,SIGNAL(buttonClicked(int)), this, SLOT(buttonHandler(int)));
 
 void gesamtbild::handel()
 {
-hf->slotpause();
+gameview->slotpause();
 
 qWarning() << "handel";
 
 
-rahmen = new QFrame(this);
+QFrame *rahmen = new QFrame(this);
 
 rahmen->setFrameShape(QFrame::StyledPanel);
 rahmen->setFrameShadow(QFrame::Sunken);
@@ -300,54 +302,54 @@ rahmen->setFrameShadow(QFrame::Sunken);
  rahmen->setAutoFillBackground(true);
 rahmen->setLineWidth(5);
 
-hwin = new handelsfenster();
+tradingwindow = new handelsfenster();
 
-hwin->setParent(rahmen);
+tradingwindow->setParent(rahmen);
 rahmen->setMinimumSize(753, 600);
-//  rahmen->setGeometry(hf->x(),hf->y(),hwin->width(),hwin->height());
-rahmen->move(hf->x() + (hf->width() - rahmen->width())/2, hf->y() + (hf->height() - rahmen->height())/2);
+//  rahmen->setGeometry(gameview->x(),gameview->y(),tradingwindow->width(),tradingwindow->height());
+rahmen->move(gameview->x() + (gameview->width() - rahmen->width())/2, gameview->y() + (gameview->height() - rahmen->height())/2);
 
 
 
 for(int i =0; i < const_warenanzahl; i++)
 {
-// hwin->vorrat[i]->setText(QString("%1").arg(lager.ware[i]));
-// hwin->warenmenge[i]->setText(QString("%1").arg(lager2.ware[i]));
-hwin->preis[i]->setText(QString("(Preis)"));
-hwin->erloes[i]->setText(QString("(Erloes)"));
-hwin->kaufmenge[i]->setRange(0,999);
-hwin->verkaufsmenge[i]->setRange(0,999);
+// tradingwindow->vorrat[i]->setText(QString("%1").arg(lager.ware[i]));
+// tradingwindow->warenmenge[i]->setText(QString("%1").arg(lager2.ware[i]));
+tradingwindow->preis[i]->setText(QString("(Preis)"));
+tradingwindow->erloes[i]->setText(QString("(Erloes)"));
+tradingwindow->kaufmenge[i]->setRange(0,999);
+tradingwindow->verkaufsmenge[i]->setRange(0,999);
 
 }
 
-// hwin->updateWidget();
+// tradingwindow->updateWidget();
 qWarning() << "Nach HU";
 
 
-connect(hwin->exit,SIGNAL(clicked()),rahmen,SLOT(close()));
-connect(hwin->exit,SIGNAL(clicked()),rahmen,SLOT(deleteLater()));
-connect(hwin->exit,SIGNAL(clicked()),hf,SLOT(show()));
-connect(hwin->exit,SIGNAL(clicked()),hf,SLOT(slotpause()));
+connect(tradingwindow->exit,SIGNAL(clicked()),rahmen,SLOT(close()));
+connect(tradingwindow->exit,SIGNAL(clicked()),rahmen,SLOT(deleteLater()));
+connect(tradingwindow->exit,SIGNAL(clicked()),gameview,SLOT(show()));
+connect(tradingwindow->exit,SIGNAL(clicked()),gameview,SLOT(slotpause()));
 
-connect(hwin->handelsbutton, SIGNAL(clicked()), this, SLOT(tradingFinished()));
-// connect(hwin,SIGNAL(hmoeglich(bool)), hwin->handelsbutton,SLOT(setEnabled(bool)));
+connect(tradingwindow->handelsbutton, SIGNAL(clicked()), this, SLOT(tradingFinished()));
+// connect(tradingwindow,SIGNAL(hmoeglich(bool)), tradingwindow->handelsbutton,SLOT(setEnabled(bool)));
 
-// connect(hwin->htypgroup,SIGNAL(buttonClicked(int)), hwin, SLOT(buttonHandler(int)));
-// hwin->show();
+// connect(tradingwindow->htypgroup,SIGNAL(buttonClicked(int)), tradingwindow, SLOT(buttonHandler(int)));
+// tradingwindow->show();
 rahmen->show();
 /*
-if(hf->activeship.attribute.stadt != hf->mapprops.stadtname)
+if(gameview->activeship.attribute.stadt != gameview->mapprops.stadtname)
 {
-hwin->htyp[0]->setEnabled(false);
-hwin->htyp[1]->animateClick();
-hwin->htyp[2]->setEnabled(false);
+tradingwindow->htyp[0]->setEnabled(false);
+tradingwindow->htyp[1]->animateClick();
+tradingwindow->htyp[2]->setEnabled(false);
 }
 bool found = false;
 for (QList<kontorklasse>::iterator it = kontorliste.begin();
 it != kontorliste.end();
 ++it)
 	{
-		if(it->stadt == hf->mapprops.stadtname)
+		if(it->stadt == gameview->mapprops.stadtname)
 		{
 			found = true;
 			break;
@@ -355,27 +357,27 @@ it != kontorliste.end();
 	}
 if(!found)
 {
-hwin->htyp[1]->setEnabled(false);
-hwin->htyp[2]->setEnabled(false);
+tradingwindow->htyp[1]->setEnabled(false);
+tradingwindow->htyp[2]->setEnabled(false);
 }*/
 
-hwin->setGameData(gamedata);
+tradingwindow->setGameData(/*GAMEDATA*/);
 }
 
-void handelsfenster::setGameData(DataClass *param_data)
+void handelsfenster::setGameData(/*DataClass *param_data*/)
 {
-gamedata = param_data;
+// GAMEDATA = param_data;
 for(int i = 0; i < 3; i++)
 {
 	htyp[i]->setEnabled(false);
 }
 
-if(gamedata->active_kontor->ret_CityID() == gamedata->active_city->id && gamedata->currentMap.cityname == gamedata->active_city->cityname)
+if(GAMEDATA->active_kontor->getCityID() == GAMEDATA->active_city->id && GAMEDATA->currentMap->ret_Cityname() == GAMEDATA->active_city->cityname)
 {
 htyp [1]->setEnabled(true);
 htyp[1]->animateClick();
 }
-if(gamedata->active_ship->ret_CurrentPosition().mapcoords == gamedata->currentMap.coordinate && gamedata->currentMap.cityname == gamedata->active_city->cityname)
+if(GAMEDATA->active_ship->ret_CurrentPosition().mapcoords == GAMEDATA->currentMap->ret_Coordinate() && GAMEDATA->currentMap->ret_Cityname() == GAMEDATA->active_city->cityname)
 {
 htyp [0]->setEnabled(true);
 htyp[0]->animateClick();
@@ -396,20 +398,20 @@ switch(id)
 {
 	case 0:
 	{
-		setStorage(gamedata->active_ship->cargo, 0);
-		setStorage(gamedata->active_city->goods, 1);
+		setStorage(GAMEDATA->active_ship->cargo, 0);
+		setStorage(GAMEDATA->active_city->goods, 1);
 		break;
 	}
 	case 1:
 	{
-		setStorage(gamedata->active_kontor->storage, 0);
-		setStorage(gamedata->active_city->goods, 1);
+		setStorage(GAMEDATA->active_kontor->storage, 0);
+		setStorage(GAMEDATA->active_city->goods, 1);
 		break;
 	}
 	case 2:
 	{
-		setStorage(gamedata->active_ship->cargo, 0);
-		setStorage(gamedata->active_kontor->storage, 1);
+		setStorage(GAMEDATA->active_ship->cargo, 0);
+		setStorage(GAMEDATA->active_kontor->storage, 1);
 		break;
 	}
 }
@@ -417,7 +419,7 @@ updateWidget();
 
 }
 
-void handelsfenster::setStorage(Warenstruct param_stor, int i)
+void handelsfenster::setStorage(const Warenstruct &param_stor, int i)
 {
 	if(i>=0 && i <= 1)
 	{
@@ -438,40 +440,40 @@ void handelsfenster::updateWidget()
 // {
 // static quint8 typ;
 qWarning() << "Handelsupdate";
-// hwin->handelsbutton->setEnabled(false);
-// hwin->handelsbutton->repaint();
+// tradingwindow->handelsbutton->setEnabled(false);
+// tradingwindow->handelsbutton->repaint();
 /*
-if(hwin->htyp[0]->isChecked() && hwin->typ !=0)
+if(tradingwindow->htyp[0]->isChecked() && tradingwindow->typ !=0)
 {*/
 // for (QList<stadtklasse>::iterator it = stadtliste.begin();
 // it != stadtliste.end();
 // ++it)
 // 	{
-// 		if(it->stadtname == hf->mapprops.stadtname)
+// 		if(it->stadtname == gameview->mapprops.stadtname)
 // 		{
-// 			qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 			qWarning() << it->stadtname << gameview->mapprops.stadtname ;
 // 			stadt = *it;
 // 			lager2 = stadt.stadtwaren;
 // 			break;
 // 		}
 // 	}
 // 
-// lager = hf->activeship.Ladung;
+// lager = gameview->activeship.Ladung;
 
-// hwin->typ = 0;
+// tradingwindow->typ = 0;
 // }
 
 
-// if(hwin->htyp[1]->isChecked() && hwin->typ != 1)
+// if(tradingwindow->htyp[1]->isChecked() && tradingwindow->typ != 1)
 // {
 // bool found = false;
 // for (QList<kontorklasse>::iterator it = kontorliste.begin();
 // it != kontorliste.end();
 // ++it)
 // 	{
-// 		if(it->stadt == hf->mapprops.stadtname)
+// 		if(it->stadt == gameview->mapprops.stadtname)
 // 		{
-// 			qWarning() << hf->mapprops.stadtname ;
+// 			qWarning() << gameview->mapprops.stadtname ;
 // 			kontor = *it;
 // 			lager = kontor.Lager;
 // 			found = true;
@@ -482,20 +484,20 @@ if(hwin->htyp[0]->isChecked() && hwin->typ !=0)
 // 	{
 // 		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
 // 		{
-// 			if(it->stadtname == hf->mapprops.stadtname)
+// 			if(it->stadtname == gameview->mapprops.stadtname)
 // 			{
-// 				qWarning() << it->stadtname << hf->mapprops.stadtname ;
+// 				qWarning() << it->stadtname << gameview->mapprops.stadtname ;
 // 				stadt = *it;
 // 				lager2 = stadt.stadtwaren;
 // 				break;
-// 				hwin->typ = 1;
+// 				tradingwindow->typ = 1;
 // 			}
 // 		}
 // 	}
 // 	else
 // 	{
-// 	hwin->htyp[1]->setChecked(false);
-// 	hwin->htyp[hwin->typ]->setChecked(true);
+// 	tradingwindow->htyp[1]->setChecked(false);
+// 	tradingwindow->htyp[tradingwindow->typ]->setChecked(true);
 // 	}
 // }
 
@@ -557,7 +559,7 @@ for (int i = 0; i<const_warenanzahl; i++)
 
 		if(erloes[i]>0)
 		{
-// 	hwin->erloes[i]->setText(QString("%1 (%2)").arg(erloes[i], int(erloes[i]/mengev[i])));
+// 	tradingwindow->erloes[i]->setText(QString("%1 (%2)").arg(erloes[i], int(erloes[i]/mengev[i])));
 		erloes[i]->setText( QString("%1").arg(erloes_int[i]).append(QString("(%1)").arg(int(erloes_int[i]/mengev[i]))));
 		}
 		else
@@ -595,16 +597,16 @@ bool hb_e_lager = true;
 if(qint32(storage[0].taler + bilanz) < 0)
 	{
 	hb_e_geld = false;	
-// 	hwin->handelsbutton->setEnabled(hb_enabled);
-// 	hwin->sethandelsbutton(false);
+// 	tradingwindow->handelsbutton->setEnabled(hb_enabled);
+// 	tradingwindow->sethandelsbutton(false);
 	}
 
-// if((lager.taler + bilanz) > 0 && !hwin->handelsbutton->isEnabled())
-// 	{	hwin->handelsbutton->setEnabled(true);	}
+// if((lager.taler + bilanz) > 0 && !tradingwindow->handelsbutton->isEnabled())
+// 	{	tradingwindow->handelsbutton->setEnabled(true);	}
 
 if(storage[0].kapazitaet < storage[0].fuellung + mengenbilanz )
 	{
-// 	hwin->handelsbutton->setEnabled(false);
+// 	tradingwindow->handelsbutton->setEnabled(false);
 	hb_e_lager = false;
 	}
 
@@ -616,8 +618,8 @@ if((hb_e_lager && hb_e_geld ) && !handelsbutton->isEnabled())
 {
 	handelsbutton->setEnabled(true);
 }
-// if(lager.kapazitaet > lager.fuellung + mengenbilanz && hwin->handelsbutton->isEnabled() == false && hb_enabled)
-// 	{	hwin->handelsbutton->setEnabled(true);	}
+// if(lager.kapazitaet > lager.fuellung + mengenbilanz && tradingwindow->handelsbutton->isEnabled() == false && hb_enabled)
+// 	{	tradingwindow->handelsbutton->setEnabled(true);	}
 
 // qWarning() << "Button-Zeugs";
 }
@@ -651,55 +653,55 @@ void handelsfenster::handelsaktion()
 		storage[1].ware[i] += warev[i] - warek[i];
 	
 		storage[0].ware[i] += warek[i] - warev[i];
-		// hf->activeship.Ladung.ware[i] = lager.ware[i] ;
+		// gameview->activeship.Ladung.ware[i] = lager.ware[i] ;
 	}
 	
 
 	if(htyp[0]->isEnabled())
 	{
-		gamedata->active_city->goods = storage[1];
-		gamedata->active_ship->cargo = storage[0];
+		GAMEDATA->active_city->goods = storage[1];
+		GAMEDATA->active_ship->cargo = storage[0];
 	}
 	else if(htyp[1]->isEnabled())
 	{
-		gamedata->active_city->goods = storage[1];
-		gamedata->active_kontor->storage = storage[0];
+		GAMEDATA->active_city->goods = storage[1];
+		GAMEDATA->active_kontor->storage = storage[0];
 	}
 	else if(htyp[2]->isEnabled())
 	{
-		gamedata->active_kontor->storage = storage[1];
-		gamedata->active_ship->cargo = storage[0];
+		GAMEDATA->active_kontor->storage = storage[1];
+		GAMEDATA->active_ship->cargo = storage[0];
 	}
-/// 	hf->activeship.Ladung = lager;
-// 	qWarning() << "hf->ASL.taler" << hf->activeship.Ladung.taler;
+/// 	gameview->activeship.Ladung = lager;
+// 	qWarning() << "gameview->ASL.taler" << gameview->activeship.Ladung.taler;
 // 	for(int i = 0; i<const_warenanzahl; i++)
 // {
 // // qWarning() << i;
-// menupanel->ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
+// menupanel->ware[i]->setText(QString("%1").arg(gameview->activeship.Ladung.ware[i]));
 // }
 // 	{
-// 	QString flstring = QString("%1").arg(hf->activeship.Ladung.fuellung);
-// 	flstring.append(QString("/%1 belegt").arg(hf->activeship.Ladung.kapazitaet));
+// 	QString flstring = QString("%1").arg(gameview->activeship.Ladung.fuellung);
+// 	flstring.append(QString("/%1 belegt").arg(gameview->activeship.Ladung.kapazitaet));
 // 	menupanel->fuellung->setText(flstring);
 /// 	}
-// hf->activeship.Ladung.gesamtladung += lager.mengenbilanz;
+// gameview->activeship.Ladung.gesamtladung += lager.mengenbilanz;
 
-// 	qWarning() << hf->activeship.Ladung.fuellung << hf->activeship.Ladung.kapazitaet;
+// 	qWarning() << gameview->activeship.Ladung.fuellung << gameview->activeship.Ladung.kapazitaet;
 
-// hf->activeship.Ladung.taler += hwin->umsatz->text().toInt();
+// gameview->activeship.Ladung.taler += tradingwindow->umsatz->text().toInt();
 
-// 	taler->setText(QString("Geladenes Geld: %1 Taler").arg(hf->activeship.Ladung.taler));
-// 	menupanel->taler->setText(QString("%1").arg(hf->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")).append(tr("Taler")));
+// 	taler->setText(QString("Geladenes Geld: %1 Taler").arg(gameview->activeship.Ladung.taler));
+// 	menupanel->taler->setText(QString("%1").arg(gameview->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")).append(tr("Taler")));
 
-// 	fuellung->setText(QString("Belegt: %1 von %2").arg(hf->activeship.Ladung.fuellung, hf->activeship.Ladung.kapazitaet));
+// 	fuellung->setText(QString("Belegt: %1 von %2").arg(gameview->activeship.Ladung.fuellung, gameview->activeship.Ladung.kapazitaet));
 						qWarning() << "Handel ...";
 /// 	rahmen->deleteLater();
 
 /// 	stadt.stadtwaren = lager2;
 // 	for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)
 // 	{
-// // 		qWarning() << it->stadtname << hf->mapprops.stadtname ;
-// 		if(it->stadtname == hf->mapprops.stadtname)
+// // 		qWarning() << it->stadtname << gameview->mapprops.stadtname ;
+// 		if(it->stadtname == gameview->mapprops.stadtname)
 // 		{
 // // 			qWarning() << it->stadtname;
 // 			*it = stadt;
@@ -726,9 +728,7 @@ delete warenmenge[i];
 
 void gesamtbild::tradingFinished()
 {
-delete hwin;
-rahmen->close();
-delete rahmen;
-	hf->show();
-	hf->slotpause();
+delete tradingwindow;
+	gameview->show();
+	gameview->slotpause();
 }

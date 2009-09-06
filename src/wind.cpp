@@ -22,60 +22,60 @@
 #include "wind.h"
 
 
-void windclass::init()
+Wind::Wind()
 {
-	dir = double (rand()%7);
-	v = rand() %30 +5;
+	m_dir = double (rand()%7);
+	m_v = rand() %30 +5;
 }
 
-void windclass::refresh()
+void Wind::refresh()
 {
 	int aenderung = ((rand()%3)-1);
 	double faenderung = (rand()%23);
 	if((aenderung*M_PI)/ (1+faenderung*10) < 0.2 && (aenderung*M_PI)/ (1+faenderung*10) > -0.2)
 	{
-		dir = dir + (aenderung*M_PI)/(1+faenderung*10);
+		m_dir = m_dir + (aenderung*M_PI)/(1+faenderung*10);
 	}
-	if(dir > 2 * M_PI)
+	if(m_dir > 2 * M_PI)
 	{
-		dir =0;
-	}
-
-	else if(dir < 0)
-	{
-		dir =2 * M_PI;
+		m_dir =0;
 	}
 
-	v = v + ((rand()%3)-1);
-
-	if(v > 90)
+	else if(m_dir < 0)
 	{
-		v=90;
+		m_dir =2 * M_PI;
 	}
 
-	else if(v < 0)
+	m_v = m_v + ((rand()%3)-1);
+
+	if(m_v > 90)
 	{
-	v=1;
+		m_v=90;
+	}
+
+	else if(m_v < 0)
+	{
+	m_v=1;
 	}
 }
 
-void windclass::setDir(double param_dir)
+void Wind::setDir(double param_dir)
 {
-dir = param_dir;
+m_dir = param_dir;
 }
 
-double windclass::retDir()
+double Wind::dir()
 {
-return dir;
+return m_dir;
 }
 
-void windclass::setV(int param_v)
+void Wind::setV(int param_v)
 {
-v = param_v;
+m_v = param_v;
 }
 
-int windclass::retV()
+int Wind::v()
 {
-return v;
+return m_v;
 }
 

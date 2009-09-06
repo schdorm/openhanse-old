@@ -22,6 +22,8 @@
 #include <QTimer>
 // #endif
 
+#include "datamanager.h"
+
 #include "tabpanel.h"
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
@@ -29,8 +31,8 @@
 #include <QDebug>
 
 
-
-void SeaTabPanel::create()
+SeaTabPanel::SeaTabPanel()
+// void SeaTabPanel::create()
 {
 	qWarning() << "Create";
 // 	QVBoxLayout tablayout[3];
@@ -46,15 +48,15 @@ void SeaTabPanel::create()
 	qWarning() << "Create2";
 
 	int index;
-	index = addTab(tab[0], QIcon(":img/icons/kiste_icon_alpha_hell.png") , tr("L"));
+	index = addTab(tab[0], QIcon(":img/icons/kiste_icon_alpha_hell.png") , tr("Goods"));
 // 	index = menutabs->addTab(w1,QIcon(":fass03_weich_heller.png") , tr("Lad."));
-	setTabToolTip(index, tr("Warenladung des Schiffes"));
+	setTabToolTip(index, tr("Loaded Goods"));
 
-	index = addTab(tab[1], QIcon(":img/icons/steuerrad01.png"), tr("S"));
-	setTabToolTip(index, tr("Steuerung des Schiffes"));
+	index = addTab(tab[1], QIcon(":img/icons/steuerrad01.png"), tr("Nav"));
+	setTabToolTip(index, tr("Control-tools"));
 
-	index = addTab(tab[2], "B");
-	setTabToolTip(index, tr("Besatzung des Schiffes"));
+	index = addTab(tab[2], tr("Crew"));
+	setTabToolTip(index, tr("Crew of the Ship"));
 // 	menutabs->setGeometry(800, 2, 225, 655);
 // 	resize(225,655);
 	qWarning() << "Create3";
@@ -89,7 +91,7 @@ void SeaTabPanel::create()
 // 	geschwindigkeitsregler->setGeometry(5,40,200,45);
 	geschwindigkeitsregler->setRange(0,5);
 	geschwindigkeitsregler->setOrientation(Qt::Horizontal);
-	geschwindigkeitsregler->setToolTip(tr("Diesen Regler verschieben um Anzahl\n der gesetzten Segel zu aendern."));
+	geschwindigkeitsregler->setToolTip(tr("Move this Slider to set sails."));
 	steuerungslayout->addWidget(geschwindigkeitsregler);
 // 	qWarning() << "Create5";
 
@@ -105,7 +107,7 @@ void SeaTabPanel::create()
 	anlegen = new QPushButton(tr("Anlegen"),steuerung);
 	steuerungslayout->addWidget(anlegen);
 
-	schuss = new QPushButton(tr("Feuer!"),steuerung);
+	schuss = new QPushButton(tr("Fire!"),steuerung);
 	steuerungslayout->addWidget(schuss);
 
 	steuerung->setLayout(steuerungslayout);
@@ -228,7 +230,7 @@ stat_color->setPixmap(blah);
 #endif
 
 QPixmap stat_color_pm = *stat_color->pixmap();
-int tempint = gamedata->active_ship->ret_Condition();
+int tempint = GAMEDATA->active_ship->ret_Condition();
 if(tempint >50)
 {
 stat_color_pm.fill(QColor(5.1 * (100 - tempint), 255, 0));
@@ -242,10 +244,10 @@ stat_color->setPixmap(stat_color_pm);
 
 }
 
-void SeaTabPanel::setGameData(DataClass *param_dc)
-{
-gamedata = param_dc;
-}
+// void SeaTabPanel::setGameData(DataClass *param_dc)
+// {
+// GAMEDATA = param_dc;
+// }
 
 void SeaTabPanel::landmenu()
 {
@@ -253,3 +255,23 @@ steuerung->hide();
 ladung->hide();
 }
 
+
+SeaTabPanel::~SeaTabPanel()
+{
+	for(int i = 0; i < const_warenanzahl; i++)
+	{
+		delete ware[i];
+	}
+	delete fuellung;
+	delete taler;
+	for(int i = 0; i<3; i++)
+		delete tab[i];
+	delete ladung;
+	delete steuerung;
+	delete anlegen;
+	delete schuss;
+	delete geschwindigkeitsregler;
+	delete geschwindigkeitsanzeige;
+	delete stat_color;
+	delete stat_icon;
+}

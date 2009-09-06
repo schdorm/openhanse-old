@@ -22,6 +22,7 @@
 #define _gesamtbild_h
 
 #include <QtCore/QList>
+#include <QtCore/QObject>
 
 #include <QtGui/QWidget>
 #include <QtGui/QFrame>
@@ -32,14 +33,18 @@
 // #include "stadtklasse.h"
 // #include "kontorklasse.h"
 
-#include "settings.h"
+
+
+#include "datamanager.h"
 
 #include "hauptfenster.h"
 #include "handelsfenster.h"
 #include "tabpanel.h"
 #include "konsole.h"
 
-#include "dataclass.h"
+// #include "settings.h"
+// #include "dataclass.h"
+
 
 #include <QtGui/QKeyEvent>
 
@@ -61,14 +66,13 @@ gesamtbild();
 // void init(QString);
 void spielfensteraufbau();
 
-Settings currentSettings;
 
 public slots:
 // void mmenuslot();
-void hauptmenu();
+void mainmenu();
 void spielmenu();
 
-void execCommand(QString);
+void execCommand(const QString&);
 
 void aktivieren();
 
@@ -88,7 +92,7 @@ void zeitanzeige();
 #ifndef _NO_SAVE__
 void speichern();
 void speicherndialog();
-void speichername(QString);
+void speichername(const QString&);
 void speichern(QListWidgetItem*);
 
 void laden(QListWidgetItem*);
@@ -99,21 +103,21 @@ private:
 bool spielbool;
 bool aktiv;
 int schwierigkeitsgrad;
-DataClass *gamedata;
+// DataClass *gamedata;
 
-hauptfenster *hf;
-handelsfenster *hwin;
+hauptfenster *gameview;
+handelsfenster *tradingwindow;
 SeaTabPanel *menupanel;
 konsole *konsolenwidget;
 
-QFrame *rahmen;
+// QFrame *rahmen;
 // QLabel *ware[const_warenanzahl];
 // QLabel *fuellung;
 // QLabel *taler;
 // QTabWidget *menutabs;
 // QWidget *tab[3];
 QComboBox *schwierigkeitsauswahl;
-QPushButton *okbutton;
+// QPushButton *okbutton;
 QString filename;			// fuer Savegame 
 
 /*struct gebaudeklasse{			//Zusaetzliche, Nicht-Map-Standard-Gebaude, kommen in Liste

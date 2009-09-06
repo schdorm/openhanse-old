@@ -25,18 +25,18 @@
 class zeit
 {
 
-int day_length;
-double minute;
-int hour;
-int day;
-int month;
-int year;
+int m_day_length;
+double m_minute;
+int m_hour;
+int m_day;
+int m_month;
+int m_year;
 
-bool existingClock;
+bool m_existingClock;
 QGraphicsPixmapItem *smallclockhand;
 QGraphicsPixmapItem *bigclockhand;
 public:
-// zeit();
+ zeit();
 void init();
 
 void setClockHands(QGraphicsPixmapItem*, QGraphicsPixmapItem*);
@@ -44,20 +44,20 @@ void setClockHands(QGraphicsPixmapItem*, QGraphicsPixmapItem*);
 void refreshClock();
 bool refreshTime();
 
-void setMinute(double);
+void setMinute(const double &);
 void setHour(int);
 void setDay(int);
 void setMonth(int);
 void setYear(int);
 
-double retMinute();
-int retHour();
-int retDay();
-int retMonth();
-int retYear();
+double minute() const;
+int hour() const;
+int day() const;
+int month() const;
+int year() const;
 
 void setDayLength(int);
-int retDayLength();
+int dayLength() const;
 };
 
 #endif

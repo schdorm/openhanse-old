@@ -18,6 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include <QtCore/QDir>
 #include <QtCore/QFile>
 #include <QtCore/QTextStream>
 #include <QtCore/QXmlStreamReader>
@@ -25,16 +26,27 @@
 
 #include <QtDebug>
 
-void Settings::readConfigs(QString param_filename)
+Settings::Settings()
 {
-resolution = QSize(800,600); fullscreen = false; fps = 25; opengl = true; music_volume = 1; misc_volume = 1;
+	QDir dir = QDir().current();
+	if(dir.cd("maps"))
+	{
+		m_mapdirectory = dir.absolutePath().append("/");
+	}
+}
+
+void Settings::readConfigs(const QString &param_filename)
+{
+m_resolution = QSize(800,600); m_fullscreen = false; m_fps = 25; m_opengl = true;
+m_music_volume = 1; m_misc_volume = 1;
+m_cacheMaps = false;
 
 		QFile cfg(param_filename);
 		if(!cfg.exists())
 		{
 			cfg.open(QIODevice::WriteOnly);
 			QTextStream cfgstream(&cfg);
-			cfgstream << "<conf> \n\t<resolution> \n\t\t<height>600</height> \n\t\t<width>800</width> \n\t</resolution> \n\t<fullscreen>false</fullscreen> \n\t<fps>25</fps> \n\t<opengl>true</opengl> \n\t<music-volume>1</music-volume> \n\t<misc-volume>1</misc-volume> \n</conf> ";
+			cfgstream << "<conf> \n\t<resolution> \n\t\t<height>600</height> \n\t\t<width>800</width> \n\t</resolution> \n\t<fullscreen>false</fullscreen> \n\t<fps>25</fps> \n\t<opengl>true</opengl> \n\t<music-volume>1</music-volume> \n\t<misc-volume>1</misc-volume> \n\t<cache-maps>true</cache-maps>\n</conf> ";
 			cfg.close();
 
 // 			return;
@@ -51,23 +63,23 @@ resolution = QSize(800,600); fullscreen = false; fps = 25; opengl = true; music_
 				if(cfg_reader.name() == "height")
 				{
 					cfg_reader.readNext();
-					resolution.setHeight(cfg_reader.text().toString().toInt());
+					m_resolution.setHeight(cfg_reader.text().toString().toInt());
 				}
 				else if(cfg_reader.name() == "width")
 				{
 					cfg_reader.readNext();
-					resolution.setWidth(cfg_reader.text().toString().toInt());
+					m_resolution.setWidth(cfg_reader.text().toString().toInt());
 				}
 				else if(cfg_reader.name() == "fullscreen")
 				{
 					cfg_reader.readNext();
 					if(cfg_reader.text().toString() == "false")
 					{
-						fullscreen = false;
+						m_fullscreen = false;
 					}
 					else
 					{
-						fullscreen = true;
+						m_fullscreen = true;
 					}
 				}
 				else if(cfg_reader.name() == "opengl")
@@ -76,28 +88,42 @@ resolution = QSize(800,600); fullscreen = false; fps = 25; opengl = true; music_
 					qWarning() << cfg_reader.text().toString();
 					if(cfg_reader.text().toString() == "false")
 					{
-						opengl = false;
+						m_opengl = false;
 					}
 					else
 					{
-						opengl = true;
+						m_opengl = true;
 					}
 				}
 				else if(cfg_reader.name() == "fps")
 				{
 					cfg_reader.readNext();
-					fps = cfg_reader.text().toString().toInt();
+					m_fps = cfg_reader.text().toString().toInt();
 				}
 				else if(cfg_reader.name() == "misc-volume")
 				{
 					cfg_reader.readNext();
-					misc_volume = cfg_reader.text().toString().toFloat();
+					m_misc_volume = cfg_reader.text().toString().toFloat();
 				}
 				else if(cfg_reader.name() == "music-volume")
 				{
 					cfg_reader.readNext();
-					music_volume = cfg_reader.text().toString().toFloat();
+					m_music_volume = cfg_reader.text().toString().toFloat();
 				}
+				else if(cfg_reader.name() == "cache-maps")
+				{
+					cfg_reader.readNext();
+					qWarning() << cfg_reader.text().toString();
+					if(cfg_reader.text().toString() == "true")
+					{
+						m_cacheMaps = true;
+					}
+					else
+					{
+						m_opengl = false;
+					}
+				}
+				
 			
 			}
 			
@@ -105,5 +131,5 @@ resolution = QSize(800,600); fullscreen = false; fps = 25; opengl = true; music_
 			cfg.close();
 		}
 
-// qWarning() << opengl;
+// qWarning() << m_opengl;
 }

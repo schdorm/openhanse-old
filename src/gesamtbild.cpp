@@ -40,6 +40,11 @@
 
 gesamtbild::gesamtbild()
 {
+tradingwindow = 0;
+gameview = 0;
+menupanel = 0;
+konsolenwidget = 0;
+schwierigkeitsauswahl = 0;
 	QDir dir = QDir().current();
 // 	qWarning() << dir.absolutePath();
 {
@@ -50,7 +55,7 @@ gesamtbild::gesamtbild()
 	QTextStream errorstream(&dbf);
 	errorstream << dir.path();
 	errorstream << "\nStarting Log on ";
-	errorstream << dt.toString(QString("ddd MMM dd. yyyy hh:mm:ss ")) << "\n";
+	errorstream << dt.toString(QString("ddd. MMM dd. yyyy hh:mm:ss ")) << "\n";
 	dbf.close();
 }
 	qWarning() << dir.path();
@@ -58,45 +63,11 @@ gesamtbild::gesamtbild()
 	{
 		if(dir.count() > 0)
 		{
-// 		dir = QDir().home();
-// 		QFile cfg();
-/// 		if(!currentSettings.readConfigs(dir.absolutePath().append("/.OpenHanse/cfg.ohc")))
-// 		{
-// 		resize(800,600);
-/// 		}
-// 		if(!cfg.exists())
-// 		{
-// 			cfg.open(QIODevice::WriteOnly);
-// 			QTextStream cfgstream(&cfg);
-// 			cfgstream << "1\n";
-// 			cfg.close();
-// 			resize(1024,768);
-// 		}
-// 		else
-// 		{
-// 			cfg.open(QIODevice::ReadOnly);
-// 			QTextStream cfgstream(&cfg);
-// 			QString res;
-// 			res = cfgstream.readLine();
-// 			if(res == "1")
-// 			{
-// 				resize(1024,768);
-// 			}
-// 			if(res == "2")
-// 			{
-// 				resize(1280,1024);
-// 			}
-// 			cfg.close();
-// 		}
 
-// #ifndef _RELEASE_
 		srand(time(NULL));
 
 
 
-// #endif
-// 		setFixedSize(1024,768);
-// 		setFixedSize(1280,1024);
 
 		move(0,0);
 		setWindowTitle("OpenHanse");
@@ -108,9 +79,8 @@ gesamtbild::gesamtbild()
 
 
 		spielbool=false;
-//	 	aktiv=true;
 		aktiv=false;
-		hauptmenu();
+		mainmenu();
 
 		return;
 		}
@@ -126,51 +96,48 @@ gesamtbild::gesamtbild()
 }
 gesamtbild::~gesamtbild()
 {
-delete rahmen;
-delete hf;
-delete hwin;
-delete okbutton;
+delete gameview;
+delete tradingwindow;
 delete schwierigkeitsauswahl;
 delete menupanel;
 delete konsolenwidget;
-delete gamedata;
 }
 
 
-void gesamtbild::hauptmenu()
+void gesamtbild::mainmenu()
 {
-	rahmen = new QFrame(this);
-// 	QVBoxLayout layout(rahmen);
-	rahmen->setGeometry(200,300,600,400);
-	rahmen->setFrameShape(QFrame::Panel);
-	rahmen->setFrameShadow(QFrame::Sunken);
-	QPushButton *spielbt = new QPushButton(tr("Einzelspiel"), rahmen);
+	QFrame *mmframe = new QFrame(this);			// Main Menu Frame
+// 	QVBoxLayout layout(mmframe);
+	mmframe->setGeometry(200,300,600,400);
+	mmframe->setFrameShape(QFrame::Panel);
+	mmframe->setFrameShadow(QFrame::Sunken);
+	QPushButton *spielbt = new QPushButton(tr("Single-Player-Game"), mmframe);
 // 	spielbt->move(450,340);
 	spielbt->move(50,50);
-	QPushButton *laden = new QPushButton(tr("Laden"), rahmen);
+	QPushButton *laden = new QPushButton(tr("Load"), mmframe);
 	laden->move(50,160);
-	QPushButton *ende = new QPushButton(tr("Beenden"), rahmen);
+	QPushButton *ende = new QPushButton(tr("Quit"), mmframe);
 	ende->move(50,220);
-	QLabel *lbl = new QLabel(tr("Hauptmenue"),rahmen);
+	QLabel *lbl = new QLabel(tr("Mainmenu"), mmframe);
 	lbl->move(50,0);
 // 	ende->move(450,380);
 // 	spielbt->move();
-	connect(spielbt,SIGNAL(clicked()),rahmen, SLOT(deleteLater()));
-	connect(spielbt,SIGNAL(clicked()),this, SLOT(startNewGame()));
+	connect(spielbt, SIGNAL(clicked()), mmframe, SLOT(deleteLater()));
+	connect(spielbt, SIGNAL(clicked()), this, SLOT(startNewGame()));
 // 	connect(spielbt,SIGNAL(clicked()),this, SLOT(handel()));
-	connect(ende,SIGNAL(clicked()),this,SLOT(close()));
+	connect(ende, SIGNAL(clicked()), this, SLOT(close()));
 
-	connect(laden,SIGNAL(clicked()),rahmen, SLOT(deleteLater()));
-	connect(laden,SIGNAL(clicked()),this,SLOT(lademenu()));
+	connect(laden, SIGNAL(clicked()), mmframe, SLOT(deleteLater()));
+	connect(laden, SIGNAL(clicked()), this, SLOT(lademenu()));
 
-// 	QPushButton *toggler = new QPushButton (tr("Toggle"),rahmen);	//Testsache
+// 	QPushButton *toggler = new QPushButton (tr("Toggle"),mmframe);	//Testsache
 // 	connect(toggler,SIGNAL(clicked()),laden,SLOT(toggle()));
 
-	schwierigkeitsauswahl = new QComboBox(rahmen);
-	schwierigkeitsauswahl -> addItem(tr("Einfach"));
-	schwierigkeitsauswahl -> addItem(tr("Schwierig"));
+	schwierigkeitsauswahl = new QComboBox(mmframe);
+	schwierigkeitsauswahl -> addItem(tr("Easy"));
+	schwierigkeitsauswahl -> addItem(tr("Hard"));
 	schwierigkeitsauswahl -> move(50,90);
-	rahmen->show();
+	mmframe->show();
 }
 
 void gesamtbild::keyPressEvent(QKeyEvent *event)
@@ -178,7 +145,7 @@ void gesamtbild::keyPressEvent(QKeyEvent *event)
 // if(event->key() !=
 //  Qt::Key_Escape && spielbool)
 //  {
-// hf->keyEventWeiterleitung(event);
+// gameview->keyEventWeiterleitung(event);
 //  }
 			//Menue-Zeugs
 	if(aktiv)
@@ -195,7 +162,7 @@ void gesamtbild::keyPressEvent(QKeyEvent *event)
 			return;
 		}
 
-		hf->keyEventWeiterleitung(event);
+		gameview->keyEventWeiterleitung(event);
 	}
 }
 
