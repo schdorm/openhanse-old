@@ -20,7 +20,7 @@
 #ifndef _stadtklasse_h
 #define _stadtklasse_h
 
-#include <QtCore/QString>
+#include <QtCore/QList>
 // #include <stdlib.h>
 
 #include "waren.h"
@@ -97,14 +97,18 @@ private:
 int m_id;
 QString m_cityname;
 int m_inhabitants;
+
+int m_lifequality;
+int m_luxuryrate;
+
 Warenstruct m_goods;
 
 
 bool m_hasKontor;		//Kontor built in this town.
 
-int m_hproduction[5];		// high production
-int m_mproduction[5];
-int m_lproduction[5];		// low production
+// int m_hproduction[5];		// high production
+// int m_mproduction[5];
+// int m_lproduction[5];		// low production
 // public slots:
 //  void produktion(int);
 

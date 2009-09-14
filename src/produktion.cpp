@@ -40,16 +40,14 @@ void DataClass::produktion(int durchlauf)
 	}
 }
 
-void CityClass::production(int durchlauf)
+void CityClass::production(int param_durchlauf)
 {
 		qWarning() << "Stadtproduktion:" << m_cityname;
-// 		for(int i=0;i<20;i++)
-// 		{
-// 		for(QList<int>::iterator it = m_hproductionlist.begin(), it != m_hproductionlist.end(), ++it)
- 		for(int j=0;j<5;j++)		//kann man mal noch schoen mit switch und case machen
+
+		for(QList<int>::iterator it = m_hproductionlist.begin(); it != m_hproductionlist.end(); ++it)
 		{
- 			switch(m_hproduction[j])
-// 			switch(it->value())
+// 			switch(m_hproduction[j])
+			switch(*it)
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
@@ -253,8 +251,11 @@ void CityClass::production(int durchlauf)
 			default:
 				break;
 			}
-
-			switch(m_mproduction[j])
+		}
+		
+		for(QList<int>::iterator it = m_mproductionlist.begin(); it != m_mproductionlist.end(); ++it)
+		{
+			switch(*it)
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
@@ -449,7 +450,10 @@ void CityClass::production(int durchlauf)
 			default:
 				break;
 			}
-			switch(m_lproduction[j])
+		}
+		for(QList<int>::iterator it = m_lproductionlist.begin(); it != m_lproductionlist.end(); ++it)
+		{
+			switch(*it)
 			{
 			case W_Baumstamme:			//Baumstaemme
 				{
@@ -644,6 +648,7 @@ void CityClass::production(int durchlauf)
 			default:
 				break;
 			}
+		}
 // 			if(hproduction[j] == i)
 // 			{
 // 			qWarning() << "Hproduktion vorher: "<< m_goods.ware[i];
@@ -662,14 +667,11 @@ void CityClass::production(int durchlauf)
 // 			m_goods.ware[i] += ((rand()% 4) + m_inhabitants/350);
 // 			qWarning() << "NProduktion nachher" << m_goods.ware[i];
 // 			}
-		}
-// 		}
 ///////////////////Stadtverbrauch durch Essen ^^
 
 
-		if(durchlauf%3==0)				//Alle 3 "Tage"
+		if(param_durchlauf%3==0)				//Alle 3 "Tage"
 		{
-			int lqualitaet=0;
 			// stadtware[W_Baumstamme];
 			m_goods.ware[W_Holzbretter] -= m_inhabitants/1000;
 // stadtware[W_Holzkohle] -= m_inhabitants/1000;		//Als Heizzeug .. evtl. anpassen
@@ -695,21 +697,30 @@ void CityClass::production(int durchlauf)
 // stadtware[17];
 // stadtware[18];
 // stadtware[19];
+			int currentLifeQuality = 0;
 
-			for(int i = 0; i<const_warenanzahl ;i++)
+			for(int i = 0; i < const_warenanzahl ;i++)
 			{
-				if(m_goods.ware[i]<0)
+				if(m_goods.ware[i] < 0)
 				{
-					m_goods.ware[i]=0;
-					lqualitaet -= (1+rand()%7);
+					currentLifeQuality -= (rand()%3 - m_goods.ware[i]);
+					
+					// m_goods.ware[i] is negative -> adds a positive value to the rand-value -> -= value
+					
+					m_goods.ware[i] = 0;
+					
+				
 				}
 				else
 				{
-				lqualitaet ++;
+					currentLifeQuality ++;
 				}
 			}
-			m_inhabitants += lqualitaet;
-			qWarning() << m_inhabitants;
+			currentLifeQuality = m_lifequality + 4*currentLifeQuality;
+			currentLifeQuality = currentLifeQuality / 5;
+			m_lifequality = currentLifeQuality;
+			m_inhabitants += currentLifeQuality;
+			qWarning() << "current Inhabitants:" << m_inhabitants << "(" << currentLifeQuality << ")";
 		}
 
 // 		for (QList<stadtklasse>::iterator it = stadtliste.begin(); it != stadtliste.end(); ++it)

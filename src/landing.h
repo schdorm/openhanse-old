@@ -17,29 +17,47 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
-#ifndef _BUILDINGS_H
-#define _BUILDINGS_H
-#include <QtGui/QGraphicsItem>
-// #include <QtGui/QMouseEvent>
-// #include <QtGui/QGraphicsScene>
-// #include <QtCore/QObject>
-#include "definitions.h"
 
-class BuildingClass		//Gebaudeklasse
+#ifndef _LANDING_H
+#define _LANDING_H
+
+#include <QtCore/QLine>
+
+class QGraphicsPixmapItem;
+
+
+class Landing
 {
 public:
-// QString name;
+	enum statuses
+	{
+		NotActive,
+		WaitingForDestination,
+		ActiveLanding,
+		AtLand
+	};
+// 	struct landingstructure{
 
-void set_GraphicsItem(QGraphicsItem *);
+void setLandingLine(const QPointF&, const QPointF&);
+// void setLineOrientation(double);
+
+void setStatus	(statuses);
+
+const QLineF &landingLine()	const 	{	return m_LandingLine;		}
+double lineOrientation ()	const	{	return m_LineOrientation;	}
+double orientation()		const 	{	return m_Orientation;		}
+statuses status()		const	{	return m_status;		}
 
 protected:
-QString m_CityName;
-int m_CityID;
-int m_Workers;
-Tax::levels m_TaxLevel;
-QGraphicsItem *m_graphicsitem;
-ObjectType::object_types_def m_Type;
-double m_state;
+
+		statuses m_status;
+		QLineF m_LandingLine;
+		bool m_correctOrientation;
+		double m_LineOrientation;		//Line-Orientation
+		double m_Orientation;
+		double m_vx, m_vy;
+		QGraphicsPixmapItem *m_landingShip_gi;
+// 	};
 };
 
 #endif
