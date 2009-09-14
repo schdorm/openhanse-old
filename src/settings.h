@@ -26,17 +26,17 @@ class Settings
 public:
 Settings();
 void readConfigs (const QString&);
-bool openGL()		const	{	return m_opengl;	}
-bool fullscreen()	const	{	return m_fullscreen;	}
-QSize resolution()	const	{	return m_resolution;	}
-int fps()		const	{	return m_fps;		}
+bool openGL()			const	{	return m_opengl;	}
+bool fullscreen()		const	{	return m_fullscreen;	}
+const QSize &resolution()	const	{	return m_resolution;	}
+int fps()			const	{	return m_fps;		}
 
-QString mapdirectory()	const	{	return m_mapdirectory;	}
+const QString &mapdirectory()	const	{	return m_mapdirectory;	}
 
-float miscVolume()	const	{	return m_misc_volume;	}
-float musicVolume()	const	{	return m_music_volume;	}
+float miscVolume()		const	{	return m_misc_volume;	}
+float musicVolume()		const	{	return m_music_volume;	}
 
-bool cacheMaps()	const	{	return m_cacheMaps;	}
+bool cacheMaps()		const	{	return m_cacheMaps;	}
 
 private:
 QSize m_resolution;

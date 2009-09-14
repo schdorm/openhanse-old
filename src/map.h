@@ -50,43 +50,45 @@ public:
 		West
 	};
 
-	QList <MapObject*> objectlist;
 // QList <ShipClass *> ships;
 	void loadStartMap(const QString &);
 
-	bool loadMap(const Orientations &);
+	bool loadMap(Orientations);
 
+const QList <MapObject*> &objectList() const	{return m_ObjectList;	}
 
-QPoint ret_Coordinate()		{	return coordinate;	}
-QSize ret_Size()		{	return size;		}
-QString ret_Cityname()		{	return cityname;	}
-QString ret_Background()	{	return background;	}
+const QPoint &coordinates()	const	{	return m_coordinate;	}
+const QSize &size()		const	{	return m_size;		}
+const QString &cityname()	const	{	return m_cityname;	}
+const QString &background()	const	{	return m_background;	}
 
-QString ret_Mapnorth()		{	return mapnorth;	}
-QString ret_Mapeast()		{	return mapeast;		}
-QString ret_Mapsouth()		{	return mapsouth;	}
-QString ret_Mapwest()		{	return mapwest;		}
+const QString &mapnorth()	const	{	return m_mapnorth;	}
+const QString &mapeast()	const	{	return m_mapeast;	}
+const QString &mapsouth()	const	{	return m_mapsouth;	}
+const QString &mapwest()	const	{	return m_mapwest;	}
 
-MapType ret_Type()		{	return type;		}
+MapType type()		const	{	return m_type;		}
 
 private:
 bool loadMap(QString);
 
-QString m_mapdirectory;
+// QString m_mapdirectory;
 
 protected:
 
-QString filename;
-QPoint coordinate;
-QSize size;
-bool isCity;
-QString cityname;
-QString background;
-QString mapnorth;
-QString mapeast;
-QString mapsouth;
-QString mapwest;
-MapType type;
+QString m_filename;
+QPoint m_coordinate;
+QSize m_size;
+bool m_isCity;
+QString m_cityname;
+QString m_background;
+QString m_mapnorth;
+QString m_mapeast;
+QString m_mapsouth;
+QString m_mapwest;
+MapType m_type;
+
+	QList <MapObject*> m_ObjectList;
 
 };
 

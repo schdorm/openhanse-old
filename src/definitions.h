@@ -55,26 +55,6 @@ namespace Direction
 }
 
 
-namespace LandingProcess
-{
-	enum landing_process_states
-	{
-		NotActive,
-		WaitingForDestination,
-		ActiveLanding,
-		AtLand
-	};
-	struct landingstructure{
-		landing_process_states landingstate;
-		QLineF landing_line;
-		bool correctOrientation;
-		double l_orientation;
-		double orientation;
-		double vx, vy;
-		QGraphicsPixmapItem *landingShip_gi;
-	};
-}
-
 namespace Tax
 {
 	enum levels

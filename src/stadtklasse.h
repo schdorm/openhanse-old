@@ -36,60 +36,85 @@ public:
 // // int ware01,ware02,ware03,ware04,ware05,ware06,ware07,ware08,ware09,ware10,ware11,ware12, ware13, ware14, ware15, ware16, ware17, ware18, ware19, ware20;		//Waren der Haendler
 // qint16 ware[30];
 // };
-Warenstruct goods;
-QString cityname;
-int inhabitants;
-int id;
-bool hasKontor;		//Kontor built in this town.
+// CityClass(const QString&, int *, int *, int *);
+CityClass(const QString &, const QList<int> &,  const QList<int> &, const QList<int> &);
 
-int hproduction[5];		// high production
-int mproduction[5];
-int lproduction[5];		// low production
+// CityClass(const QString&, int [const_warenanzahl], int [const_warenanzahl], int [const_warenanzahl]);
+
+// CityClass(const QString&, const int &param_hproduction[const_warenanzahl], const int &param_mproduction[const_warenanzahl], const int &param_lproduction[const_warenanzahl])
+
+	void init();
+// 	{
+// 	hasKontor = false;
+// 		srand(time(NULL));
+// 		for(int i=0; i<const_warenanzahl; i++)
+// 		{
+// 		// int p;
+// 		// if(stadtwaren.ware[i]==0)
+// 			{
+// 			int r=rand()%20;
+// 			int s=rand()%20;
+// 			int p = rand()%10;
+// 			goods.ware[i] = s + r + p;
+// 
+// 		}
+// 		// else
+// 		// stadtwaren.ware[i] = int(sqrt(stadtwaren.ware[i] * stadtwaren.ware[i])) % 100;
+// 
+// 		}
+// 	inhabitants = 1300 + rand()%1000;				//das kommt mal noch ins XML-Zeugs rein
+// 
+// 	static int id_counter;
+// 	m_id = id_counter;
+// 	id++;
+// 	}
+
+void reset();
+// {
+// for(int i = 0; i<5; i++)
+// {
+// hproduction[i]=-1;
+// mproduction[i]=-1;
+// lproduction[i]=-1;
+// }
+// cityname = QString();
+// inhabitants = 0;
+// // stadtwaren.kapazitaet = 0;
+// }
+void production(int);
+void setGoods(const Warenstruct &);
+
+
+int id() const	{		return m_id;		}
+int inhabitants()  const	{	return m_inhabitants;	}
+QString cityname() const	{	return m_cityname;	}
+Warenstruct goods() const	{	return m_goods;		}
+
+bool hasKontor() const	{		return m_hasKontor;	}
+
+
+private:
+int m_id;
+QString m_cityname;
+int m_inhabitants;
+Warenstruct m_goods;
+
+
+bool m_hasKontor;		//Kontor built in this town.
+
+int m_hproduction[5];		// high production
+int m_mproduction[5];
+int m_lproduction[5];		// low production
 // public slots:
 //  void produktion(int);
 
 // void produktion();
 // void verbrauch();
 
-	void init()
-	{
-	hasKontor = false;
-		srand(time(NULL));
-		for(int i=0; i<const_warenanzahl; i++)
-		{
-		// int p;
-		// if(stadtwaren.ware[i]==0)
-			{
-			int r=rand()%20;
-			int s=rand()%20;
-			int p = rand()%10;
-			goods.ware[i] = s + r + p;
+QList<int> m_hproductionlist;
+QList<int> m_mproductionlist;
+QList<int> m_lproductionlist;
 
-		}
-		// else
-		// stadtwaren.ware[i] = int(sqrt(stadtwaren.ware[i] * stadtwaren.ware[i])) % 100;
-
-		}
-	inhabitants = 1300 + rand()%1000;				//das kommt mal noch ins XML-Zeugs rein
-
-	static int id_counter;
-	id = id_counter;
-	id++;
-	}
-
-void reset()
-{
-for(int i = 0; i<5; i++)
-{
-hproduction[i]=-1;
-mproduction[i]=-1;
-lproduction[i]=-1;
-}
-cityname = QString();
-inhabitants = 0;
-// stadtwaren.kapazitaet = 0;
-}
-void production(int);
 };
 
 

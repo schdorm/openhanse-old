@@ -24,17 +24,22 @@
 #define GAMEDATA dataManager::instance()->gamedata()	// Game-Data-Pointer
 #define SETTINGS dataManager::instance()->settings()	// Settings-Pointer
 
-#include "dataclass.h"
-#include "settings.h"
+#include <QtCore/QObject>
+
+// #include "dataclass.h"
+// #include "settings.h"
+
+class DataClass;
+class Settings;
 
 class dataManager
 {
 public:
-	dataManager()		// Konstruktor: erzeugt neue Instanzen fuer private Pointer 
-	{
-		m_gamedata = new DataClass();
-		m_globalSettings = new Settings();
-	}
+	dataManager();		// Konstruktor: erzeugt neue Instanzen fuer private Pointer 
+// 	{
+// 		m_gamedata = new DataClass();
+// 		m_globalSettings = new Settings();
+// 	}
 
 	static dataManager *instance()
 		// statische Funktion: erzeugt neue Instanz dieser Klasse, falls keine besteht und gibt diese zurück
@@ -46,11 +51,12 @@ public:
 		return m_instance;
 	}
 	
-	void recreateGamedata()		// loescht alte Spieldaten und erzeugt neue Instanz der Spieldaten
-	{
+	void recreateGamedata();
+		// loescht alte Spieldaten und erzeugt neue Instanz der Spieldaten
+/*	{
 		delete m_gamedata;
 		m_gamedata = new DataClass();
-	}
+	}*/
 	
 	Settings *settings()		// gibt die Settings zurueck
 	{

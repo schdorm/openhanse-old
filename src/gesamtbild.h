@@ -35,7 +35,7 @@
 
 
 
-#include "datamanager.h"
+// #include "datamanager.h"
 
 #include "hauptfenster.h"
 #include "handelsfenster.h"
@@ -82,7 +82,7 @@ void handel();
 void tradingFinished();
 // void handelsupdate();
 // void handelsaktion();
-void produktion(int);
+// void produktion(int);
 
 void landmenu();
 void seemenu();

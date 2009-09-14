@@ -22,13 +22,14 @@
 #include "questclass.h"
 //  #include "hauptfenster.h"
 #include "questhandler.h"
+#include "datamanager.h"
  
  #include <QtDebug>
  #include <QtCore/QFile>
  #include <QtCore/QXmlStreamReader>
 
  
-void QuestHandler::indexQuestFile(QString questfile_name)
+void QuestHandler::indexQuestFile(const QString &questfile_name)
 {
 
   if(!questIndexList.contains(questfile_name))
@@ -64,12 +65,12 @@ void QuestHandler::indexQuestFile(QString questfile_name)
   }
 }
 
-void QuestHandler::setHFPointer(hauptfenster *hfp)
-{
-hfpointer = hfp;
-}
+// void QuestHandler::setHFPointer(hauptfenster *hfp)
+// {
+// hfpointer = hfp;
+// }
 
-void quest::readQuest(QString questfile_name)
+void Quest::readQuest(const QString &questfile_name)
 {
 if(!questfile_name.isEmpty() && questfile_name.endsWith(".ohq"))
 {

@@ -25,18 +25,86 @@
 #include <QtCore/QThread>
 #include <QtCore/QTimer>
 
-#include "stadtklasse.h"
-#include "kontordata.h"
-#include "shipdata.h"
+// #include "stadtklasse.h"
+// #include "kontordata.h"
+// #include "shipdata.h"
 #include "wind.h"
 #include "zeit.h"
 #include "buildingclass.h"
-#include "person.h"
+// #include "person.h"
 #include "map.h"
+ #include "landing.h"
+ 
+ 
+class CityClass;
+class KontorData;
+class ShipData;
+class Person;
+class BuildingClass;
+// class Map;
 
 class DataClass : public QThread
 {
 Q_OBJECT
+public:
+DataClass();
+~DataClass();
+
+
+void addBuilding(const BuildingClass &);		// add a Building .... to the Building .... List
+void addShip(const ShipData &);
+void addKontor(const KontorData &);
+void addCity(const CityClass &);
+void addPerson(const Person &);
+void addMap(const Map &);
+
+void setCurrentCity();
+void setCurrentCity(CityClass *);
+
+
+void pause();
+
+
+
+// QList<CityClass> ret_CityList() const;
+// QList<ShipData> ret_ShipList() const;
+// QList<KontorData> ret_KontorList() const;
+
+void manageMapReading(const Map::Orientations &orientation);
+
+const QList <ShipData> * shipList ()	const	{	return &m_ShipList;	}
+const QList <Person> * personList ()	const	{	return &m_PersonList;	}
+const QList <CityClass> * cityList()	const	{	return &m_CityList;	}
+const QList <KontorData> * kontorList()	const	{	return &m_KontorList;	}
+const QList <BuildingClass> * buildingList() const{	return &m_BuildingList;	}
+
+const QList <Map> * MapList()		const	{	return &m_MapList;	}
+
+#ifdef _RELEASE_
+const zeit & gametime()		const	{	return m_gametime;	}
+const Wind & wind()		const	{	return m_wind;		}
+#else
+zeit & gametime()			{	return m_gametime;	}
+Wind & wind()				{	return m_wind;		}
+#endif
+
+CityClass *activeCity	()		{	return m_ActiveCity;	}
+KontorData *activeKontor()		{	return m_ActiveKontor;	}
+ShipData *activeShip	()		{	return m_ActiveShip;	}
+Person *activeChar	()		{	return m_ActiveChar;	}
+
+Map *currentMap		()		{	return m_CurrentMap;	}
+
+bool anbord		() const 		{	return m_anbord;	}
+
+// LandingProcess::landingstructure *landingstruct() {	return &m_landingstructure;	}
+
+// const LandingProcess::landingstructure *landingstruct() const {	return &m_landingstructure;	}
+
+const Landing &landingState	() const	{	return m_landingprocess;	}
+Landing *landingProcess		()		{	return &m_landingprocess;	}
+
+
 public slots:
 void calcData();
 void startTimer();
@@ -46,60 +114,44 @@ void calcShipMovement();
 signals:
 void sig_newDay(int);
 
-public:
-DataClass();
-~DataClass();
-
-CityClass *active_city;
-KontorData *active_kontor;
-ShipData *active_ship;
-Person *active_char;
-
-zeit gametime;
-Wind wind;
-Map *currentMap;
-
-QList <Map*> maplist;
-
-void addBuilding(const BuildingClass &);		// add a Building .... to the Building .... List
-void addShip(ShipData *);
-void addKontor(const KontorData &);
-void addCity(const CityClass &);
-void addPerson(const Person &);
-
-void setCurrentCity();
-void setCurrentCity(CityClass *);
-
-void pause();
-
-bool anbord;
-
-LandingProcess::landingstructure landingstruct;
-
-
-QList<CityClass> ret_CityList() const;
-QList<ShipData*> ret_ShipList() const;
-QList<KontorData> ret_KontorList() const;
-
-
 private:
 QTimer calc_data_timer;
 QTimer calc_ship_movement_timer;
 int cycle;
 
+void produktion(int);
 
 
 protected:
 // bool singleplayer;
 void run();
 
-int schwierigkeit;
-QList <CityClass> CityList;
-QList <ShipData *> ShipList;
-QList <BuildingClass> BuildingList;
-QList <KontorData> KontorList;
-QList <Person> PersonList;
-ShipData *shipiterator;		//pointer for iterating through lists
+bool m_anbord;
+
+int m_schwierigkeit;
+
+zeit m_gametime;
+Wind m_wind;
+
+QList <CityClass> m_CityList;
+QList <ShipData> m_ShipList;
+QList <BuildingClass> m_BuildingList;
+QList <KontorData> m_KontorList;
+QList <Person> m_PersonList;
+
+QList <Map> m_MapList;			// used only if cache maps is enabled
+
+// ShipData *shipiterator;		//pointer for iterating through lists
+// LandingProcess::landingstructure m_landingstructure;
+Landing m_landingprocess;
+
+CityClass *m_ActiveCity;
+KontorData *m_ActiveKontor;
+ShipData *m_ActiveShip;
+Person *m_ActiveChar;
+
+Map *m_CurrentMap;
+
 };
 
 #endif

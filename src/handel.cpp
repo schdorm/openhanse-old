@@ -25,6 +25,10 @@
 #include "waren.h"
 
 #include "datamanager.h"
+#include "dataclass.h"
+
+#include "stadtklasse.h"
+#include "shipdata.h"
 
 #include <math.h>
 
@@ -372,12 +376,12 @@ for(int i = 0; i < 3; i++)
 	htyp[i]->setEnabled(false);
 }
 
-if(GAMEDATA->active_kontor->getCityID() == GAMEDATA->active_city->id && GAMEDATA->currentMap->ret_Cityname() == GAMEDATA->active_city->cityname)
+if(GAMEDATA->activeKontor()->getCityID() == GAMEDATA->activeCity()->id() && GAMEDATA->currentMap()->cityname() == GAMEDATA->activeCity()->cityname())
 {
 htyp [1]->setEnabled(true);
 htyp[1]->animateClick();
 }
-if(GAMEDATA->active_ship->ret_CurrentPosition().mapcoords == GAMEDATA->currentMap->ret_Coordinate() && GAMEDATA->currentMap->ret_Cityname() == GAMEDATA->active_city->cityname)
+if(GAMEDATA->activeShip()->currentPosition().mapcoords == GAMEDATA->currentMap()->coordinates() && GAMEDATA->currentMap()->cityname() == GAMEDATA->activeCity()->cityname())
 {
 htyp [0]->setEnabled(true);
 htyp[0]->animateClick();
@@ -398,20 +402,20 @@ switch(id)
 {
 	case 0:
 	{
-		setStorage(GAMEDATA->active_ship->cargo, 0);
-		setStorage(GAMEDATA->active_city->goods, 1);
+		setStorage(GAMEDATA->activeShip()->cargo(), 0);
+		setStorage(GAMEDATA->activeCity()->goods(), 1);
 		break;
 	}
 	case 1:
 	{
-		setStorage(GAMEDATA->active_kontor->storage, 0);
-		setStorage(GAMEDATA->active_city->goods, 1);
+		setStorage(GAMEDATA->activeKontor()->storage(), 0);
+		setStorage(GAMEDATA->activeCity()->goods(), 1);
 		break;
 	}
 	case 2:
 	{
-		setStorage(GAMEDATA->active_ship->cargo, 0);
-		setStorage(GAMEDATA->active_kontor->storage, 1);
+		setStorage(GAMEDATA->activeShip()->cargo(), 0);
+		setStorage(GAMEDATA->activeKontor()->storage(), 1);
 		break;
 	}
 }
@@ -659,18 +663,18 @@ void handelsfenster::handelsaktion()
 
 	if(htyp[0]->isEnabled())
 	{
-		GAMEDATA->active_city->goods = storage[1];
-		GAMEDATA->active_ship->cargo = storage[0];
+		GAMEDATA->activeCity()->setGoods(storage[1]);
+		GAMEDATA->activeShip()->setCargo(storage[0]);
 	}
 	else if(htyp[1]->isEnabled())
 	{
-		GAMEDATA->active_city->goods = storage[1];
-		GAMEDATA->active_kontor->storage = storage[0];
+		GAMEDATA->activeCity()->setGoods(storage[1]);
+		GAMEDATA->activeKontor()->setStorage(storage[0]);
 	}
 	else if(htyp[2]->isEnabled())
 	{
-		GAMEDATA->active_kontor->storage = storage[1];
-		GAMEDATA->active_ship->cargo = storage[0];
+		GAMEDATA->activeKontor()->setStorage(storage[1]);
+		GAMEDATA->activeShip()->setCargo(storage[0]);
 	}
 /// 	gameview->activeship.Ladung = lager;
 // 	qWarning() << "gameview->ASL.taler" << gameview->activeship.Ladung.taler;

@@ -22,7 +22,7 @@
 
 
 #include "definitions.h"
-#include "map.h"
+// #include "map.h"
 
 class ShipData
 {
@@ -37,8 +37,7 @@ enum ShipTypes
 	Holk
 	};
 
-Warenstruct cargo;			//Ladung
-QString schiffsname;
+// QString m_schiffsname;
 
 
 
@@ -48,113 +47,96 @@ QString schiffsname;
 // int schifflange;	//entspricht SchiffsBildY
 // int schiffbreite;	//entspricht SchiffsBildX
 
-int control_difficulty;
-bool mouse_control;
 
  int g_height, g_height2;	// graphicsitem - height -> laenge		|| Not needed ?? (Model-Data-concept)
  int g_width, g_width2;		// graphicsitem - width -> breite	||
 
-Map *currentMap;
 
-ShipData()					///== RESET
-{
-	static int idzuweisung;
-	id = idzuweisung;
-	idzuweisung++;
+ShipData(const QString &);
+~ShipData();
 
-	m_setPosAllowed = true;
-	
-	cargo.taler = 5000;
 
-	for(int i = 0; i<const_warenanzahl; i++)
-	{
-		cargo.ware[i]=5;
-	}
-	cargo.fuellung=0;
-
-	condition = 100;		// ehemals: "zustand"
-	type = Kogge;
-	v = 0;
-	dir = 0;
-	toDir = 0;
-	sailDir = 0;
-	rudderDir = 0;
-	toRudderDir = 0;
-	settedSails = 0;
-	toSettedSails = 0;
-	control_velocity = 1;
-	
-	control_difficulty = 0;
-// 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
-	cargo.kapazitaet = rand()%2001;
-}
-~ShipData()
-{
-}
-
-int ret_Condition();
 
 // control: set - fct.
+
+
 void set_ToSettedSails(double);
 void set_SailDir(double);
 void set_ToRudderDir(double);
 void set_ToDir(double);
+void setName(const QString &);
 
-void brake(double);
+bool setCargo(const Warenstruct&);
+
+void brake(const double &);
+
+void setMouseControl(bool);
+void setControlDifficulty(int);
 
 // control: Return - fct.
-double ret_V();
-double ret_SettedSails();
-double ret_ToSettedSails();
-double ret_SailDir();
-// double ret_ToSailDir();
-double ret_Dir();
-double ret_ToDir();
-double ret_RudderDir();
-double ret_ToRudderDir();
 
-PositioningStruct ret_CurrentPosition();
-int ret_MPos_X();
-int ret_MPos_Y();
+QString name()		const	{	return m_name;		}
 
+double v()		const	{	return m_v;		}
+double settedSails()	const	{	return m_settedSails;	}
+double toSettedSails()	const	{	return m_toSettedSails;	}
+double sailDir()	const	{	return m_sailDir;	}
+double dir()		const	{	return m_dir;		}
+double toDir()		const	{	return m_toDir;		}
+double rudderDir()	const	{	return m_rudderDir;	}
+double toRudderDir()	const	{	return m_toRudderDir;	}
+
+Warenstruct cargo()	const	{	return m_cargo;		}
+PositioningStruct currentPosition() const {return m_currentPosition;			}
+
+int mPosX()		const	{	return m_currentPosition.m_position.x();	}
+int mPosY()		const	{	return m_currentPosition.m_position.y();	}
+
+int condition()		const	{	return m_condition;	}
 
 // void bewegungsbeschreibung() --> calculate movement-things ...
-void calcMovement(int, double);
+void calcMovement(int, const double &);
 
 void calcPos();
 
-void setPos(PositioningStruct);
+void setPos(const PositioningStruct&);
 
 private:
 bool m_setPosAllowed;
+int m_delayvar;
+int m_ControlDifficulty;
+bool m_MouseControl;
 
 protected:
 
-int id;
-ShipTypes type;
+Warenstruct m_cargo;			//Ladung
 
+int m_id;
+ShipTypes m_type;
 
-double v;
-double control_velocity;		//describes, how fast a ship can turn; drops, if the ship is spoilt / damaged ..
-double settedSails;
-double toSettedSails;
-bool hasMoved;
+QString m_name;				// the ships name
 
-double dir;
-double toDir;	// mouse-control
-double rudderDir;	//keyboard-control
-double toRudderDir;	// 	''
+double m_v;
+double m_controlVelocity;		//describes, how fast a ship can turn; drops, if the ship is spoilt / damaged ..
+double m_settedSails;
+double m_toSettedSails;
+bool m_hasMoved;
+
+double m_dir;
+double m_toDir;	// mouse-control
+double m_rudderDir;	//keyboard-control
+double m_toRudderDir;	// 	''
 
 // control-difficulty +
-double sailDir;
+double m_sailDir;
 // double toSailDir;
 
 
-PositioningStruct currentPosition;
-
-int condition;
-int controlcondition;		// Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
-int seamen;			// Matrosen
+PositioningStruct m_currentPosition;
+// UI6L
+int m_condition;
+int m_controlcondition;		// Manoevrierzustand: wie gut kann das Schiff lenken, wie intakt sind die Segel
+int m_seamen;			// Matrosen
 
 };
 

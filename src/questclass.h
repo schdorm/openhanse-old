@@ -24,35 +24,33 @@
 
 #include "zeit.h"
 
-namespace Quest
+
+class Quest
 {
-	enum questtasks
+public:
+enum tasks
 	{
 	talk,
 	obtainGoods,
 	delivery,
 	
 	};
-	enum questtypes
+	enum types
 	{
 	startofquest,
 	step,
 	endofquest,
 	
 	};
-}
-
-
-class quest
-{
-public:
-zeit *hfgametime;
-void readQuest(QString);
+	
+zeit hfgametime;
+void readQuest(const QString&);
 
 
 private:
 
-Quest::questtypes questtype;
+types m_type;
+tasks m_task;
 int destinationTownID;
 bool questfollowing;
 

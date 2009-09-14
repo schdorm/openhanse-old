@@ -21,9 +21,11 @@
 
 
 // #define _RELEASE_
-#define _NO_CONTROL_LABEL_
+// #define _NO_CONTROL_LABEL_
 
 #include "hauptfenster.h"
+
+#include "shipdata.h"
 
 #include <math.h>
 
@@ -49,19 +51,20 @@
 // #include <QtCore/QFile>
 
 #include "konsole.h"
+#include "dataclass.h"
 
 hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*/)
 {
 // 	GAMEDATA = param_GAMEDATA;
 // 	currentSettings = paramsettings;
 
-// 	qWarning() << "Schiffstyp" << GAMEDATA->active_ship->type;
+// 	qWarning() << "Schiffstyp" << GAMEDATA->activeShip()->type;
 
-	GAMEDATA->anbord = true;
+// 	GAMEDATA->anbord = true;
 	pause = false;
 	
 // 	GAMEDATA->gametime.init();
-// 	GAMEDATA->wind.init();
+// 	GAMEDATA->wind().init();
 
 // 	szene = new QGraphicsScene();
 
@@ -73,16 +76,16 @@ hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*
 	setFocus();
 // 	centerOn(testschiff->x(),testschiff->y());
 // 	centerOn(testschiff);
-// 	GAMEDATA->active_ship->schiffbreite = testschiff->boundingRect().width();
-// 	GAMEDATA->active_ship->schifflange = testschiff->boundingRect().height();
- 	GAMEDATA->active_ship->schiffsname = tr("Seeadler");
+// 	GAMEDATA->activeShip()->schiffbreite = testschiff->boundingRect().width();
+// 	GAMEDATA->activeShip()->schifflange = testschiff->boundingRect().height();
+//   	GAMEDATA->activeShip()->setName(tr("Seeadler"));
 
 #ifndef _NO_CONTROL_LABEL_
 
 	QWidget *status = new QWidget();
 
 	knoten = new QLabel();
-	sollknoten = new QLabel();
+// 	sollknoten = new QLabel();
 	segel = new QLabel();
 	sollsegel = new QLabel();
 	solldir = new QLabel();
@@ -100,17 +103,17 @@ hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*
 
 	QLabel *fok = new QLabel("Auf Schiff fokussieren");
 
-	knoten -> setText (QString("V:%1").arg(GAMEDATA->active_ship->attribute.geschwindigkeit));
-	sollknoten -> setText(QString("SollV: %1").arg(GAMEDATA->active_ship->attribute.sollgeschwindigkeit));
+	knoten -> setText (QString("V:%1").arg(GAMEDATA->activeShip()->v()));
+// 	sollknoten -> setText(QString("SollV: %1").arg(GAMEDATA->activeShip()->attribute.sollgeschwindigkeit));
 
-	segel->setText(QString("SegelFlaeche: %1").arg(GAMEDATA->active_ship->attribute.prozentgesetzteSegel));
-	sollsegel->setText(QString("SollSegelFl: %1").arg(GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel));
-	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->active_ship->attribute.segelausrichtung));
+	segel->setText(QString("SegelFlaeche: %1").arg(GAMEDATA->activeShip()->settedSails()));
+	sollsegel->setText(QString("SollSegelFl: %1").arg(GAMEDATA->activeShip()->toSettedSails()));
+	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->activeShip()->sailDir()));
 
-	solldir -> setText(QString("SollDir %1").arg(GAMEDATA->active_ship->attribute.sollausrichtung));
-	dir -> setText(QString("Dir %1").arg(GAMEDATA->active_ship->attribute.ausrichtung));
-	steuerdir -> setText(QString("SteuerDir: %1").arg(GAMEDATA->active_ship->attribute.steuerruderausrichtung));
-	sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(GAMEDATA->active_ship->attribute.sollsteuerruderausrichtung));
+	solldir -> setText(QString("SollDir %1").arg(GAMEDATA->activeShip()->toDir()));
+	dir -> setText(QString("Dir %1").arg(GAMEDATA->activeShip()->dir()));
+	steuerdir -> setText(QString("SteuerDir: %1").arg(GAMEDATA->activeShip()->rudderDir()));
+	sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(GAMEDATA->activeShip()->toRudderDir()));
 
 //  	winddir -> setText(QString("WindDir: %1").arg(windrichtung));
 // 	windv -> setText(QString("WindV: %1").arg(windgeschwindigkeit));
@@ -122,7 +125,7 @@ hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*
 	sollsteuerdir->setFixedWidth(200);
 	QVBoxLayout layout;
 	layout.addWidget(knoten);
-	layout.addWidget(sollknoten);
+// 	layout.addWidget(sollknoten);
 
 	layout.addWidget(sollsegel);
 	layout.addWidget(segel);
@@ -160,7 +163,7 @@ foreach(graphicsitem_it, dellist)
 delete graphicsitem_it;
 }
 scene()->clear();
-// delete szene;
+delete scene();
 }
 
 
@@ -180,7 +183,7 @@ QPointF clickpoint = QPointF((event->x() + horizontalScrollBar()->value())/scale
 (event->y() + verticalScrollBar()->value())/scale);
 if(!pause)
 {
-	if(GAMEDATA->landingstruct.landingstate == LandingProcess::WaitingForDestination)
+/*	if(GAMEDATA->landingState().status == Landing::WaitingForDestination)
 	{
 	QGraphicsItem *it;
 	QList <QGraphicsItem *> qgilistAP = scene()->items(clickpoint);
@@ -188,33 +191,33 @@ if(!pause)
 	{
 		if(it->data(0).toInt() >= 100 && it->data(0).toInt() < 500 )
 		{
-		GAMEDATA->landingstruct.landing_line = QLineF(QPointF(GAMEDATA->landingstruct.landingShip_gi->x() + GAMEDATA->landingstruct.landingShip_gi->boundingRect().width()/2, GAMEDATA->landingstruct.landingShip_gi->y() + GAMEDATA->landingstruct.landingShip_gi->boundingRect().height()/2), clickpoint);
-		GAMEDATA->landingstruct.landingstate = LandingProcess::ActiveLanding;
-		GAMEDATA->landingstruct.vx = GAMEDATA->landingstruct.landing_line.dx() / GAMEDATA->landingstruct.landing_line.length();
-		GAMEDATA->landingstruct.vy = GAMEDATA->landingstruct.landing_line.dy() / GAMEDATA->landingstruct.landing_line.length();
-		GAMEDATA->landingstruct.l_orientation = (GAMEDATA->landingstruct.landing_line.angle() - 90) ;
-		if (GAMEDATA->landingstruct.l_orientation < 0)
+		GAMEDATA->landingProcess()->landing_line = QLineF(QPointF(GAMEDATA->landingState().landingShip_gi->x() + GAMEDATA->landingState().landingShip_gi->boundingRect().width()/2, GAMEDATA->landingState().landingShip_gi->y() + GAMEDATA->landingState().landingShip_gi->boundingRect().height()/2), clickpoint);
+		GAMEDATA->landingProcess()->status = Landing::ActiveLanding;
+		GAMEDATA->landingProcess()->vx = GAMEDATA->landingState().landing_line.dx() / GAMEDATA->landingState().landing_line.length();
+		GAMEDATA->landingProcess()->vy = GAMEDATA->landingState().landing_line.dy() / GAMEDATA->landingState().landing_line.length();
+		GAMEDATA->landingstruct()->l_orientation = (GAMEDATA->landingstruct()->landing_line.angle() - 90) ;
+		if (GAMEDATA->landingstruct()->l_orientation < 0)
 		{
-		GAMEDATA->landingstruct.l_orientation += 360;
+		GAMEDATA->landingstruct()->l_orientation += 360;
 		}
-		GAMEDATA->landingstruct.l_orientation = GAMEDATA->landingstruct.l_orientation *  M_PI / 180;
-		konsolenwidget->debug(QString("landing_line_orientation: %1 ").arg(GAMEDATA->landingstruct.l_orientation));
-		konsolenwidget->debug(QString("landing_line_angle: %1 ").arg(GAMEDATA->landingstruct.landing_line.angle()));
-		konsolenwidget->debug(QString("landing orientation: %1 ").arg(GAMEDATA->landingstruct.orientation));
-		qWarning() << GAMEDATA->landingstruct.vx << GAMEDATA->landingstruct.landing_line.dx() << GAMEDATA->landingstruct.vy << GAMEDATA->landingstruct.landing_line.dy() << GAMEDATA->landingstruct.landing_line.length();
-		GAMEDATA->landingstruct.correctOrientation = false;
+		GAMEDATA->landingstruct()->l_orientation = GAMEDATA->landingstruct()->l_orientation *  M_PI / 180;
+		konsolenwidget->debug(QString("landing_line_orientation: %1 ").arg(GAMEDATA->landingstruct()->l_orientation));
+		konsolenwidget->debug(QString("landing_line_angle: %1 ").arg(GAMEDATA->landingstruct()->landing_line.angle()));
+		konsolenwidget->debug(QString("landing orientation: %1 ").arg(GAMEDATA->landingstruct()->orientation));
+		qWarning() << GAMEDATA->landingstruct()->vx << GAMEDATA->landingstruct()->landing_line.dx() << GAMEDATA->landingstruct()->vy << GAMEDATA->landingstruct()->landing_line.dy() << GAMEDATA->landingstruct()->landing_line.length();
+		GAMEDATA->landingstruct()->correctOrientation = false;
 		return;
 		}
 		else if(it->data(0).toString() == QString("ship")){
 				// Iterator, that find
-// 		foreach(GAMEDATA->active_ship, GAMEDATA->currentMap->ships)
+// 		foreach(GAMEDATA->activeShip(), GAMEDATA->currentMap()->ships)
 		
 		}
 	}
 	
 	
-	}
-	if(!GAMEDATA->anbord && GAMEDATA->landingstruct.landingstate == LandingProcess::AtLand)
+	}*/
+	if(!GAMEDATA->anbord() && GAMEDATA->landingState().status() == Landing::AtLand)
 	{
 //	if(QLine(clickpoint, active_person->ortblah).lenght < 100)
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
@@ -233,10 +236,10 @@ if(!pause)
 // 			qWarning() << "Item Name getroffen";
 // #endif
 // 			}
-			if(ort == GAMEDATA->landingstruct.landingShip_gi)
-			{
-			GAMEDATA->landingstruct.landingstate = LandingProcess::WaitingForDestination;
-			}
+// 			if(ort == GAMEDATA->landingstruct()->landingShip_gi)
+// 			{
+// 			GAMEDATA->landingstruct()->landingstate = LandingProcess::WaitingForDestination;
+// 			}
 			switch (ort->data(0).toInt())
 			{
 				case ObjectType::Market:
@@ -298,13 +301,13 @@ if(!pause)
 // #endif
 		}
 	}
-	else if(GAMEDATA->anbord)
+	else if(GAMEDATA->anbord())
 	{
-// 	GAMEDATA->active_ship->mouse_control = true;
+// 	GAMEDATA->activeShip()->mouse_control = true;
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
 	int y = (event->y() + verticalScrollBar()->value())/scale;
 
-	PositioningStruct ship_pos = GAMEDATA->active_ship->ret_CurrentPosition();
+	PositioningStruct ship_pos = GAMEDATA->activeShip()->currentPosition();
 	
 	int mposx = ship_pos.m_position.x();
 	int mposy = ship_pos.m_position.y();
@@ -324,10 +327,10 @@ if(!pause)
 		float klickabstand = sqrt( diffx*diffx + diffy*diffy);
 		float winkel = asin(diffy/klickabstand);
 
-		GAMEDATA->active_ship->set_ToDir(3*M_PI/2 + winkel);
+		GAMEDATA->activeShip()->set_ToDir(3*M_PI/2 + winkel);
 
 #ifndef _RELEASE_
-		qWarning() << "I" << winkel << "Ausrichtung" << GAMEDATA->active_ship->ret_ToDir() <<"Abstand:" <<klickabstand;
+		qWarning() << "I" << winkel << "Ausrichtung" << GAMEDATA->activeShip()->toDir() <<"Abstand:" <<klickabstand;
 #endif
 	}
 
@@ -340,10 +343,10 @@ if(!pause)
 // #ifndef _RELEASE_
 // 		qWarning() << "II" << winkel << klickabstand;
 // #endif
-		GAMEDATA->active_ship->set_ToDir(winkel);
+		GAMEDATA->activeShip()->set_ToDir(winkel);
 
 #ifndef _RELEASE_
-		qWarning() << "II" << winkel << "Ausrichtung" << GAMEDATA->active_ship->ret_ToDir() <<"Abstand:" <<klickabstand;
+		qWarning() << "II" << winkel << "Ausrichtung" << GAMEDATA->activeShip()->toDir() <<"Abstand:" <<klickabstand;
 #endif
 	}
 
@@ -356,10 +359,10 @@ if(!pause)
 // #ifndef _RELEASE_
 // 		qWarning() << "III" << winkel << klickabstand;
 // #endif
-		GAMEDATA->active_ship->set_ToDir(M_PI/2 + winkel);
+		GAMEDATA->activeShip()->set_ToDir(M_PI/2 + winkel);
 
 #ifndef _RELEASE_
-		qWarning() << "III" << winkel << "Ausrichtung" << GAMEDATA->active_ship->ret_ToDir() <<"Abstand:" <<klickabstand;
+		qWarning() << "III" << winkel << "Ausrichtung" << GAMEDATA->activeShip()->toDir() <<"Abstand:" <<klickabstand;
 #endif
 	}
 
@@ -372,13 +375,13 @@ if(!pause)
 // #ifndef _RELEASE_
 // 		qWarning() << "IV" << winkel << klickabstand;
 // #endif
-		GAMEDATA->active_ship->set_ToDir(M_PI + winkel);
+		GAMEDATA->activeShip()->set_ToDir(M_PI + winkel);
 #ifndef _RELEASE_
-		qWarning() << "IV" << winkel << "Ausrichtung" << GAMEDATA->active_ship->ret_ToDir() <<"Abstand:" <<klickabstand;
+		qWarning() << "IV" << winkel << "Ausrichtung" << GAMEDATA->activeShip()->toDir() <<"Abstand:" <<klickabstand;
 #endif
 	}
 // 	tastatur=false;
-	GAMEDATA->active_ship->mouse_control = true;
+	GAMEDATA->activeShip()->setMouseControl(true);
 	}
 }
 }
@@ -396,15 +399,15 @@ switch (event->key())
 {
 	case Qt::Key_W:
 	{
-		if(GAMEDATA->anbord)
+		if(GAMEDATA->anbord())
 		{
-// 		if(GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel < 1)
+// 		if(GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel < 1)
 // 		{
-// 			GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel = GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel + 0.2;
-			GAMEDATA->active_ship->set_ToSettedSails(GAMEDATA->active_ship->ret_ToSettedSails() + 0.2);
-// 			GAMEDATA->active_ship->mouse_control = false;
+// 			GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel = GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel + 0.2;
+			GAMEDATA->activeShip()->set_ToSettedSails(GAMEDATA->activeShip()->toSettedSails() + 0.2);
+// 			GAMEDATA->activeShip()->mouse_control = false;
 #ifndef _RELEASE_
-			qWarning() << "Segel gesetzt:" << GAMEDATA->active_ship->ret_ToSettedSails();
+			qWarning() << "Segel gesetzt:" << GAMEDATA->activeShip()->toSettedSails();
 #endif
 
 // 		}
@@ -417,10 +420,10 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
-					GAMEDATA->active_ship->set_ToSettedSails(GAMEDATA->active_ship->ret_ToSettedSails() - 0.2);
-// 					GAMEDATA->active_ship->mouse_control = false;
+					GAMEDATA->activeShip()->set_ToSettedSails(GAMEDATA->activeShip()->toSettedSails() - 0.2);
+// 					GAMEDATA->activeShip()->mouse_control = false;
 				}
 				else
 				{
@@ -449,11 +452,11 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
-					GAMEDATA->active_ship->set_ToRudderDir(GAMEDATA->active_ship->ret_ToRudderDir() + 0.0002);
+					GAMEDATA->activeShip()->set_ToRudderDir(GAMEDATA->activeShip()->toRudderDir() + 0.0002);
 // 					tastatur = true;
-// 					GAMEDATA->active_ship->mouse_control = false;
+// 					GAMEDATA->activeShip()->mouse_control = false;
 					
 				}
 				else
@@ -464,9 +467,9 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
-				GAMEDATA->active_ship->set_SailDir(GAMEDATA->active_ship->ret_SailDir() + 0.02);
+				GAMEDATA->activeShip()->set_SailDir(GAMEDATA->activeShip()->sailDir() + 0.02);
 
 				}
 				else
@@ -485,10 +488,10 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
-					GAMEDATA->active_ship->set_ToRudderDir(GAMEDATA->active_ship->ret_ToRudderDir() - 0.0002);
-// 					GAMEDATA->active_ship->mouse_control = false;
+					GAMEDATA->activeShip()->set_ToRudderDir(GAMEDATA->activeShip()->toRudderDir() - 0.0002);
+// 					GAMEDATA->activeShip()->mouse_control = false;
 				}
 				else
 				{
@@ -498,7 +501,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
 					
 				}
@@ -554,7 +557,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
 				}
 				else
@@ -565,7 +568,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord)
+				if(GAMEDATA->anbord())
 				{
 					
 				}
@@ -578,7 +581,9 @@ switch (event->key())
 			case Qt::ControlModifier:
 			{
 #ifndef _RELEASE_
-				GAMEDATA->active_ship->cargo.taler += 1000;
+				Warenstruct tempware = GAMEDATA->activeShip()->cargo();
+				tempware.taler += 1000;
+				GAMEDATA->activeShip()->setCargo(tempware);
 #endif
 				break;
 			}
@@ -589,27 +594,27 @@ switch (event->key())
 #ifndef _RELEASE_
 	case Qt::Key_C:
 	{
-// 		centerOn(GAMEDATA->active_ship->graphicsitem);
+// 		centerOn(GAMEDATA->activeShip()->graphicsitem);
 		break;
 	}
 	case Qt::Key_L:
 	{
-		GAMEDATA->wind.setV(GAMEDATA->wind.v() + 1);
+		GAMEDATA->wind().setV(GAMEDATA->wind().v() + 1);
 		break;
 	}
 	case Qt::Key_K:
 	{
-		GAMEDATA->wind.setV(GAMEDATA->wind.v() - 1);
+		GAMEDATA->wind().setV(GAMEDATA->wind().v() - 1);
 		break;
 	}
 	case Qt::Key_Left:
 	{
 // 		if(anbord)
 // 		{
-// 		GAMEDATA->active_ship->attribute.ausrichtung += 0.2;
-// 		if(GAMEDATA->active_ship->attribute.ausrichtung > 2 * M_PI)
+// 		GAMEDATA->activeShip()->attribute.ausrichtung += 0.2;
+// 		if(GAMEDATA->activeShip()->attribute.ausrichtung > 2 * M_PI)
 // 		{
-// 			GAMEDATA->active_ship->attribute.ausrichtung = 0.1;
+// 			GAMEDATA->activeShip()->attribute.ausrichtung = 0.1;
 // 		}
 // 		}
 		break;
@@ -618,25 +623,25 @@ switch (event->key())
 	{
 // 		if(anbord)
 // 		{
-// 		GAMEDATA->active_ship->attribute.ausrichtung -= 0.2;
-// 		if(GAMEDATA->active_ship->attribute.ausrichtung < 0 )
+// 		GAMEDATA->activeShip()->attribute.ausrichtung -= 0.2;
+// 		if(GAMEDATA->activeShip()->attribute.ausrichtung < 0 )
 // 		{
-// 			GAMEDATA->active_ship->attribute.ausrichtung = 2 * M_PI - 0.1;
+// 			GAMEDATA->activeShip()->attribute.ausrichtung = 2 * M_PI - 0.1;
 // 		}
 // 		}
 		break;
 	}
 	case Qt::Key_Up:
 	{
-		if(GAMEDATA->anbord)
-// 		GAMEDATA->active_ship->attribute.geschwindigkeit ++;
+		if(GAMEDATA->anbord())
+// 		GAMEDATA->activeShip()->attribute.geschwindigkeit ++;
 		break;
 	}
 
 	case Qt::Key_Down:
 	{
-		if(GAMEDATA->anbord)
-// 		GAMEDATA->active_ship->attribute.geschwindigkeit--;
+		if(GAMEDATA->anbord())
+// 		GAMEDATA->activeShip()->attribute.geschwindigkeit--;
 		break;
 	}
 
@@ -705,10 +710,10 @@ void hauptfenster::segelsetzen(int i)
 {
 konsolenwidget->debug(QString("void hauptfenster::segelsetzen(int i) ").append(i));
 // float n = i;
-// GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel = n/5;
-GAMEDATA->active_ship->set_ToSettedSails(i/5);
+// GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel = n/5;
+GAMEDATA->activeShip()->set_ToSettedSails(i/5);
 #ifndef _RELEASE_
-qWarning() << "sollgesetzteSegel:" << GAMEDATA->active_ship->ret_ToSettedSails();
+qWarning() << "sollgesetzteSegel:" << GAMEDATA->activeShip()->toSettedSails();
 #endif
 }
 
@@ -733,10 +738,10 @@ qWarning() << "graphics Aktualisieren";
 
 // qWarning()<< "KGL: WL: Eintraege" << wolkenliste.size();
 
-if(GAMEDATA->wind.v() > 0)
+if(GAMEDATA->wind().v() > 0)
 {
-	double windrichtung = GAMEDATA->wind.dir();
-	int windgeschwindigkeit = GAMEDATA->wind.v();
+	double windrichtung = GAMEDATA->wind().dir();
+	int windgeschwindigkeit = GAMEDATA->wind().v();
 
 #ifndef _NO_CONTROL_LABEL_
 	winddir -> setText(QString("WindDir: %1").arg(windrichtung));
@@ -757,21 +762,21 @@ if(GAMEDATA->wind.v() > 0)
 			if(wolkenit->x() <10 )
 			{
 // wolke->setPos(3800 - (windgeschwindigkeit * sin(windrichtung))/10, wolke->y() - (windgeschwindigkeit * cos(windrichtung))/10);
-				wolkenit->setPos(GAMEDATA->currentMap->ret_Size().width() - 10, (rand()%(GAMEDATA->currentMap->ret_Size().height() - 200)) + 50);
+				wolkenit->setPos(GAMEDATA->currentMap()->size().width() - 10, (rand()%(GAMEDATA->currentMap()->size().height() - 200)) + 50);
 			}
-			else if(wolkenit->x() > GAMEDATA->currentMap->ret_Size().width() - 10 )
+			else if(wolkenit->x() > GAMEDATA->currentMap()->size().width() - 10 )
 			{
 // wolke->setPos(205 - (windgeschwindigkeit * sin(windrichtung))/10, wolke->y() - (windgeschwindigkeit * cos(windrichtung))/10);
-				wolkenit->setPos(10, (rand()%(GAMEDATA->currentMap->ret_Size().height() - 200)) + 50);
+				wolkenit->setPos(10, (rand()%(GAMEDATA->currentMap()->size().height() - 200)) + 50);
 			}
 			else if(wolkenit->y() <10 )
 			{
-				wolkenit->setPos((rand() % (GAMEDATA->currentMap->ret_Size().width() - 200)) + 50, GAMEDATA->currentMap->ret_Size().height() - 10);
+				wolkenit->setPos((rand() % (GAMEDATA->currentMap()->size().width() - 200)) + 50, GAMEDATA->currentMap()->size().height() - 10);
 // wolke->setPos( wolke->x() - (windgeschwindigkeit * sin(windrichtung))/10, 2800 - (windgeschwindigkeit * cos(windrichtung))/10);
 			}
-			else if(wolkenit->y() > GAMEDATA->currentMap->ret_Size().height() - 10 )
+			else if(wolkenit->y() > GAMEDATA->currentMap()->size().height() - 10 )
 			{
-				wolkenit->setPos((rand() % (GAMEDATA->currentMap->ret_Size().width() - 200)) + 50, 10);
+				wolkenit->setPos((rand() % (GAMEDATA->currentMap()->size().width() - 200)) + 50, 10);
 // wolke->setPos( wolke->x() - (windgeschwindigkeit * sin(windrichtung))/10, 205 - (windgeschwindigkeit * cos(windrichtung))/10);
 			}
 		}
@@ -785,21 +790,21 @@ if(GAMEDATA->wind.v() > 0)
 			if(wolkenit->x() <10 )
 			{
 // wolke->setPos(3800 - (windgeschwindigkeit * sin(windrichtung))/10, wolke->y() - (windgeschwindigkeit * cos(windrichtung))/10);
-				wolkenit->setPos(GAMEDATA->currentMap->ret_Size().width() - 10, (rand()%(GAMEDATA->currentMap->ret_Size().height() - 200)) + 50);
+				wolkenit->setPos(GAMEDATA->currentMap()->size().width() - 10, (rand()%(GAMEDATA->currentMap()->size().height() - 200)) + 50);
 			}
-			else if(wolkenit->x() > GAMEDATA->currentMap->ret_Size().width() - 10 )
+			else if(wolkenit->x() > GAMEDATA->currentMap()->size().width() - 10 )
 			{
 // wolke->setPos(205 - (windgeschwindigkeit * sin(windrichtung))/10, wolke->y() - (windgeschwindigkeit * cos(windrichtung))/10);
-				wolkenit->setPos(10, (rand()%(GAMEDATA->currentMap->ret_Size().height() - 200)) + 50);
+				wolkenit->setPos(10, (rand()%(GAMEDATA->currentMap()->size().height() - 200)) + 50);
 			}
 			else if(wolkenit->y() <10 )
 			{
-				wolkenit->setPos((rand() % (GAMEDATA->currentMap->ret_Size().width() - 200)) + 50, GAMEDATA->currentMap->ret_Size().height() - 10);
+				wolkenit->setPos((rand() % (GAMEDATA->currentMap()->size().width() - 200)) + 50, GAMEDATA->currentMap()->size().height() - 10);
 // wolke->setPos( wolke->x() - (windgeschwindigkeit * sin(windrichtung))/10, 2800 - (windgeschwindigkeit * cos(windrichtung))/10);
 			}
-			else if(wolkenit->y() > GAMEDATA->currentMap->ret_Size().height() - 10 )
+			else if(wolkenit->y() > GAMEDATA->currentMap()->size().height() - 10 )
 			{
-				wolkenit->setPos((rand() % (GAMEDATA->currentMap->ret_Size().width() - 200)) + 50, 10);
+				wolkenit->setPos((rand() % (GAMEDATA->currentMap()->size().width() - 200)) + 50, 10);
 // wolke->setPos( wolke->x() - (windgeschwindigkeit * sin(windrichtung))/10, 205 - (windgeschwindigkeit * cos(windrichtung))/10);
 			}
 		}
@@ -813,31 +818,31 @@ if(GAMEDATA->wind.v() > 0)
 ///////SCHIFF////////////////////////////////////////
 //falls v>0 / geplant: v>0
 // qWarning() << "IfAnbord";
-if(GAMEDATA->landingstruct.landingstate == LandingProcess::ActiveLanding)
+/*if(GAMEDATA->landingstruct()->landingstate == LandingProcess::ActiveLanding)
 {
 #ifdef _DEBUG_REFRESH_
 qWarning() << "Landing";
 #endif
 activeLanding();
-}
+}*/
 
 
-else if(GAMEDATA->anbord)
+else if(GAMEDATA->anbord())
 {
 
 // qWarning() << "Beginn Schiffszeug";
-// if(GAMEDATA->active_ship->attribute.geschwindigkeit > 0 || GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel > 0 || GAMEDATA->active_ship->attribute.prozentgesetzteSegel > 0 || windgeschwindigkeit > 0)
+// if(GAMEDATA->activeShip()->attribute.geschwindigkeit > 0 || GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel > 0 || GAMEDATA->activeShip()->attribute.prozentgesetzteSegel > 0 || windgeschwindigkeit > 0)
 {
 #ifdef _DEBUG_REFRESH_
   	qWarning() << "Calc Movement";
 #endif
 
-///	GAMEDATA->active_ship->calcMovement(GAMEDATA->wind.retV(), GAMEDATA->wind.retDir());
+///	GAMEDATA->activeShip()->calcMovement(GAMEDATA->wind().retV(), GAMEDATA->wind().retDir());
 
 #ifdef _DEBUG_REFRESH_
 	qWarning() << "End: Calc Movement (disabled), move Graphics";
 #endif
-// 	GAMEDATA->active_ship->moveGraphics();
+// 	GAMEDATA->activeShip()->moveGraphics();
 
 //////////////////////Landkollossion
 /////////////////Schiffbar?
@@ -866,10 +871,10 @@ if(activeship_model->setShipPos())
 		if(schiffskollision(landgi))
 		{
 			static int ibrprufg[3];			//Ueberpruefungszahl: Neubelegung der Bilder erforderlich?
-// int eolx = (testschiff->x() +  (cos(GAMEDATA->active_ship->attribute.ausrichtung) * schifflange)/2 + (sin(GAMEDATA->active_ship->attribute.ausrichtung) * schiffhohe)/2 - landgi->x()),
-// eoly = testschiff->y() + (cos(GAMEDATA->active_ship->attribute.ausrichtung) * schiffhohe)/2 + (sin(GAMEDATA->active_ship->attribute.ausrichtung) * schifflange)/2 - landgi->y();
-			int eolx = GAMEDATA->active_ship->ret_MPos_X() - landgi->x(),
-			eoly = GAMEDATA->active_ship->ret_MPos_Y() - landgi->y();
+// int eolx = (testschiff->x() +  (cos(GAMEDATA->activeShip()->attribute.ausrichtung) * schifflange)/2 + (sin(GAMEDATA->activeShip()->attribute.ausrichtung) * schiffhohe)/2 - landgi->x()),
+// eoly = testschiff->y() + (cos(GAMEDATA->activeShip()->attribute.ausrichtung) * schiffhohe)/2 + (sin(GAMEDATA->activeShip()->attribute.ausrichtung) * schifflange)/2 - landgi->y();
+			int eolx = GAMEDATA->activeShip()->mPosX() - landgi->x(),
+			eoly = GAMEDATA->activeShip()->mPosY() - landgi->y();
 
 			int arrakt;				// Ueberpruefung: aktives Arrayfeld
 			if(ibrprufg[0] != iz)
@@ -916,22 +921,22 @@ if(activeship_model->setShipPos())
 // 	bremsfaktor = bremsfaktor /** bremsfaktor * bremsfaktor*/ / 10;
 // 	bremsfaktor = sqrt(sqrt(sqrt(bremsfaktor)));
 //  	qWarning() << bremsfaktor;
-// 	GAMEDATA->active_ship->attribute.geschwindigkeit = GAMEDATA->active_ship->attribute.geschwindigkeit * (1 - bremsfaktor);
-	GAMEDATA->active_ship->brake(bremsfaktor);
+// 	GAMEDATA->activeShip()->attribute.geschwindigkeit = GAMEDATA->activeShip()->attribute.geschwindigkeit * (1 - bremsfaktor);
+	GAMEDATA->activeShip()->brake(bremsfaktor);
 	}
 // }
 	/////Kartenrand - Mapwechsel
-	int ship_xpos = GAMEDATA->active_ship->ret_MPos_X();
-	int ship_ypos = GAMEDATA->active_ship->ret_MPos_Y();
-	if(ship_xpos > GAMEDATA->currentMap->ret_Size().width() - 120 )
+	int ship_xpos = GAMEDATA->activeShip()->mPosX();
+	int ship_ypos = GAMEDATA->activeShip()->mPosY();
+	if(ship_xpos > GAMEDATA->currentMap()->size().width() - 120 )
 		{
- 		qWarning()<< "Mapwechsel zu Ost" << GAMEDATA->currentMap->ret_Mapeast();
- 		if(! GAMEDATA->currentMap->ret_Mapeast().isEmpty())
+ 		qWarning()<< "Mapwechsel zu Ost" << GAMEDATA->currentMap()->mapeast();
+ 		if(! GAMEDATA->currentMap()->mapeast().isEmpty())
  		{
 // 			float ty = ypos;
 // 			delete testschiff;
 // 			karteladen(mapprops.mapeast);
-// 			GAMEDATA->active_ship->attribute.map = mapprops.mapname;
+// 			GAMEDATA->activeShip()->attribute.map = mapprops.mapname;
 // //  			qWarning() << "Karte geladen (mapeast)";
 // //  			activeship->graphicsitem->setPos(125, ypos);
 // // 			qWarning() << "Pos gesetzt";
@@ -944,8 +949,8 @@ if(activeship_model->setShipPos())
 		}
 	else if(ship_xpos < 120 )
 		{
-		qWarning() << "Mapwechsel zu West" << GAMEDATA->currentMap->ret_Mapwest();
-		if(!GAMEDATA->currentMap->ret_Mapwest().isEmpty())
+		qWarning() << "Mapwechsel zu West" << GAMEDATA->currentMap()->mapwest();
+		if(!GAMEDATA->currentMap()->mapwest().isEmpty())
 		{
 // 			float ty = testschiff->y();
 //  			qWarning() << ty;
@@ -953,10 +958,10 @@ if(activeship_model->setShipPos())
 // 			scene()-> clear();
 // 			scene()-> deleteLater();
 // 			karteladen(mapprops.mapwest);
-// 			GAMEDATA->active_ship->attribute.map = mapprops.mapname;
+// 			GAMEDATA->activeShip()->attribute.map = mapprops.mapname;
 // // 			delete testschiff;
 // //  			qWarning() << "Karte geladen (mapwest)";
-// // 			testschiff = szene->addPixmap(QPixmap(GAMEDATA->active_ship->attribute.filename));
+// // 			testschiff = szene->addPixmap(QPixmap(GAMEDATA->activeShip()->attribute.filename));
 // // 			testschiff = szene->add#
 // // 			qWarning() << "Schiff geladen";
 // 			testschiff->setPos(mapprops.breite-125,ty);
@@ -972,14 +977,14 @@ if(activeship_model->setShipPos())
 
 	if(ship_ypos < 120)
 		{
- 		qWarning()<< "Mapwechsel zu Nord:" << GAMEDATA->currentMap->ret_Mapnorth();
-		if(! GAMEDATA->currentMap->ret_Mapnorth().isEmpty())
+ 		qWarning()<< "Mapwechsel zu Nord:" << GAMEDATA->currentMap()->mapnorth();
+		if(! GAMEDATA->currentMap()->mapnorth().isEmpty())
 		{
 // 			float tx = testschiff->x();
 // 			delete testschiff;
 
 // 			karteladen(mapprops.mapnorth);
-// 			GAMEDATA->active_ship->attribute.map = mapprops.mapname;
+// 			GAMEDATA->activeShip()->attribute.map = mapprops.mapname;
 // //  			qWarning() << "Karte geladen (mapnorth)";
 // 			testschiff->setPos(tx,mapprops.hoehe-125);
 // // 			qWarning() << "Pos gesetzt";
@@ -990,16 +995,16 @@ if(activeship_model->setShipPos())
 // 			testschiff->setPos(testschiff->x(), 120);
 		}
 
-	else if(ship_ypos > GAMEDATA->currentMap->ret_Size().height() - 100)
+	else if(ship_ypos > GAMEDATA->currentMap()->size().height() - 100)
 		{
-		qWarning()<< "Mapwechsel zu Sued" << GAMEDATA->currentMap->ret_Mapnorth();
-		if(!GAMEDATA->currentMap->ret_Mapsouth().isEmpty())
+		qWarning()<< "Mapwechsel zu Sued" << GAMEDATA->currentMap()->mapsouth();
+		if(!GAMEDATA->currentMap()->mapsouth().isEmpty())
 		{
 		/*
 			float tx = testschiff->x();
 			delete testschiff;
 			karteladen(mapprops.mapsouth);
-			GAMEDATA->active_ship->attribute.map = mapprops.mapname;
+			GAMEDATA->activeShip()->attribute.map = mapprops.mapname;
 // 			qWarning() << "Karte geladen (mapsouth)";
 			testschiff->setPos(tx, 125);
 // 			qWarning() << "Pos gesetzt";
@@ -1026,16 +1031,16 @@ if(durchlauf%50==0
 
 if(durchlauf%10==0)
 {
-	knoten -> setText (QString("V:%1").arg(GAMEDATA->active_ship->attribute.geschwindigkeit));
-	sollknoten -> setText(QString("SollV: %1").arg(GAMEDATA->active_ship->attribute.sollgeschwindigkeit));
-	solldir -> setText(QString("SollDir %1").arg(GAMEDATA->active_ship->attribute.sollausrichtung));
-	dir -> setText(QString("Dir %1").arg(GAMEDATA->active_ship->attribute.ausrichtung));
-	steuerdir -> setText(QString("SteuerDir: %1").arg(GAMEDATA->active_ship->attribute.steuerruderausrichtung));
-	sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(GAMEDATA->active_ship->attribute.sollsteuerruderausrichtung));
-// 	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->active_ship->attribute.segelausrichtung));
-	segel->setText(QString("SegelFlaeche: %1").arg(GAMEDATA->active_ship->attribute.prozentgesetzteSegel));
-	sollsegel->setText(QString("SollSegelFl: %1").arg(GAMEDATA->active_ship->attribute.sollprozentgesetzteSegel));
-	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->active_ship->attribute.segelausrichtung));
+	knoten -> setText (QString("V:%1").arg(GAMEDATA->activeShip()->v()));
+// 	sollknoten -> setText(QString("SollV: %1").arg(GAMEDATA->activeShip()->attribute.sollgeschwindigkeit));
+	solldir -> setText(QString("SollDir %1").arg(GAMEDATA->activeShip()->toDir()));
+	dir -> setText(QString("Dir %1").arg(GAMEDATA->activeShip()->dir()));
+	steuerdir -> setText(QString("SteuerDir: %1").arg(GAMEDATA->activeShip()->rudderDir()));
+	sollsteuerdir -> setText(QString("SollSteuerDir: %1").arg(GAMEDATA->activeShip()->toRudderDir()));
+// 	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->activeShip()->attribute.segelausrichtung));
+	segel->setText(QString("SegelFlaeche: %1").arg(GAMEDATA->activeShip()->settedSails()));
+	sollsegel->setText(QString("SollSegelFl: %1").arg(GAMEDATA->activeShip()->toSettedSails()));
+	segeldir -> setText(QString("SegelDir: %1").arg(GAMEDATA->activeShip()->sailDir()));
 }
 #endif
 
@@ -1048,7 +1053,7 @@ if(durchlauf%10==0)
 bool hauptfenster::schiffskollision(QGraphicsItem *land)
 {
 // int x = testschiff->x();
-	if(GAMEDATA->active_ship->ret_MPos_X() > land->x() && GAMEDATA->active_ship->ret_MPos_Y() > land->y() && GAMEDATA->active_ship->ret_MPos_X() < land->x() + land->boundingRect().width() && GAMEDATA->active_ship->ret_MPos_Y() < land->y() + land->boundingRect().height() )
+	if(GAMEDATA->activeShip()->mPosX() > land->x() && GAMEDATA->activeShip()->mPosY() > land->y() && GAMEDATA->activeShip()->mPosX() < land->x() + land->boundingRect().width() && GAMEDATA->activeShip()->mPosY() < land->y() + land->boundingRect().height() )
 	{
 		qWarning() << "Kollision";
 	      return true;

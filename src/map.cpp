@@ -17,9 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "map.h"
 #include "mapobject.h"
 #include "datamanager.h"
+// #include "dataclass.h"
+#include "settings.h"
 
 
 #include <QtCore/QFile>
@@ -44,7 +47,7 @@ MapObject::MapObject(const int &param_role, const QString &param_filename, const
 
 Map::Map()
 {
-m_mapdirectory = SETTINGS->mapdirectory();
+// m_mapdirectory = SETTINGS->mapdirectory();
 // 	if(mapdirectory.isEmpty())			// static QString in Map-Class
 // 	{
 // 		QDir dir= QDir().current();
@@ -60,17 +63,17 @@ m_mapdirectory = SETTINGS->mapdirectory();
 // 			mapdirectory = QString();
 // 		}
 // 	}
-	filename = QString();
-	mapnorth = QString();
-	mapeast  = QString();
-	mapsouth = QString();
-	mapwest  = QString();
+	m_filename = QString();
+	m_mapnorth = QString();
+	m_mapeast  = QString();
+	m_mapsouth = QString();
+	m_mapwest  = QString();
 }
 
 Map::~Map()
 {
 MapObject *mapobjectit = 0;	//Map-Object-Iterator
-foreach(mapobjectit, objectlist)
+foreach(mapobjectit, m_ObjectList)
 {
 delete mapobjectit;
 }
@@ -84,7 +87,7 @@ static bool started;
 if(!started)
 {
 started = loadMap(mapfilename);
-coordinate = QPoint(400,400);
+m_coordinate = QPoint(400,400);
 }
 else if(mapfilename == "false")
 {
@@ -93,42 +96,42 @@ started = false;
 
 }
 
-bool Map::loadMap(const Orientations &mapdirection)
+bool Map::loadMap(Orientations mapdirection)
 {
 	switch(mapdirection)
 	{
 		case North:
 		{
-			if(loadMap(mapnorth))
+			if(loadMap(m_mapnorth))
 			{
-				coordinate.setY(coordinate.y() + 1);
+				m_coordinate.setY(m_coordinate.y() + 1);
 				return true;
 			}
 			break;
 		}
 		case East:
 		{
-			if(loadMap(mapeast))
+			if(loadMap(m_mapeast))
 			{
-				coordinate.setX(coordinate.x() + 1);
+				m_coordinate.setX(m_coordinate.x() + 1);
 				return true;
 			}
 			break;
 		}
 		case South:
 		{
-			if(loadMap(mapsouth))
+			if(loadMap(m_mapsouth))
 			{
-				  coordinate.setY(coordinate.y() - 1);
+				m_coordinate.setY(m_coordinate.y() - 1);
 				return true;
 			}
 			break;
 		}
 		case West:
 		{
-			if(loadMap(mapwest))
+			if(loadMap(m_mapwest))
 			{
-				coordinate.setX(coordinate.x() - 1);
+				m_coordinate.setX(m_coordinate.x() - 1);
 				return true;
 			}
 			break;
@@ -144,39 +147,39 @@ bool Map::loadMap(QString param_mapname)
 {
 	qWarning() << "bool Map::loadMap(QString param_mapname)" << "Karteladen: " << param_mapname;
 
-	param_mapname.prepend(m_mapdirectory);
+	param_mapname.prepend(SETTINGS->mapdirectory());
 
-	qWarning() << "Mapdirectory:" << m_mapdirectory << "Mappath:" << param_mapname;
+	qWarning() << "Mapdirectory:" << SETTINGS->mapdirectory() << "Mappath:" << param_mapname;
 
 
 	QFile file(param_mapname);		//Map-XML-Lesen
 	if(file.exists())
 	{
-		filename = param_mapname;
+		m_filename = param_mapname;
 		qWarning() << "Mapfile is existing";
 		
 		enum stati	{
 				null,			// nothing
-				objekt,			// Objectproperties
-				o_role,			// Object-role
-				o_tooltip,		// Object-Tooltip
-				o_file,			// Image-File
-				o_posx,			// X-Position
-				o_posy,			// Y-Position
-				o_zvalue,		// Z-Value
-				map,			// Allgemein: Mapeigenschaften ///Mapproperties
-				m_cityname,		// cityname
-				m_img,			// mapbackground
-				m_nord,			//noerdliche angrenzende Map	mapnorth
-				m_west,			//westliche a M			mapwest
-				m_sued,			//suedliche a M			mapsouth
-				m_ost,			//oestliche a M			mapeast
-				m_width,		//breite			width
-				m_height,		//hoehe				height
-				m_typ,
+				e_object_null,			// Objectproperties
+				e_object_role,			// Object-role
+				e_object_tooltip,		// Object-Tooltip
+				e_object_file,			// Image-File
+				e_object_posx,			// X-Position
+				e_object_posy,			// Y-Position
+				e_object_zvalue,		// Z-Value
+				e_map_null,			// Allgemein: Mapeigenschaften ///Mapproperties
+				e_map_cityname,		// cityname
+				e_map_img,			// mapbackground
+				e_map_north,			//noerdliche angrenzende Map	mapnorth
+				e_map_west,			//westliche a M			mapwest
+				e_map_south,			//suedliche a M			mapsouth
+				e_map_east,			//oestliche a M			mapeast
+				e_map_width,		//breite			width
+				e_map_height,		//hoehe				height
+				e_map_typ,
 				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
-		cityname = QString();		isCity = false;
+		m_cityname = QString();		m_isCity = false;
 		int object_role = -1;				//Funktion des Objektes /// objectrole
 		QString object_tooltip = QString();				//name/tooltip des objekts
 		QString object_file = QString();				//name des Bildes des Objekts
@@ -199,111 +202,115 @@ bool Map::loadMap(QString param_mapname)
 				if(reader.qualifiedName().toString() =="mapproperties")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=map;
+				status = e_map_null;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="cityname")
+				else if(reader.qualifiedName().toString() =="cityname")
 				{
-				status=m_cityname;
+				status = e_map_cityname;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapbackground")
-				{
-// 				qWarning() << "Start: gamedata->currentMap";
-				status=m_img;
-				break;
-				}
-				if(reader.qualifiedName().toString() =="mapnorth")
+				else if(reader.qualifiedName().toString() =="mapbackground")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_nord;
+				status = e_map_img;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapeast")
+				else if(reader.qualifiedName().toString() =="mapnorth")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_ost;
+				status = e_map_north;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapsouth")
+				else if(reader.qualifiedName().toString() =="mapeast")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_sued;
+				status = e_map_east;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapwest")
+				else if(reader.qualifiedName().toString() =="mapsouth")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_west;
+				status = e_map_south;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapwidth")
+				else if(reader.qualifiedName().toString() =="mapwest")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_width;
+				status = e_map_west;
 				break;
 				}
-				if(reader.qualifiedName().toString() =="mapheight")
+				else if(reader.qualifiedName().toString() =="mapwidth")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_height;
+				status = e_map_width;
+				break;
+				}
+				else if(reader.qualifiedName().toString() =="mapheight")
+				{
+// 				qWarning() << "Start: gamedata->currentMap";
+				status = e_map_height;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() =="maptype")
+				else if(reader.qualifiedName().toString() =="maptype")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
-				status=m_typ;
+				status = e_map_typ;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() =="objekt")
+				else if(reader.qualifiedName().toString() =="objekt")
 				{
 // 				qWarning() << "objekt";
-				status=objekt;
+				status = e_object_null;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() == "objektfunktion")
+				else if(reader.qualifiedName().toString() == "objektfunktion")
 				{
 // 				qWarning() << "o_role";
-				status = o_role;
+				status = e_object_role;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() == "objekttooltip")
+				else if(reader.qualifiedName().toString() == "objekttooltip")
 				{
 // 				qWarning() << "o_tooltip";
-				status = o_tooltip;
+				status = e_object_tooltip;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() == "objektdatei")
+				else if(reader.qualifiedName().toString() == "objektdatei")
 				{
 // 				qWarning() << "o_file";
-				status = o_file;
+				status = e_object_file;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() == "objektpositionx")
+				else if(reader.qualifiedName().toString() == "objektpositionx")
 				{
 // 				qWarning() << "o_posx";
-				status = o_posx;
+				status = e_object_posx;
 				break;
 				}
 
-				if(reader.qualifiedName().toString() == "objektpositiony")
+				else if(reader.qualifiedName().toString() == "objektpositiony")
 				{
 // 				qWarning() << "o_posy";
-				status = o_posy;
+				status = e_object_posy;
 				break;
 				}
 				
-				if(reader.qualifiedName().toString() == "objekthoehe")
+				else if(reader.qualifiedName().toString() == "objekthoehe")
 				{
 // 				qWarning() << "o_posy";
-				status = o_zvalue;
+				status = e_object_zvalue;
 				break;
+				}
+				else
+				{
+				status = null;
 				}
 				break;
 			}
@@ -320,122 +327,125 @@ bool Map::loadMap(QString param_mapname)
 				//Tags ohne Inhalt - nur mit Unterkategorien
 				switch(status)
 				{
-				case map:
+				case e_map_null:
 					break;
-				case m_cityname:
+				case e_map_cityname:
 				{
-					cityname = reader.text().toString();
-					isCity = true;
+					m_cityname = reader.text().toString();
+					m_isCity = true;
 // 					gamedata->setCurrentCity(reader.text().toString());
 				break;
 				}
-				case m_img:
+				case e_map_img:
 				{
-				background = reader.text().toString();
-				background.prepend(m_mapdirectory);
+					m_background = reader.text().toString();
+					m_background.prepend(SETTINGS->mapdirectory());
 				break;
 				}
 
-				case m_nord:
+				case e_map_north:
 				{
-				mapnorth = reader.text().toString();
+					m_mapnorth = reader.text().toString();
 
-				qWarning() << "Nord-Map:" << mapnorth;
-				if(!QFile(mapnorth).exists())
+					qWarning() << "Nord-Map:" << m_mapnorth;
+				if(!QFile(m_mapnorth).exists())
 					{
-					qWarning() << mapnorth << "Existiert nicht";
-					mapnorth = QString();
+					qWarning() << m_mapnorth << "Existiert nicht";
+					m_mapnorth = QString();
 					}
 				break;
 				}
 
-				case m_ost:
+				case e_map_east:
 				{
-				mapeast = reader.text().toString();
-				qWarning() << "Ost-Map:" << mapeast;
-				if(!QFile(mapeast).exists())
+				m_mapeast = reader.text().toString();
+				qWarning() << "Ost-Map:" << m_mapeast;
+				if(!QFile(m_mapeast).exists())
 					{
-					qWarning() << mapeast << "Existiert nicht";
-					mapeast = QString();
+					qWarning() << m_mapeast << "Existiert nicht";
+					m_mapeast = QString();
 					}
 				break;
 				}
 
-				case m_sued:
+				case e_map_south:
 				{
-				mapsouth = reader.text().toString();
-				qWarning() << "Sued-Map:" << mapsouth;
-				if(!QFile(mapsouth).exists())
+				m_mapsouth = reader.text().toString();
+				qWarning() << "Sued-Map:" << m_mapsouth;
+				if(!QFile(m_mapsouth).exists())
 					{
-					qWarning() << mapsouth << "Existiert nicht";
-					mapsouth = QString();
+					qWarning() << m_mapsouth << "Existiert nicht";
+					m_mapsouth = QString();
 					}
 				break;
 				}
 
-				case m_west:
+				case e_map_west:
 				{
-				mapwest = reader.text().toString();
-				qWarning() << "West-Map:" << mapwest;
-				if(!QFile(mapwest).exists())
+				m_mapwest = reader.text().toString();
+				qWarning() << "West-Map:" << m_mapwest;
+				if(!QFile(m_mapwest).exists())
 					{
-					qWarning() << mapwest << "Existiert nicht";
-					mapwest = QString();
+					qWarning() << m_mapwest << "Existiert nicht";
+					m_mapwest = QString();
 					}
 				break;
 				}
 
-				case m_width:
+				case e_map_width:
 				{
-					size.setWidth(reader.text().toString().toInt());
+					m_size.setWidth(reader.text().toString().toInt());
 					break;
 				}
-				case m_height:
+				case e_map_height:
 				{
-					size.setHeight(reader.text().toString().toInt());
+					m_size.setHeight(reader.text().toString().toInt());
 					break;
 				}
-				case m_typ:
+				case e_map_typ:
 				{
-					type =
+					m_type =
 					  static_cast<Map::MapType>( reader.text().toString().toInt() );
 					break;
 				}
 
-				case objekt:
+				case e_object_null:
+				{
+// 					status = e_object_null;
 					break;
-				case o_role:
+				}
+				case e_object_role:
 				{
 					object_role = reader.text().toString().toInt();
 					qWarning() << "\tObjektfkt" << object_role;
 					break;
 				}
-				case o_tooltip:
+				case e_object_tooltip:
 				{
 					object_tooltip = reader.text().toString();
 					qWarning() << "\tObjekttooltip" << object_tooltip;
 					break;
 				}
-				case o_file:
+				case e_object_file:
 				{
 					object_file = reader.text().toString();
-					object_file.prepend(m_mapdirectory);
+					object_file.prepend(SETTINGS->mapdirectory());
 					qWarning() << "\tBild:" << object_file;
 					break;
 				}
-				case o_posx:
+				case e_object_posx:
 				{
 					object_posx = reader.text().toString().toInt();
 					qWarning() << "\tPosX:" << object_posx;
 					break;
 				}
-				case o_posy:
+				case e_object_posy:
 				{
 					object_posy = reader.text().toString().toInt();
 					qWarning() << "\tPosY" << object_posy;
 					break;
 				}
-				case o_zvalue:
+				case e_object_zvalue:
 				{
 					object_zvalue = reader.text().toString().toDouble();
 					qWarning() << "\tPosY" << object_zvalue;
@@ -457,7 +467,7 @@ bool Map::loadMap(QString param_mapname)
 					
 					MapObject *currentMO = new MapObject(object_role, object_file, object_tooltip, QPoint(object_posx, object_posy), object_zvalue);
 					
-					objectlist << currentMO;
+					m_ObjectList << currentMO;
 					
 					object_role = -1;
 					object_tooltip = QString();

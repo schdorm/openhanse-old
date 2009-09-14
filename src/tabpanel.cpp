@@ -23,12 +23,16 @@
 // #endif
 
 #include "datamanager.h"
+#include "dataclass.h"
 
 #include "tabpanel.h"
+
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QScrollArea>
 
 #include <QDebug>
+
+#include "shipdata.h"
 
 
 SeaTabPanel::SeaTabPanel()
@@ -230,7 +234,7 @@ stat_color->setPixmap(blah);
 #endif
 
 QPixmap stat_color_pm = *stat_color->pixmap();
-int tempint = GAMEDATA->active_ship->ret_Condition();
+int tempint = GAMEDATA->activeShip()->condition();
 if(tempint >50)
 {
 stat_color_pm.fill(QColor(5.1 * (100 - tempint), 255, 0));

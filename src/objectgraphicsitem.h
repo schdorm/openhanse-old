@@ -25,10 +25,11 @@
 #include "definitions.h"
 #include <QtGui/QGraphicsItem>
 
-#include "shipdata.h"
+// #include "shipdata.h"
 #include "buildingdata.h"
 #include "kontordata.h"
 // #include ""
+class ShipData;
 
 class ObjectGraphicsItem : public QGraphicsPixmapItem 
 {
@@ -39,10 +40,10 @@ ObjectGraphicsItem(ShipData *);
 ~ObjectGraphicsItem();
 enum ObjectTypes
 {
-	Citybuilding,
-	Factory,
-	Kontor,
-	Ship
+	CitybuildingGraphics,
+	FactoryGraphics,
+	KontorGraphics,
+	ShipGraphics
 } ;
 
 QList<QGraphicsPixmapItem *> GraphicsMembersList;
@@ -50,26 +51,28 @@ QList<QGraphicsPixmapItem *> GraphicsMembersList;
 
 // void setGraphicsItem(QGraphicsPixmapItem*);
 
-void addMemberItem(QGraphicsItem *, QPointF);
+void addMemberItem(QGraphicsItem *, const QPointF&);
 
 bool setShipPos();
 
 void rotateItem();
 
-ShipData *shipdata;
-BuildingData *buildingdata;
+const ShipData *shipdata() const {	return m_shipdata;	}
+
 
 private:
+float m_lastdir;
 
 int g_height, g_height2;	// graphicsitem - height -> laenge
 int g_width, g_width2;		// graphicsitem - width -> breite
 
-ObjectTypes type;
+ObjectTypes m_type;
 QStringList filenamelist;
 
 protected:
 void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
+ShipData *m_shipdata;
+BuildingData *m_buildingdata;
 };
 
 #endif

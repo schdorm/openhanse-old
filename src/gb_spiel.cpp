@@ -17,7 +17,13 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "gesamtbild.h"
+#include "dataclass.h"
+#include "settings.h"
+#include "shipdata.h"
+
+#include "stadtklasse.h"
 
 #include <QtCore/QFile>
 #include <QtCore/QXmlStreamReader>
@@ -45,18 +51,26 @@ void gesamtbild::initGameData()
 void gesamtbild::startNewGame()
 {
 // 	GAMEDATA = new DataClass();
-// 	GAMEDATA->active_city = new CityClass();
+// 	CityClass *activeCity = new CityClass();
 	spielbool=true;
 //  	QFile file("");		//Map-XML-Lesen
 //  	if(file.exists())
 	{
+	QList<int> hproductionlist;
+	QList<int> mproductionlist;
+	QList<int> lproductionlist;
+
+// 	int hproduction[const_warenanzahl];
+// 	int mproduction[const_warenanzahl];
+// 	int lproduction[const_warenanzahl];
+	QString cityname;
 // 		qWarning() << "Datei existiert" ;
-		for(int i = 0; i<5 ; i++)
-		{
-			GAMEDATA->active_city->hproduction[i]=-1;
-			GAMEDATA->active_city->mproduction[i]=-1;
-			GAMEDATA->active_city->lproduction[i]=-1;
-		}
+// 		for(int i = 0; i<5 ; i++)
+// 		{
+// 			hproduction[i]=-1;
+// 			mproduction[i]=-1;
+// 			lproduction[i]=-1;
+// 		}
 
 
 		enum stati	{
@@ -68,9 +82,9 @@ void gesamtbild::startNewGame()
 				city_lproduction,
 				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
-		int hz = 0;		//Zaehlvariablen fuer die jeweiligen Produktionsarrays
-		int mz = 0;
-		int nz = 0;
+// 		int hz = 0;		//Zaehlvariablen fuer die jeweiligen Produktionsarrays
+// 		int mz = 0;
+// 		int nz = 0;
 
 		QFile file(":maps/stadtliste.ohc");
 		file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -133,32 +147,29 @@ void gesamtbild::startNewGame()
 					break;
 				case city_name:
 				{
-				GAMEDATA->active_city->cityname = reader.text().toString();
-				qWarning() << "\tStadt: " << GAMEDATA->active_city->cityname;
+				cityname = reader.text().toString();
+				qWarning() << "\tStadt: " << cityname;
 				break;
 				}
 
 				case city_hproduction:
 				{
-				GAMEDATA->active_city->hproduction[hz] = reader.text().toString().toInt();
-				qWarning() << "\tHohe Produktion: " << GAMEDATA->active_city->hproduction[hz] << "(wird viel produziert)";
-				hz++;
+				hproductionlist << reader.text().toString().toInt();
+				qWarning() << "\tHohe Produktion: " << hproductionlist.last() << "(wird viel produziert)";
 				break;
 				}
 
 				case city_mproduction:
 				{
-				GAMEDATA->active_city->mproduction[mz] = reader.text().toString().toInt();
-				qWarning() << "\tMittlere Produktion: " << GAMEDATA->active_city->mproduction[mz] << "(wird maessig viel produziert)";
-				mz++;
+				mproductionlist << reader.text().toString().toInt();
+				qWarning() << "\tMittlere Produktion: " << mproductionlist.last() << "(wird maessig viel produziert)";
 				break;
 				}
 
 				case city_lproduction:
 				{
-				GAMEDATA->active_city->lproduction[nz] = reader.text().toString().toInt();
-				qWarning() << "\tNiedrige Produktion: " << GAMEDATA->active_city->lproduction[nz] << "(wird wenig produziert)";
-				nz++;
+				lproductionlist << reader.text().toString().toInt();
+				qWarning() << "\tNiedrige Produktion: " << lproductionlist.last() << "(wird wenig produziert)";
 				break;
 				}
 
@@ -170,12 +181,13 @@ void gesamtbild::startNewGame()
 			case QXmlStreamReader::EndElement:
 			{
 				qWarning() << "Ende :"<< reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() == "stadt" && !GAMEDATA->active_city->cityname.isEmpty())
+				if(reader.qualifiedName().toString() == "stadt" && !cityname.isEmpty())
 				{
-				GAMEDATA->active_city->init();
-				GAMEDATA->addCity(*GAMEDATA->active_city);
-				qWarning() << GAMEDATA->active_city->cityname << " zur Liste hinzugefuegt";
-				GAMEDATA->active_city->reset();
+ 				CityClass activeCity(cityname, hproductionlist, mproductionlist, lproductionlist);
+				activeCity.init();
+				GAMEDATA->addCity(activeCity);
+				qWarning() << activeCity.cityname() << " zur Liste hinzugefuegt";
+// 				activeCity->reset();
 				}
 				status=null;
 				break;
@@ -216,10 +228,10 @@ void gesamtbild::startNewGame()
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
 /// 	GAMEDATA->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
 // 					  ":img/schiffe/schiff_gerade_skaliert2.png"
-	GAMEDATA->active_ship->control_difficulty = schwierigkeitsgrad;
+	GAMEDATA->activeShip()->setControlDifficulty(schwierigkeitsgrad);
 	
-	GAMEDATA->currentMap = new Map();
-	GAMEDATA->currentMap->loadStartMap("testmap001.ohm");
+//  	GAMEDATA->currentMap() = new Map();
+	GAMEDATA->currentMap()->loadStartMap("testmap001.ohm");
 	gameview->karteladen(Map::null);
 // 	gameview->karteladen("testmap001.ohm");
 // 	gameview->testschiff->setPos(1500,900);
@@ -227,9 +239,9 @@ void gesamtbild::startNewGame()
 /// 	gameview->centerOn(GAMEDATA->active_ship->graphicsitem);
 //  	qWarning() << "StartTimer";
 	PositioningStruct destination_pos;
-	destination_pos.mapcoords = GAMEDATA->currentMap->ret_Coordinate();
+	destination_pos.mapcoords = GAMEDATA->currentMap()->coordinates();
 	destination_pos.generic_position = QPoint(1500, 800);
-	GAMEDATA->active_ship->setPos(destination_pos);
+	GAMEDATA->activeShip()->setPos(destination_pos);
 	
 	gameview->starttimer(1000/SETTINGS->fps());
 	
@@ -276,14 +288,14 @@ void gesamtbild::spielfensteraufbau()
 
 	for(int i = 0; i < const_warenanzahl; i++)
  	{
-		menupanel->ware[i]->setText(QString("%1").arg(GAMEDATA->active_ship->cargo.ware[i]));
+		menupanel->ware[i]->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().ware[i]));
  	}
 
 // // 	fuellung->setText(QString("Belegt: %1 von %2").arg(GAMEDATA->active_ship->cargo.gesamtladung, GAMEDATA->active_ship->ladekapazitaet));
 	{
- 	menupanel->taler->setText(QString("%1").arg(GAMEDATA->active_ship->cargo.taler).prepend(tr("Money: ")));
-	QString flstring = QString("%1").arg(GAMEDATA->active_ship->cargo.fuellung);
-	flstring.append(QString("/%1 belegt").arg(GAMEDATA->active_ship->cargo.kapazitaet));
+ 	menupanel->taler->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().taler).prepend(tr("Money: ")));
+	QString flstring = QString("%1").arg(GAMEDATA->activeShip()->cargo().fuellung);
+	flstring.append(QString("/%1 belegt").arg(GAMEDATA->activeShip()->cargo().kapazitaet));
 	menupanel->fuellung->setText(flstring);
 	}
 // 	menupanel->setGameData(GAMEDATA);
@@ -299,7 +311,7 @@ void gesamtbild::spielfensteraufbau()
 
 	connect(gameview, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
 
-	connect(GAMEDATA, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
+// 	connect(GAMEDATA, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
 
 	connect(gameview, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
 
@@ -311,7 +323,7 @@ void gesamtbild::spielfensteraufbau()
 
 	connect(menupanel->anlegen, SIGNAL(clicked()), this, SLOT(landmenu()));
 	connect(menupanel->schuss, SIGNAL(clicked()), gameview, SLOT(schuss()));
-// 	connect(menupanel->anlegen, SIGNAL(clicked()), gameview, SLOT(landgang()));
+	connect(menupanel->anlegen, SIGNAL(clicked()), gameview, SLOT(landgang()));
 // 	connect(anlegen, SIGNAL(clicked()), anlegen, SLOT(hide()));
 // 	connect(menupanel->anlegen, SIGNAL(clicked()), menupanel->ablegen, SLOT(show()));
 
@@ -342,7 +354,7 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 			QDialog *zeitw = new QDialog(this);
 			QVBoxLayout layout(zeitw);
-			QLabel *anzeige = new QLabel(tr("Time: Day %1,").arg(GAMEDATA->gametime.day()).append(QString("%1 hours").arg(GAMEDATA->gametime.hour())), zeitw);
+			QLabel *anzeige = new QLabel(tr("Time: Day %1,").arg(GAMEDATA->gametime().day()).append(QString("%1 hours").arg(GAMEDATA->gametime().hour())), zeitw);
 
 // 			anzeige->setText(anzeige->text().append(QString(", %2 Uhr %3").arg( gameview->stunde, gameview->minute)));gameview->stunde
 // 			qWarning() << anzeige->text().append(QString(", %2 Uhr %3").arg( gameview->stunde, gameview->minute));

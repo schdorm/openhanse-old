@@ -18,7 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
  
+ #include "datamanager.h"
+ #include "dataclass.h"
 #include "objectgraphicsitem.h"
+#include "shipdata.h"
 
 ObjectGraphicsItem::ObjectGraphicsItem(ShipData *param_shipdata)
 {/*
@@ -34,8 +37,8 @@ ObjectGraphicsItem::ObjectGraphicsItem(ShipData *param_shipdata)
 		default:
 			break;
 	}*/
-	shipdata = param_shipdata;
-	type = Ship;
+	m_shipdata = param_shipdata;
+	m_type = ShipGraphics;
 }
 
 ObjectGraphicsItem::~ObjectGraphicsItem()
@@ -45,16 +48,16 @@ ObjectGraphicsItem::~ObjectGraphicsItem()
 }
 
 
-void ObjectGraphicsItem::addMemberItem(QGraphicsItem *param_MemberItem, QPointF param_DestinationCoords)	// adds a graphicsItem to itself --> e.g. adds the body of the ship / the sails of the ship to the "Ship-Item"
+void ObjectGraphicsItem::addMemberItem(QGraphicsItem *param_MemberItem, const QPointF &param_DestinationCoords)	// adds a graphicsItem to itself --> e.g. adds the body of the ship / the sails of the ship to the "Ship-Item"
 {
 param_MemberItem->setParentItem(this);
 param_MemberItem->setPos(param_DestinationCoords);
-if(type == Ship)
+if(m_type == ShipGraphics)
 {
-shipdata->g_width2 = boundingRect().width()/2;
-shipdata->g_height2 = boundingRect().height()/2;
-shipdata->g_width = boundingRect().width();
-shipdata->g_height = boundingRect().height();
+m_shipdata->g_width2 = boundingRect().width()/2;
+m_shipdata->g_height2 = boundingRect().height()/2;
+m_shipdata->g_width = boundingRect().width();
+m_shipdata->g_height = boundingRect().height();
 
 }
 }
@@ -62,7 +65,7 @@ shipdata->g_height = boundingRect().height();
 bool ObjectGraphicsItem::setShipPos()
 {
 rotateItem();
-QPointF destinationpoint = shipdata->ret_CurrentPosition().generic_position;	// Position in the data-struct
+QPointF destinationpoint = m_shipdata->currentPosition().generic_position;	// Position in the data-struct
 if(destinationpoint != pos())				//if data-position != graphicsposition (this->pos())
 {
 setPos(destinationpoint);
@@ -73,20 +76,37 @@ else return false;
 
 void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-
+	switch(m_type)
+	{
+		case ShipGraphics:
+		{
+			if(GAMEDATA->anbord())
+			{
+			
+			}
+			else
+			{
+// 				GAMEDATA->anbord()
+				GAMEDATA->landingProcess()->setStatus(Landing::AtLand);
+			}
+			break;
+		}
+		default:
+		break;
+	}
 }
 
 void ObjectGraphicsItem::rotateItem()
 {
-static float lastdir;
-if(shipdata != 0 && lastdir != shipdata->ret_Dir())
-{
-lastdir = shipdata->ret_Dir();
+//   static float lastdir;
+	if(m_shipdata != 0 && m_lastdir != m_shipdata->dir())
+	{
+		m_lastdir = m_shipdata->dir();
 		resetTransform();
 		QTransform t;
 		t.translate( boundingRect().width(), boundingRect().height() );
-		t.rotateRadians(- lastdir);
+		t.rotateRadians(- m_lastdir);
 		t.translate( - boundingRect().width(), - boundingRect().height() );
 		setTransform( t );
-}
+	}
 }

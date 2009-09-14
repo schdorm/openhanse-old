@@ -23,23 +23,23 @@
 
 #include <QtCore/QMap>
 #include "questclass.h"
-#include "hauptfenster.h"
+// #include "hauptfenster.h"
 
 class QuestHandler //: public QObject 
 {
 // Q_OBJECT
 public:
-	void indexQuestFile(QString);
+	void indexQuestFile(const QString&);
 
-void setHFPointer(hauptfenster *);
+// void setHFPointer(hauptfenster *);
 // public slots:
 
 // signals:
 
 private:
 QMap<QString, int> questIndexList;
-QList<quest> activeTasks;
-hauptfenster *hfpointer;
+QList<Quest> activeTasks;
+// hauptfenster *hfpointer;
 // protected:
 
 };

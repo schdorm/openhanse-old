@@ -33,13 +33,13 @@ public:
 void set_GraphicsItem(QGraphicsItem *);
 
 protected:
-QString cityname;
-int cityID;
-int workers;
-Tax::levels tax_level;
-QGraphicsItem *graphicsitem;
-ObjectType::object_types_def type;
-double state;
+QString m_CityName;
+int m_CityID;
+int m_Workers;
+Tax::levels m_TaxLevel;
+QGraphicsItem *m_graphicsitem;
+ObjectType::object_types_def m_Type;
+double m_state;
 };
 
 #endif

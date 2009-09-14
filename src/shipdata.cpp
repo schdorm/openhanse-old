@@ -4,8 +4,8 @@
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
+ *   the Free Software Foundation; eitherm_version 2 of the License, or     *
+ *   (at your option) any laterm_version.                                   *
  *                                                                         *
  *   This program is distributed in the hope that it will be useful,       *
  *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
@@ -28,208 +28,201 @@
 #include <QtDebug>
 #endif
 
-void ShipData::calcMovement(int windv, double winddir)
+
+
+ShipData::ShipData(const QString &param_name) : m_name (param_name)				///== RESET
 {
-	if(settedSails > toSettedSails)
+	static int idzuweisung;
+	m_id = idzuweisung;
+	idzuweisung++;
+
+	m_setPosAllowed = true;
+	
+	m_cargo.taler = 5000;
+
+	for(int i = 0; i<const_warenanzahl; i++)
 	{
-		settedSails -= 0.1;
-		if(settedSails < 0.05)
+		m_cargo.ware[i]=5;
+	}
+	m_cargo.fuellung=0;
+
+	m_condition = 100;		// ehemals: "zustand"
+	m_type = Kogge;
+	m_v = 0;
+	m_dir = 0;
+	m_toDir = 0;
+	m_sailDir = 0;
+	m_rudderDir = 0;
+	m_toRudderDir = 0;
+	m_settedSails = 0;
+	m_toSettedSails = 0;
+	m_controlVelocity = 1;
+	
+	m_ControlDifficulty = 0;
+// 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
+	m_cargo.kapazitaet = rand()%2001;
+}
+
+ShipData::~ShipData()
+{
+}
+
+void ShipData::setName(const QString &param_name)
+{
+m_name = param_name;
+}
+
+void ShipData::setMouseControl (bool param_mousecontrol)
+{
+m_MouseControl = param_mousecontrol;
+}
+void ShipData::setControlDifficulty (int param_difficulty)
+{
+m_ControlDifficulty = param_difficulty;
+}
+
+void ShipData::calcMovement(int windv, const double &winddir)
+{
+	if(m_settedSails > m_toSettedSails)
+	{
+		m_settedSails -= 0.1;
+		if(m_settedSails < 0.05)
 		{
-			settedSails = 0;
+			m_settedSails = 0;
 		}
 	}
 	
-	else if(settedSails < toSettedSails)
+	else if(m_settedSails < m_toSettedSails)
 	{
-		settedSails += 0.1;
+		m_settedSails += 0.1;
 	}
 	#ifdef _debug_
-	qWarning() << settedSails << toSettedSails << " sS << tSS";
+	qWarning() << m_settedSails << m_toSettedSails << " sS << tSS";
 	#endif
-// 	if(settedSails > 0 && windv > 0)
+// 	if(m_settedSails > 0 && windv > 0)
 	{
-		if(control_difficulty == 0)
+		if(m_ControlDifficulty == 0)
 		{
-			double accelerationv = windv * (0.9 + cos(dir - winddir))/2 ;
-// 			if(accelerationv > v)
+			double accelerationv = windv * (0.9 + cos(m_dir - winddir))/2 ;
+// 			if(accelerationv >m_v)
 			{
-// 				v += (ceil((accelerationv - v)/4));
- 				v += (settedSails + 0.1) * (accelerationv - v)/25;
+// 				v += (ceil((accelerationv -m_v)/4));
+ 				m_v += (m_settedSails + 0.1) * (accelerationv - m_v)/25;
 			}
-			if( v > 0)
+			if(m_v> 0)
 			{
- 			v -= (v+5)/100;
+ 			m_v -= (m_v + 5)/100;
 			}
-/*			else if(accelerationv < v)
+/*			else if(accelerationv <m_v)
 			{
-// 				v += (floor((accelerationv - v)/4));
-				v += (accelerationv - v)/20;
+// 				v += (floor((accelerationv -m_v)/4));
+				v += (accelerationv -m_v)/20;
 			}*/
 			#ifdef _debug_
-			qWarning() << accelerationv << v << v/20 << (settedSails + 0.1) * (accelerationv - v)/25;
+			qWarning() << accelerationv <<m_v<<m_v/20 << (m_settedSails + 0.1) * (accelerationv -m_v)/25;
 			#endif
 		}
 	
-		else if(control_difficulty == 1)
+		else if(m_ControlDifficulty == 1)
 		{
-			double acceleration = settedSails * windv * cos(dir + sailDir - winddir) - v;
+			double acceleration = m_settedSails * windv * cos(m_dir + m_sailDir - winddir) -m_v;
 			if(acceleration > 0)
 			{
-				v += int (ceil(acceleration/2));
+				m_v += int (ceil(acceleration/2));
 			}
 			else if(acceleration < 0 )
 			{
-				v += int (floor(acceleration/2));
+				m_v += int (floor(acceleration/2));
 			}
 			#ifdef _debug_
 			qWarning() << acceleration;
 			#endif
 		}
 		#ifdef _debug_
-		qWarning() << v << " v";
+		qWarning() << m_v << "m_v";
 		#endif
 	}
 	
-	if(mouse_control)
+	if(m_MouseControl)
 	{
-		if(dir != toDir)
+		if(m_dir != m_toDir)
 		{
-			if(toDir > dir - 0.01 && toDir < dir + 0.01)
+			if(m_toDir > m_dir - 0.01 && m_toDir < m_dir + 0.01)
 			{
-				dir = toDir;
+				m_dir = m_toDir;
 				return;
 			}
 	
-			if((dir < toDir && dir + M_PI > toDir) || (dir > toDir && dir - M_PI > toDir))
+			if((m_dir < m_toDir && m_dir + M_PI > m_toDir) || (m_dir > m_toDir && m_dir - M_PI > m_toDir))
 			{
-				dir = dir + 0.0006 * ((v/4) + 2) * control_velocity;
+				m_dir = m_dir + 0.0006 * ((m_v/4) + 2) * m_controlVelocity;
 			}
 			else
 			{
-				dir = dir - 0.0006 * ((v/4) + 2) * control_velocity;
+				m_dir = m_dir - 0.0006 * ((m_v/4) + 2) * m_controlVelocity;
 			}
 			
-			if(dir < 0)
+			if(m_dir < 0)
 			{
-				dir = 2*M_PI-0.0000001;
+				m_dir = 2*M_PI-0.0000001;
 			}
-			else if(dir > 2*M_PI)
+			else if(m_dir > 2*M_PI)
 			{
-				dir = 0;
+				m_dir = 0;
 			}
 		}
 	}
 	else
 	{
-		if(rudderDir != 0 || toRudderDir != 0)
+		if(m_rudderDir != 0 || m_toRudderDir != 0)
 		{
-			static int delayvar;		// control-delaying-variable
-			delayvar ++;
-			if(delayvar % 10 == 0)
+// 			static int delayvar;		// control-delaying-variable
+			m_delayvar ++;
+			if(m_delayvar % 10 == 0)
 			{
-				delayvar = 1;
-				if(rudderDir != toRudderDir)
+				m_delayvar = 1;
+				if(m_rudderDir != m_toRudderDir)
 				{
 					
-					if(toRudderDir < 0 && rudderDir > toRudderDir)
+					if(m_toRudderDir < 0 && m_rudderDir > m_toRudderDir)
 					{
-						rudderDir += (toRudderDir + rudderDir)/5;
+						m_rudderDir += (m_toRudderDir + m_rudderDir)/5;
 					}
-					else if(toRudderDir >= 0 && rudderDir < toRudderDir)
+					else if(m_toRudderDir >= 0 && m_rudderDir < m_toRudderDir)
 					{
-						rudderDir += (toRudderDir - rudderDir)/5;
+						m_rudderDir += (m_toRudderDir - m_rudderDir)/5;
 					}
-					if(rudderDir < 0.0001 && rudderDir > -0.0001 && toRudderDir == 0)
+					if(m_rudderDir < 0.0001 && m_rudderDir > -0.0001 && m_toRudderDir == 0)
 					{
-						rudderDir = 0;
+						m_rudderDir = 0;
 					}
-					else if(rudderDir > 0.1 || rudderDir < -0.1)
+					else if(m_rudderDir > 0.1 || m_rudderDir < -0.1)
 					{
-					rudderDir = 0;
+						m_rudderDir = 0;
 					}
 				}
 			}
-			dir += rudderDir;
+			m_dir += m_rudderDir;
 			
-			if(dir < 0)
+			if(m_dir < 0)
 			{
-				dir = 2*M_PI-0.0000001;
+				m_dir = 2*M_PI-0.0000001;
 			}
-			else if(dir > 2*M_PI)
+			else if(m_dir > 2*M_PI)
 			{
-				dir = 0;
+				m_dir = 0;
 			}
 		}
 	}
 
 }
 
-void ShipData::brake(double param_brakefactor)
+void ShipData::brake(const double &param_brakefactor)
 {
-	v = v * (1 - param_brakefactor);
+	m_v = m_v * (1 - param_brakefactor);
 
 }
 
-double ShipData::ret_V()
-{
-return v;
-}
-
-double ShipData::ret_SettedSails()
-{
-return settedSails;
-}
-
-double ShipData::ret_ToSettedSails()
-{
-return toSettedSails;
-}
-
-double ShipData::ret_SailDir()
-{
-return sailDir;
-}
-
-// double ShipData::ret_ToSailDir()
-// {
-// return toSailDir;
-// }
-
-double ShipData::ret_Dir()
-{
-return dir;
-}
-
-double ShipData::ret_ToDir()
-{
-return toDir;
-}
-
-double ShipData::ret_RudderDir()
-{
-return rudderDir;
-}
-
-double ShipData::ret_ToRudderDir()
-{
-return toRudderDir;
-}
-
-PositioningStruct ShipData::ret_CurrentPosition()
-{
-return currentPosition;
-}
-
-int ShipData::ret_MPos_X()
-{
-return currentPosition.m_position.x();
-}
-
-
-int ShipData::ret_MPos_Y()
-{
-return currentPosition.m_position.y();
-}
 
 
 void ShipData::set_ToSettedSails(double param_amount)
@@ -239,11 +232,11 @@ void ShipData::set_ToSettedSails(double param_amount)
 	{
 		if(param_amount < 0.01)
 		{
-		toSettedSails = 0;
+		m_toSettedSails = 0;
 // 		return;
 		}
 		else
-			toSettedSails = param_amount;
+			m_toSettedSails = param_amount;
 		
 		#ifdef _debug_
 		qWarning() << "void ShipData::set_ToSettedSails(double param_amount)" << param_amount;
@@ -256,7 +249,7 @@ void ShipData::set_SailDir(double param_dir)
 {
 	if(param_dir <= 0.3 && param_dir >= -0.3)
 	{
-	sailDir = param_dir;
+	m_sailDir = param_dir;
 	}
 }
 
@@ -264,7 +257,7 @@ void ShipData::set_ToRudderDir(double param_dir)
 {
 	if(param_dir <= const_max_rudder_deflection && param_dir >= - const_max_rudder_deflection)
 	{
-	toRudderDir = param_dir;
+	m_toRudderDir = param_dir;
 	}
 }
 
@@ -272,29 +265,31 @@ void ShipData::set_ToDir(double param_dir)
 {
 	if(param_dir <= 2 * M_PI && param_dir >= 0)
 	{
-	toDir = param_dir;
+	m_toDir = param_dir;
 	}
 }
 
-int ShipData::ret_Condition()
-{
-	return condition;
-}
+
 
 void ShipData::calcPos()
 {
-	currentPosition.generic_position.setX(currentPosition.generic_position.x() - (v * sin(dir))/10);
-	currentPosition.generic_position.setY(currentPosition.generic_position.y()  - (v * cos(dir))/10);
-	currentPosition.m_position.setX(currentPosition.generic_position.x() + g_width2);
-	currentPosition.m_position.setY(currentPosition.generic_position.y() + g_height2);
-	
-	
+	m_currentPosition.generic_position.setX(m_currentPosition.generic_position.x() - (m_v * sin(m_dir))/10);
+	m_currentPosition.generic_position.setY(m_currentPosition.generic_position.y()  - (m_v * cos(m_dir))/10);
+	m_currentPosition.m_position.setX(m_currentPosition.generic_position.x() + g_width2);
+	m_currentPosition.m_position.setY(m_currentPosition.generic_position.y() + g_height2);
 }
 
 
-void ShipData::setPos(PositioningStruct param_destinationposition)
+void ShipData::setPos(const PositioningStruct &param_destinationposition)
 {
-if(m_setPosAllowed || ((param_destinationposition.mapcoords.x() + 1 == currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() == currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() - 1 == currentPosition.mapcoords.x()) && (param_destinationposition.mapcoords.y() + 1 == currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() == currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() - 1 == currentPosition.mapcoords.y())))
-currentPosition = param_destinationposition;
+if(m_setPosAllowed || ((param_destinationposition.mapcoords.x() + 1 == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() - 1 == m_currentPosition.mapcoords.x()) && (param_destinationposition.mapcoords.y() + 1 == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() - 1 == m_currentPosition.mapcoords.y())))
+m_currentPosition = param_destinationposition;
 m_setPosAllowed = false;
+}
+
+
+bool ShipData::setCargo(const Warenstruct &param_newcargo)
+{
+m_cargo = param_newcargo;
+return true;
 }

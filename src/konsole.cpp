@@ -21,6 +21,10 @@
 
 #include "konsole.h"
 #include "gesamtbild.h"
+
+#include "dataclass.h"
+#include "datamanager.h"
+
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QFile>
 
@@ -159,10 +163,10 @@ return;
 
 if(inputstring == QString("gametime"))
 {
-// output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(GAMEDATA->gametime.retDay()), QChar(GAMEDATA->gametime.retMonth()), QChar(GAMEDATA->gametime.retYear()), QChar(GAMEDATA->gametime.retHour()), QChar(int(GAMEDATA->gametime.retMinute()))));
-output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime.day()), QString("%1").arg(GAMEDATA->gametime.month()), QString("%1").arg(GAMEDATA->gametime.year()), QString("%1").arg(GAMEDATA->gametime.hour()), QString("%1").arg(GAMEDATA->gametime.minute())));
+// output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(GAMEDATA->gametime().retDay()), QChar(GAMEDATA->gametime().retMonth()), QChar(GAMEDATA->gametime().retYear()), QChar(GAMEDATA->gametime().retHour()), QChar(int(GAMEDATA->gametime().retMinute()))));
+output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime().day()), QString("%1").arg(GAMEDATA->gametime().month()), QString("%1").arg(GAMEDATA->gametime().year()), QString("%1").arg(GAMEDATA->gametime().hour()), QString("%1").arg(GAMEDATA->gametime().minute())));
 
-qWarning() << QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime.day()), QString("%1").arg(GAMEDATA->gametime.month()), QString("%1").arg(GAMEDATA->gametime.year()), QString("%1").arg(GAMEDATA->gametime.hour()), QString("%1").arg(GAMEDATA->gametime.minute()));
+qWarning() << QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime().day()), QString("%1").arg(GAMEDATA->gametime().month()), QString("%1").arg(GAMEDATA->gametime().year()), QString("%1").arg(GAMEDATA->gametime().hour()), QString("%1").arg(GAMEDATA->gametime().minute()));
 return;
 }
 
@@ -194,8 +198,8 @@ else if(cmd.startsWith("load maps/"))
 QString map = cmd;
 if(map.remove("load maps/") != cmd)
 {
-GAMEDATA->currentMap->loadStartMap("false");
-GAMEDATA->currentMap->loadStartMap(map);
+GAMEDATA->currentMap()->loadStartMap("false");
+GAMEDATA->currentMap()->loadStartMap(map);
 gameview->karteladen(Map::null);
 }
 

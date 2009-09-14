@@ -26,49 +26,54 @@
 
 class KontorData : public BuildingData
 {
-private:
-int kontorid;
 public:
 
 KontorData(){
 static int idzaehler;
-	kontorid=idzaehler;
+	m_kontorid = idzaehler;
 	idzaehler++;
 
 
 	for(int i=0; i< const_warenanzahl; i++)
 	{
-		storage.ware[i] = 0;
-		production.ware[i] = 0;
+		m_storage.ware[i] = 0;
+		m_production.ware[i] = 0;
 	}
 
-	storage.kapazitaet = 800;
-	storage.fuellung = 0;
-	storage.taler = 0;
-	storage.mengenbilanz = 0;
-	production.taler = 0;
+	m_storage.kapazitaet = 800;
+	m_storage.fuellung = 0;
+	m_storage.taler = 0;
+	m_storage.mengenbilanz = 0;
+	m_production.taler = 0;
 	}
 
 
-int getID()	const	{	return kontorid;	}
-int getCityID()	const	{	return cityID;		}
+int getID()	const	{	return m_kontorid;	}
+int getCityID()	const	{	return m_CityID;		}
 // int cityid;
 // QString stadt; --> inherited from BuildingClass --> cityname + cityID
 
-Warenstruct storage;
-Warenstruct production;
+const Warenstruct &storage ()	const	{	return m_storage;	}
+
 ///
 void productGoods();
-
-
-
-void build(const QString &param_cityname, const int &param_cityid)
+void setStorage(const Warenstruct &param_storage)
 {
-	cityname = param_cityname;
-	cityID = param_cityid;
-	tax_level = Tax::midhighLevel;
+m_storage = param_storage;
 }
 
+
+void build(const QString &param_cityname, int param_cityid)
+{
+	m_CityName = param_cityname;
+	m_CityID = param_cityid;
+	m_TaxLevel = Tax::midhighLevel;
+}
+
+private:
+Warenstruct m_storage;
+Warenstruct m_production;
+int m_kontorid;
 };
 
 

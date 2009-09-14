@@ -25,6 +25,7 @@
  #include <QDir>
  
 #include "datamanager.h"
+#include "settings.h"
 
 #include "gesamtbild.h"
 

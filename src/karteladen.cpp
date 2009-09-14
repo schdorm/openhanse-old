@@ -17,8 +17,12 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+
 #include "hauptfenster.h"
-#include "map.h"
+#include "dataclass.h"
+#include "settings.h"
+
+#include "shipdata.h"
 
 #include <QtGui/QGraphicsScene>
 
@@ -34,19 +38,24 @@ void hauptfenster::karteladen(Map::Orientations orientation)
 {
 	if(orientation != Map::null)
 	{
+		GAMEDATA->manageMapReading(orientation);
+	/*
+	Map *tempmappointer = GAMEDATA->currentMap();
 	if(!SETTINGS->cacheMaps())
 	{
-	delete GAMEDATA->currentMap;
+	delete tempmappointer;
 	}
-	GAMEDATA->currentMap = new Map();
+
+	tempmappointer = new Map();
 	
-	GAMEDATA->currentMap->loadMap(orientation);
+	tempmappointer->loadMap(orientation);
 	
 	if(SETTINGS->cacheMaps())
 	{
-		GAMEDATA->maplist << GAMEDATA->currentMap;
+		GAMEDATA->addMap(*tempmappointer);
+	}*/
 	}
-	}
+
 	
 	QGraphicsScene tempscene;
 	setScene(&tempscene);
@@ -58,17 +67,17 @@ void hauptfenster::karteladen(Map::Orientations orientation)
 // 	scene = QGraphicsScene();
 
 	
-	QFile mapimgfile(GAMEDATA->currentMap->ret_Background());
+	QFile mapimgfile(GAMEDATA->currentMap()->background());
 	if(mapimgfile.exists())
 	{
-		szene->setBackgroundBrush(QBrush(QImage(GAMEDATA->currentMap->ret_Background())));
+		szene->setBackgroundBrush(QBrush(QImage(GAMEDATA->currentMap()->background())));
 	}
 	else
 	{
-	      qWarning() << "Maphintergrund:" << GAMEDATA->currentMap->ret_Background() << "nicht gefunden!";
+	      qWarning() << "Maphintergrund:" << GAMEDATA->currentMap()->background() << "nicht gefunden!";
 	}
 	
-	if(!GAMEDATA->currentMap->ret_Cityname().isEmpty())
+	if(!GAMEDATA->currentMap()->cityname().isEmpty())
 	{
 		GAMEDATA->setCurrentCity();
 	}
@@ -76,7 +85,7 @@ void hauptfenster::karteladen(Map::Orientations orientation)
 	MapObject *MapObjectIterator = 0;
 	QString filename;
 	int role;
-	foreach(MapObjectIterator, GAMEDATA->currentMap->objectlist)
+	foreach(MapObjectIterator, GAMEDATA->currentMap()->objectList())
 	{
 		filename = MapObjectIterator->fileName();
 		role = MapObjectIterator->role();
@@ -101,7 +110,7 @@ void hauptfenster::karteladen(Map::Orientations orientation)
 			qWarning() << "pic.exists() == false!" << filename;
 	}
 	setScene(szene);
-	setSceneRect(QRectF(QPoint(0,0), GAMEDATA->currentMap->ret_Size()));
+	setSceneRect(QRectF(QPoint(0,0), GAMEDATA->currentMap()->size()));
 
 /*
 	qWarning() << "Karteladen: " << mname;
@@ -614,49 +623,49 @@ qWarning() << "Mapdir does not exist. Exiting.";
 */
 
 
-	if(GAMEDATA->anbord)
+	if(GAMEDATA->anbord())
 {
 QGraphicsPixmapItem *testschiff;
 // 	qWarning() << GAMEDATA->active_ship->filename;
 	testschiff = szene->addPixmap(QPixmap(":img/schiffe/schiff_gerade_skaliert2.png"));
 	testschiff->setZValue(0.1);
 	
-	activeship_model = new ObjectGraphicsItem(GAMEDATA->active_ship);
+	activeship_model = new ObjectGraphicsItem(GAMEDATA->activeShip());
 	activeship_model->addMemberItem(testschiff,QPointF(0,0));
 	activeship_model->rotateItem();
 	szene->addItem(activeship_model);
 	
 	PositioningStruct destination_pos;
-	destination_pos.mapcoords = GAMEDATA->currentMap->ret_Coordinate();
+	destination_pos.mapcoords = GAMEDATA->currentMap()->coordinates();
 	switch(orientation)
 	{
 		case Map::North:
 		{
-			destination_pos.generic_position = QPoint(GAMEDATA->active_ship->ret_CurrentPosition().generic_position.x(), GAMEDATA->currentMap->ret_Size().height() - 50);
+			destination_pos.generic_position = QPoint(GAMEDATA->activeShip()->currentPosition().generic_position.x(), GAMEDATA->currentMap()->size().height() - 50);
 			break;
 		}
 		case Map::East:
 		{
-			destination_pos.generic_position = QPoint(30, GAMEDATA->active_ship->ret_CurrentPosition().generic_position.y());
+			destination_pos.generic_position = QPoint(30, GAMEDATA->activeShip()->currentPosition().generic_position.y());
 			break;
 		}
 		case Map::South:
 		{
-			destination_pos.generic_position = QPoint(GAMEDATA->active_ship->ret_CurrentPosition().generic_position.x(), 0);
+			destination_pos.generic_position = QPoint(GAMEDATA->activeShip()->currentPosition().generic_position.x(), 0);
 			break;
 		}
 		case Map::West:
 		{
-			destination_pos.generic_position = QPoint(GAMEDATA->currentMap->ret_Size().width() -30, GAMEDATA->active_ship->ret_CurrentPosition().generic_position.y());
+			destination_pos.generic_position = QPoint(GAMEDATA->currentMap()->size().width() -30, GAMEDATA->activeShip()->currentPosition().generic_position.y());
 			break;
 		}
 		default:
 		{
-			destination_pos = GAMEDATA->active_ship->ret_CurrentPosition();
+			destination_pos = GAMEDATA->activeShip()->currentPosition();
 			break;
 		}
 	}
-	GAMEDATA->active_ship->setPos(destination_pos);
+	GAMEDATA->activeShip()->setPos(destination_pos);
 	centerOn(activeship_model);
 
 // 	ShipData blah2;
@@ -678,13 +687,13 @@ QGraphicsPixmapItem *testschiff;
 // 	active_ship.attribute.map = GAMEDATA->currentMap.mapname;
 // 	active_ship.attribute.stadt = GAMEDATA->currentMap.stadtname;
 	
-	qWarning() << GAMEDATA->currentMap->ret_Type();
-	if(GAMEDATA->currentMap->ret_Type() == Map::coast || GAMEDATA->currentMap->ret_Type() == Map::coast_city)
+	qWarning() << GAMEDATA->currentMap()->type();
+	if(GAMEDATA->currentMap()->type() == Map::coast || GAMEDATA->currentMap()->type() == Map::coast_city)
 	{
 	emit sig_anlegbar(true);
 // 	qWarning() << "anlegbar";
 	}
-	else if(GAMEDATA->currentMap->ret_Type() == Map::sea)
+	else if(GAMEDATA->currentMap()->type() == Map::sea)
 	{
 	emit sig_anlegbar(false);
 // 	qWarning() << "nicht anlegbar";

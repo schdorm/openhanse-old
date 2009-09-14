@@ -18,8 +18,10 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
+#include "dataclass.h"
+#include "datamanager.h"
 #include "gesamtbild.h"
-#include "zeit.h"
+// #include "zeit.h"
 
 #ifndef _NO_SAVE__
 

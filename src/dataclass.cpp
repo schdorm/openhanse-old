@@ -17,38 +17,54 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#include "stadtklasse.h"
+#include "kontordata.h"
+#include "shipdata.h"
+// #include "wind.h"
+// #include "zeit.h"
+#include "buildingclass.h"
+#include "person.h"
+#include "map.h"
+#include "landing.h"
 
 #include "dataclass.h"
+#include "datamanager.h"
+#include "settings.h"
+
 #include <QtDebug>
 
 // #define _DEBUG_CALC_
 
 DataClass::DataClass()
 {
-active_ship = new ShipData();
-// active_ship->init();
-active_city = new CityClass();
-active_kontor = new KontorData();
-active_char = new Person();
+m_ActiveShip = new ShipData(QString());
+// m_ActiveShip->init();
+m_ActiveCity = 0;
+m_ActiveKontor = new KontorData();
+m_ActiveChar = new Person();
 
-currentMap = 0;
+m_CurrentMap = new Map();
 
-landingstruct.landingstate = LandingProcess::NotActive;
+m_landingprocess.setStatus(Landing::NotActive);
 connect(&calc_data_timer, SIGNAL(timeout()), this, SLOT(calcData()));
 // singleplayer = true;
+m_anbord = true;
 }
 
 DataClass::~DataClass()
 {
-	delete active_ship;
-	delete active_city;
-	delete active_kontor;
-	delete active_char;
-	maplist << currentMap;
-	foreach(currentMap, maplist)
-	{
-		delete currentMap;
-	}
+	delete m_ActiveShip;
+	delete m_ActiveCity;
+	delete m_ActiveKontor;
+	delete m_ActiveChar;
+//  	m_MapList << *currentMap;
+// 	foreach(*currentMap, m_MapList)
+// 	{
+ 		delete m_CurrentMap;
+// 	}
+// 	m_MapList.clear();
+// 	m_CityList.clear();
+// 	m_KontorList.clear();
 }
 
 void DataClass::startTimer()
@@ -65,21 +81,23 @@ void DataClass::calcData()
 #ifdef _DEBUG_CALC_
 qWarning() << "DataClass::calcData()";
 #endif
-cycle++;
-if(gametime.refreshTime())			//returns true, when a new day starts ...
-{
-	qWarning() << "A new day is rising up ... :-)";
-	emit sig_newDay(cycle);
-	if(cycle > 2000000000)	// 2 000 000 000
+	cycle++;
+	if(m_gametime.refreshTime())			//returns true, when a new day starts ...
 	{
-		cycle = 0;
+		qWarning() << "A new day is rising up ... :-)";
+// 		emit sig_newDay(cycle);
+		produktion(cycle);
+		if(cycle > 2000000000)	// 2 000 000 000
+		{
+			cycle = 0;
+		}
 	}
-}
-wind.refresh();
-foreach(shipiterator, ShipList)
-{
-shipiterator->calcMovement(wind.v(), wind.dir());
-}
+	m_wind.refresh();
+	for(QList<ShipData>::iterator it = m_ShipList.begin(); it != m_ShipList.end(); ++it)
+// 	foreach(shipiterator, ShipList)
+	{
+		it->calcMovement(m_wind.v(), m_wind.dir());
+	}
 }
 
 void DataClass::pause()
@@ -92,58 +110,81 @@ quit();
 
 void DataClass::addBuilding(const BuildingClass &param_building)
 {
-BuildingList << param_building;
+m_BuildingList << param_building;
 }
 
-void DataClass::addShip(ShipData *param_ship)
+void DataClass::addShip(const ShipData &param_ship)
 {
-ShipList << param_ship;
+m_ShipList << param_ship;
 }
 
 void DataClass::addKontor(const KontorData &param_kontor)
 {
-KontorList << param_kontor;
+m_KontorList << param_kontor;
 }
 
 void DataClass::addCity(const CityClass &param_city)
 {
-CityList << param_city;
+m_CityList << param_city;
 }
 
 void DataClass::addPerson(const Person &param_person)
 {
-PersonList << param_person;
+m_PersonList << param_person;
+}
+
+void DataClass::addMap(const Map &param_map)
+{
+m_MapList << param_map;
 }
 
 void DataClass::setCurrentCity(CityClass *param_city)
 {
-active_city = param_city;
+m_ActiveCity = param_city;
 }
 
 void DataClass::setCurrentCity()
 {
-	foreach(*active_city, CityList)
+	for(QList<CityClass>::iterator it = m_CityList.begin(); it != m_CityList.end(); ++it)
+// 	foreach(*m_ActiveCity, CityList)
 	{
-		if(active_city->cityname == currentMap->ret_Cityname())
+		if(it->cityname() == m_CurrentMap->cityname())
 		{
+			m_ActiveCity = &*it;
 			break;
 		}
 	}
 }
 
-QList<CityClass> DataClass::ret_CityList() const
-{
-return CityList;
-}
-QList<ShipData*> DataClass::ret_ShipList() const
-{
-return ShipList;
-}
-QList<KontorData> DataClass::ret_KontorList() const
-{
-return KontorList;
-}
 
+// QList<CityClass> DataClass::ret_CityList() const
+// {
+// 	return m_CityList;
+// }
+// QList<ShipData> DataClass::ret_ShipList() const
+// {
+// 	return m_ShipList;
+// }
+// QList<KontorData> DataClass::ret_KontorList() const
+// {
+// 	return m_KontorList;
+// }
+
+
+void DataClass::manageMapReading(const Map::Orientations &orientation)
+{
+
+	delete m_CurrentMap;
+
+	m_CurrentMap = new Map();
+	
+	m_CurrentMap->loadMap(orientation);
+	
+	if(SETTINGS->cacheMaps())
+	{
+		addMap(*m_CurrentMap);
+	}
+}
 
 void DataClass::run()
 {
@@ -158,10 +199,12 @@ void DataClass::calcShipMovement()
 #ifdef _DEBUG_CALC_
 qWarning() << "void DataClass::calcShipMovement()";
 #endif
-foreach(shipiterator, ShipList)
-{
-shipiterator->calcPos();
-}
+// foreach(shipiterator, ShipList)
+
+	for(QList<ShipData>::iterator it = m_ShipList.begin(); it != m_ShipList.end(); ++it)
+	{
+		it->calcPos();
+	}
 
 }
 

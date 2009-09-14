@@ -20,6 +20,8 @@
 
 #ifndef _BUILDMENU_H
 #define _BUILDMENU_H
+
+#include <QtCore/QObject>
 #include <QtGui/QWidget>
 #include <QtGui/QTabWidget>
 #include <QtGui/QPushButton>

@@ -21,6 +21,7 @@
 #define _hauptfenster_h
 
 #include <QtCore/QObject>
+#include <QtCore/QTimer>
 
 #include <QtGui/QGraphicsView>
 
@@ -33,16 +34,17 @@
 
 #include <QtGui/QCheckBox>
 
-#include "konsole.h"
+// #include "konsole.h"
 
 
 #include "datamanager.h"
 
 #include "definitions.h"
 
-#include "settings.h"
+// #include "settings.h"
 // #include "dataclass.h"
 // #include "shipdata.h"
+#include "map.h"
 
 #include "objectgraphicsitem.h"
 
@@ -52,6 +54,8 @@
 // #include <math.h>
 
 // const int const_mhiscale = 5;
+
+class konsole;
 
 class hauptfenster : public QGraphicsView
 {
@@ -140,7 +144,7 @@ public slots:
 	void schuss();
 	
 	void landgang();
-	void einschiffen();
+// 	void einschiffen();
 
 	void slotpause();
 	void endePause();
