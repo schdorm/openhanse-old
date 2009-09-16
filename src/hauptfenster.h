@@ -55,7 +55,7 @@
 
 // const int const_mhiscale = 5;
 
-class konsole;
+// class konsole;
 
 class hauptfenster : public QGraphicsView
 {
@@ -134,7 +134,7 @@ QImage collimg[3];
 // QList <QGraphicsItem *> hafenobjliste;
 QList <QGraphicsPixmapItem*> landobjektliste;
 
-konsole *konsolenwidget;
+// konsole *konsolenwidget;
 
 public slots:
 

@@ -21,6 +21,9 @@
 #ifndef _konsole_h
 #define _konsole_h
 
+#define OHDebug(x) konsole::instance()->debug(x)
+#define TERMINAL konsole::instance()
+
 #include <QtGui/QWidget>
 #include <QtGui/QPlainTextEdit>
 #include <QtGui/QLineEdit>
@@ -28,13 +31,28 @@
 
 #include "zeit.h"
 
-class konsole : public QWidget
+// konsole konsole::m_instance;
+
+class konsole : public QWidget		// konsole = Terminal
 {
 Q_OBJECT
 public:
 // zeit *hfgametime;
 konsole();
-void debug(QString);
+~konsole();
+void debug(const QString&) const ;
+
+static konsole* instance()
+{
+	if(m_instance == NULL)
+	{
+		m_instance = new konsole();
+	}
+return m_instance;
+}
+// konsole& operator<<(int);
+// konsole& operator<<(const QString&);
+// konsole& operator<<(const char *);
 
 public slots:
 void execCommand();
@@ -50,8 +68,13 @@ QStringList lastcommands;
 // QStringListIterator lc_iterator(QStringList);
 int row;
 
+static konsole *m_instance;
+
 protected:
 void keyPressEvent(QKeyEvent *);
+
+// void operator<<(const char []) const;
+
 };
 
 #endif

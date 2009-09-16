@@ -47,6 +47,8 @@ void gesamtbild::initGameData()
 
 }*/
 
+#include "konsole.h"
+
 
 void gesamtbild::startNewGame()
 {
@@ -186,7 +188,7 @@ void gesamtbild::startNewGame()
  				CityClass activeCity(cityname, hproductionlist, mproductionlist, lproductionlist);
 				activeCity.init();
 				GAMEDATA->addCity(activeCity);
-				qWarning() << activeCity.cityname() << " zur Liste hinzugefuegt";
+				OHDebug(activeCity.cityname().append(" zur Liste hinzugefuegt"));
 // 				activeCity->reset();
 				}
 				status=null;
@@ -200,21 +202,21 @@ void gesamtbild::startNewGame()
 		}
 	
 		if (reader.hasError()) {
-		qWarning() << reader.errorString();
+		OHDebug(reader.errorString());
 	}
 }
 
-	qWarning() << "Stadtliste erzeugt";
+	OHDebug("Stadtliste erzeugt");
 // 	if(!load)
 // 	{
 	schwierigkeitsgrad = schwierigkeitsauswahl->currentIndex();
-	qWarning() << "Schwierigkeitsgrad" <<schwierigkeitsgrad;
+	OHDebug(QString("Schwierigkeitsgrad %1").arg(schwierigkeitsgrad));
 	delete schwierigkeitsauswahl;
 	schwierigkeitsauswahl = 0;
 // 	}
 
 
-	qWarning() << "vor Spielfenster aufgebaut";
+	OHDebug("vor Spielfenster aufgebaut");
 
  	gameview = new hauptfenster(/*GAMEDATA, currentSettings*/);
 
@@ -222,15 +224,17 @@ void gesamtbild::startNewGame()
 	qWarning() << "Spielfenster aufgebaut";
 // 	gameview->setDataClass(GAMEDATA);
 	qWarning() << "Data set";
-// 	konsolenwidget->gameviewgametime = gameviewgametime;
-// 	konsolenwidget->debug("Timepointer set");
+// 	TERMINAL->gameviewgametime = gameviewgametime;
+// 	TERMINAL->debug("Timepointer set");
 	gameview->schwierigkeit = schwierigkeitsgrad;
 	qWarning() << "Schwierigkeitsgrad:" << schwierigkeitsgrad;
 /// 	GAMEDATA->active_ship->filename = ":img/schiffe/schiff_gerade_skaliert2.png";
-// 					  ":img/schiffe/schiff_gerade_skaliert2.png"
 	GAMEDATA->activeShip()->setControlDifficulty(schwierigkeitsgrad);
 	
 //  	GAMEDATA->currentMap() = new Map();
+
+	OHDebug("GAMEDATA->currentMap()->loadStartMap(\"testmap001.ohm\");");
+	
 	GAMEDATA->currentMap()->loadStartMap("testmap001.ohm");
 	gameview->karteladen(Map::null);
 // 	gameview->karteladen("testmap001.ohm");
@@ -334,15 +338,13 @@ void gesamtbild::spielfensteraufbau()
 
 	connect(menupanel->geschwindigkeitsregler,SIGNAL(valueChanged(int)), gameview, SLOT(segelsetzen(int)));
 	
-	konsolenwidget = new konsole();
-	konsolenwidget->resize(width(), height()/2);
-	konsolenwidget->setParent(this);
-	konsolenwidget->setWindowFlags(Qt::Popup);
-	konsolenwidget->hide();
-	connect(gameview, SIGNAL(sig_konsole()), konsolenwidget, SLOT(show()));
-// 	connect(konsolenwidget, SIGNAL(sig_loadMap(QString)), gameview, SLOT(karteladen(QString)));
-	connect(konsolenwidget, SIGNAL(sig_command(QString)), this, SLOT(execCommand(QString)));
-	gameview->konsolenwidget = konsolenwidget;
+	TERMINAL->resize(width(), height()/2);
+	TERMINAL->setParent(this);
+	TERMINAL->setWindowFlags(Qt::Popup);
+	TERMINAL->hide();
+	connect(gameview, SIGNAL(sig_konsole()), TERMINAL, SLOT(show()));
+// 	connect(TERMINAL, SIGNAL(sig_loadMap(QString)), gameview, SLOT(karteladen(QString)));
+	connect(TERMINAL, SIGNAL(sig_command(QString)), this, SLOT(execCommand(QString)));
 }
 
 
@@ -383,7 +385,7 @@ gameview->setEnabled(false);
 menupanel->setEnabled(false);
 aktiv = false;
 
-qWarning() << "Spielmenu";
+OHDebug("Spielmenu");
 // gameview->hide();
 
 QWidget *menuw = new QWidget(this);

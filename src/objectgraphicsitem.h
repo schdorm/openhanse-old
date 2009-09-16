@@ -23,7 +23,7 @@
 
 #include "waren.h"
 #include "definitions.h"
-#include <QtGui/QGraphicsItem>
+#include <QtGui/QGraphicsItemGroup>
 
 // #include "shipdata.h"
 #include "buildingdata.h"
@@ -31,7 +31,7 @@
 // #include ""
 class ShipData;
 
-class ObjectGraphicsItem : public QGraphicsPixmapItem 
+class ObjectGraphicsItem : public QGraphicsItemGroup
 {
 
 

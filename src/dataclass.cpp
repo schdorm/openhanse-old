@@ -22,7 +22,7 @@
 #include "shipdata.h"
 // #include "wind.h"
 // #include "zeit.h"
-#include "buildingclass.h"
+#include "buildingdata.h"
 #include "person.h"
 #include "map.h"
 #include "landing.h"
@@ -49,6 +49,35 @@ m_landingprocess.setStatus(Landing::NotActive);
 connect(&calc_data_timer, SIGNAL(timeout()), this, SLOT(calcData()));
 // singleplayer = true;
 m_anbord = true;
+
+// GoodLabelHash.insert();
+m_GoodLabelHash.insert(W_Baumstamme, tr("trunks"));	//Baumstaemme
+m_GoodLabelHash.insert(W_Holzbretter,tr("shelves"));	//Holzbretter
+m_GoodLabelHash.insert(W_Holzkohle, tr("charcoal"));	//Holzkohle
+m_GoodLabelHash.insert(W_Pech, tr("pitch"));		//Pech
+m_GoodLabelHash.insert(W_Steine, tr("bricks"));		//Steine/Ziegel
+m_GoodLabelHash.insert(W_Eisenerz, tr("iron ore"));	//Eisenerz
+m_GoodLabelHash.insert(W_Schmiedeeisen, tr("malleable iron"));	//Schmiedeeisen
+m_GoodLabelHash.insert(W_Werkzeuge, tr("tools"));		//Werkzeuge
+m_GoodLabelHash.insert(W_Leder, tr("leather"));		//Leder
+m_GoodLabelHash.insert(W_Wolle, tr("wool"));		//Wolle
+m_GoodLabelHash.insert(W_Stoffe, tr("cloth"));		//Stoff
+m_GoodLabelHash.insert(W_Hanf, tr("hemp"));		//Hanf
+
+
+m_GoodLabelHash.insert(W_Bier, tr("beer"));	//Bier
+m_GoodLabelHash.insert(W_Getreide, tr("cereal"));	//Getreide
+m_GoodLabelHash.insert(W_Brot, tr("bread"));	//Brot
+m_GoodLabelHash.insert(W_Salz, tr("salt"));	//Salz
+m_GoodLabelHash.insert(W_Fleisch, tr("meat"));	//Fleisch
+m_GoodLabelHash.insert(W_Fisch, tr("fish"));	//Fisch
+m_GoodLabelHash.insert(W_Kase, tr("cheese"));	//Kaese
+m_GoodLabelHash.insert(W_Wein, tr("wine"));	//Wein
+m_GoodLabelHash.insert(W_Gewurze, tr("spicery"));	//Gewuerze
+m_GoodLabelHash.insert(W_Gold, tr("gold"));	//Gold
+m_GoodLabelHash.insert(W_Schmuck, tr("jewellery"));//Schmuck
+
+
 }
 
 DataClass::~DataClass()
@@ -108,7 +137,7 @@ calc_data_timer.stop();
 quit();
 }
 
-void DataClass::addBuilding(const BuildingClass &param_building)
+void DataClass::addBuilding(const BuildingData &param_building)
 {
 m_BuildingList << param_building;
 }

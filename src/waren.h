@@ -22,7 +22,6 @@
 #define _waren_h
 
 
-
 const int const_warenanzahl = 30;
 const int const_waffen = 15;
 
@@ -73,7 +72,7 @@ _platzhalter28_gold_,
 _platzhalter29_gold_
 };
 
-enum waffen{
+enum weapons{
 wp_entermesser,
 wp_kanone,
 wp_balliste,

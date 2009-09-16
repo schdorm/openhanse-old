@@ -216,8 +216,12 @@ connect(kaufmenge[i],SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
 connect(verkaufsmenge[i],SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
 
 }
-
-ware[0]->setText(tr("Baumstaemme"));
+for(int i=0; i< const_warenanzahl; i ++)
+{
+ware[i]->setText(GAMEDATA->GoodLabelHash().value(i));
+}
+/*
+ware[]->setText(tr("Baumstaemme"));
 ware[1]->setText(tr("Holzbrett"));
 ware[2]->setText(tr("Holzkohle"));
 ware[3]->setText(tr("Pech"));
@@ -241,7 +245,7 @@ ware[21]->setText(tr("Kaese"));
 ware[22]->setText(tr("Wein"));
 ware[23]->setText(tr("Gewuerze"));
 ware[24]->setText(tr("Gold"));
-ware[25]->setText(tr("Schmuck"));
+ware[25]->setText(tr("Schmuck"));*/
 // ware[24]->setText(tr("Nicht essbares Luxusgut"));
 
 // QFrame *line1 = new QFrame(this);

@@ -25,10 +25,16 @@
 #include "dataclass.h"
 #include "datamanager.h"
 
+#include "shipdata.h"
+
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QFile>
 
-#include <QDebug>
+#include <QtDebug>
+
+
+konsole *konsole::m_instance;
+
 
 konsole::konsole()
 {
@@ -44,6 +50,39 @@ konsole::konsole()
 	connect(input, SIGNAL(returnPressed()), input, SLOT(clear()));
 
 }
+
+konsole::~konsole()
+{
+// 	lc_iterator = (lastcommands);
+	delete output;
+	delete input;
+}
+
+// void konsole::operator<<(const char *param_char[]) const
+// {
+// debug(QString(param_char));
+// }
+
+// konsole &konsole::operator<<(int a)
+// {
+// debug(QString(a));
+// return this;
+// 
+// }
+// 
+// konsole &konsole::operator<<(const char *param_char)
+// {
+// debug(QString(param_char));
+// return this;
+// 
+// }
+// 
+// 
+// konsole &konsole::operator<<(const QString &param_debugmsg)
+// {
+// debug(param_debugmsg);
+// return this;
+// }
 
 void konsole::keyPressEvent(QKeyEvent *event)
 {
@@ -72,10 +111,14 @@ else if(event->key() == Qt::Key_Escape)
 {
 hide();
 }
+else if(event->modifiers() == Qt::ControlModifier && event->key() == Qt::Key_Q)
+{
+deleteLater();
+}
 }
 
 
-void konsole::debug(QString msg)
+void konsole::debug(const QString &msg) const
 {
 qWarning() << msg;
 output->appendPlainText(msg);
@@ -97,71 +140,78 @@ bool executed = false;
 QString inputstring = input->text();
 if(!inputstring.isEmpty())
 {
-lastcommands << inputstring;
+	lastcommands << inputstring;
 // lc_iterator.toBack();
-row = lastcommands.size();
+	row = lastcommands.size();
 }
 output->appendPlainText(QString(inputstring).prepend("> "));
+
 if(inputstring.startsWith("load "))
-{executed = true;
-QString filestring = QString(inputstring).remove("load ");
-if(QFile(filestring).exists())
 {
-// karteladen(QString(inputstring).remove("load "));
-qWarning() << "Load: " << filestring;
-output->appendPlainText(QString("Load: ").append(filestring));
-if(filestring.endsWith(".ohm"))
-{
-emit sig_command(inputstring.simplified());
-return;
-}
-if(filestring.endsWith(".ohs"))		//Savegame
-{
-return;
-}
-if(filestring.endsWith(".oht"))		//Script
-{
-return;
-}
-else
-{
-QFile rfile(filestring);
-rfile.open(QIODevice::ReadOnly|QIODevice::Text);
-output->appendPlainText(rfile.readAll());
-rfile.close();
-}
-}
-else
-{
-output->appendPlainText(tr("Fehler: Datei nicht gefunden: \"").append(filestring).append("\" !"));
-
-}
-}
-
-if(inputstring.startsWith("echo "))
-{
-output->appendPlainText(inputstring.remove("echo "));
-return;
+	executed = true;
+	QString filestring = QString(inputstring).remove("load ");
+	if(QFile(filestring).exists())
+	{
+// 	karteladen(QString(inputstring).remove("load "));
+		qWarning() << "Load: " << filestring;
+		output->appendPlainText(QString("Load: ").append(filestring));
+		if(filestring.endsWith(".ohm"))
+		{
+			emit sig_command(inputstring.simplified());
+			return;
+		}
+		else if(filestring.endsWith(".ohs"))		//Savegame
+		{
+			return;
+		}
+		else if(filestring.endsWith(".oht"))		//Script
+		{
+			return;
+		}
+		else
+		{
+			QFile rfile(filestring);
+			rfile.open(QIODevice::ReadOnly|QIODevice::Text);
+			output->appendPlainText(rfile.readAll());
+			rfile.close();
+		}
+	}
+	else
+	{
+	output->appendPlainText(tr("Fehler: Datei nicht gefunden: \"").append(filestring).append("\" !"));
+	}
 }
 
-if(QString(inputstring).simplified().contains(" sidemenu"))
+else if(inputstring.startsWith("echo "))
 {
-emit sig_command(inputstring);
+	output->appendPlainText(inputstring.remove("echo "));
+	return;
+}
+
+else if(QString(inputstring).simplified().contains(" sidemenu"))
+{
+	emit sig_command(inputstring);
+	return;
+}
+
+else if(inputstring.isEmpty() || QString(inputstring).remove(" ").isEmpty() ||  QString(inputstring).simplified().isEmpty())
+{
+	return;
+}
+
+else if(inputstring == "test a")
+{
+	emit sig_command(inputstring);
+	return;
+}
+
+else if(inputstring == "print Shipposition")
+{
+GAMEDATA->activeShip()->printPosition();
 return;
 }
 
-if(inputstring.isEmpty() || QString(inputstring).remove(" ").isEmpty())
-{
-return;
-}
-
-if(inputstring == "test a")
-{
-emit sig_command(inputstring);
-return;
-}
-
-if(inputstring == QString("gametime"))
+else if(inputstring == QString("gametime"))
 {
 // output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QChar(GAMEDATA->gametime().retDay()), QChar(GAMEDATA->gametime().retMonth()), QChar(GAMEDATA->gametime().retYear()), QChar(GAMEDATA->gametime().retHour()), QChar(int(GAMEDATA->gametime().retMinute()))));
 output->appendPlainText(QString("%1.%2.%3, %4:%5").arg(QString("%1").arg(GAMEDATA->gametime().day()), QString("%1").arg(GAMEDATA->gametime().month()), QString("%1").arg(GAMEDATA->gametime().year()), QString("%1").arg(GAMEDATA->gametime().hour()), QString("%1").arg(GAMEDATA->gametime().minute())));
@@ -172,8 +222,7 @@ return;
 
 if(!executed)
 {
-output->appendPlainText(tr("Error: unknown Command \"").append(inputstring).append("\" !"));
-
+	output->appendPlainText(tr("Error: unknown Command \"").append(inputstring).append("\" !"));
 }
 }
 

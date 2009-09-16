@@ -52,9 +52,14 @@
 
 #include "konsole.h"
 #include "dataclass.h"
+#include "buildingdata.h"
 
 hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*/)
 {
+/*	OHWarning<< 1;*/
+// 	OHDebug(QString("blah");
+// 	OHDebug("blah";
+	
 // 	GAMEDATA = param_GAMEDATA;
 // 	currentSettings = paramsettings;
 
@@ -169,14 +174,14 @@ delete scene();
 
 void hauptfenster::starttimer(int param_delay)
 {
-konsolenwidget->debug(QString("void hauptfenster::starttimer()"));
+TERMINAL->debug(QString("void hauptfenster::starttimer()"));
 graphics_refresh_delay = param_delay;
 refreshGraphicsTimer.start(param_delay);
 }
 
 void hauptfenster::mousePressEvent(QMouseEvent *event) /// MAUS-Steuerungssachen
 {
-konsolenwidget->debug(QString("void hauptfenster::mousePressEvent(QMouseEvent *event) "));
+TERMINAL->debug(QString("void hauptfenster::mousePressEvent(QMouseEvent *event) "));
 
 const float scale = transform().m11();
 QPointF clickpoint = QPointF((event->x() + horizontalScrollBar()->value())/scale,
@@ -201,9 +206,9 @@ if(!pause)
 		GAMEDATA->landingstruct()->l_orientation += 360;
 		}
 		GAMEDATA->landingstruct()->l_orientation = GAMEDATA->landingstruct()->l_orientation *  M_PI / 180;
-		konsolenwidget->debug(QString("landing_line_orientation: %1 ").arg(GAMEDATA->landingstruct()->l_orientation));
-		konsolenwidget->debug(QString("landing_line_angle: %1 ").arg(GAMEDATA->landingstruct()->landing_line.angle()));
-		konsolenwidget->debug(QString("landing orientation: %1 ").arg(GAMEDATA->landingstruct()->orientation));
+		TERMINAL->debug(QString("landing_line_orientation: %1 ").arg(GAMEDATA->landingstruct()->l_orientation));
+		TERMINAL->debug(QString("landing_line_angle: %1 ").arg(GAMEDATA->landingstruct()->landing_line.angle()));
+		TERMINAL->debug(QString("landing orientation: %1 ").arg(GAMEDATA->landingstruct()->orientation));
 		qWarning() << GAMEDATA->landingstruct()->vx << GAMEDATA->landingstruct()->landing_line.dx() << GAMEDATA->landingstruct()->vy << GAMEDATA->landingstruct()->landing_line.dy() << GAMEDATA->landingstruct()->landing_line.length();
 		GAMEDATA->landingstruct()->correctOrientation = false;
 		return;
@@ -245,7 +250,7 @@ if(!pause)
 				case ObjectType::Market:
 				{
 #ifndef _RELEASE_
-					qWarning() << "Man begibt sich auf den Markt ...";
+					OHDebug("Man begibt sich auf den Markt ...");
 #endif
 					emit handel();
 					break;
@@ -394,7 +399,7 @@ keyPressEvent(event);
 
 void hauptfenster::keyPressEvent(QKeyEvent *event)
 {
-konsolenwidget->debug(QString("void hauptfenster::keyPressEvent(QKeyEvent *event) ").append(event->text()));
+TERMINAL->debug(QString("void hauptfenster::keyPressEvent(QKeyEvent *event) ").append(event->text()));
 switch (event->key())
 {
 	case Qt::Key_W:
@@ -539,15 +544,15 @@ switch (event->key())
 	
 	case Qt::Key_AsciiCircum:
 	{
-		qWarning() << "Open Console!";
+		OHDebug("Open Console!");
 
-		konsolenwidget->show();
+		TERMINAL->show();
 		break;
 	}
 	case Qt::Key_Escape:
 	{
 		emit menusig();
-		qWarning() << "Menusig";
+		OHDebug("Menusig");
 		break;
 	}
 	
@@ -660,7 +665,7 @@ if(event->text() =="Q" || (event->key() == Qt::Key_Q && event->modifiers() == Qt
 
 void hauptfenster::slotpause()
 {
-konsolenwidget->debug(QString("void hauptfenster::slotpause()"));
+TERMINAL->debug(QString("void hauptfenster::slotpause()"));
 
 		if(!pause)
 		{
@@ -685,7 +690,7 @@ konsolenwidget->debug(QString("void hauptfenster::slotpause()"));
 
 void hauptfenster::endePause()
 {
-konsolenwidget->debug(QString("void hauptfenster::endePause()"));
+TERMINAL->debug(QString("void hauptfenster::endePause()"));
 		if(!refreshGraphicsTimer.isActive())
 		{
 			GAMEDATA->startTimer();
@@ -696,7 +701,7 @@ konsolenwidget->debug(QString("void hauptfenster::endePause()"));
 
 void hauptfenster::startPause()
 {
-konsolenwidget->debug(QString("void hauptfenster::startPause()"));
+TERMINAL->debug(QString("void hauptfenster::startPause()"));
 		if(refreshGraphicsTimer.isActive())
 		{
 			GAMEDATA->pause();
@@ -708,7 +713,7 @@ konsolenwidget->debug(QString("void hauptfenster::startPause()"));
 
 void hauptfenster::segelsetzen(int i)
 {
-konsolenwidget->debug(QString("void hauptfenster::segelsetzen(int i) ").append(i));
+TERMINAL->debug(QString("void hauptfenster::segelsetzen(int i) ").append(i));
 // float n = i;
 // GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel = n/5;
 GAMEDATA->activeShip()->set_ToSettedSails(i/5);
@@ -1078,7 +1083,7 @@ bool hauptfenster::isLand(QGraphicsItem *checkqgi) const
 {
 	if(checkqgi->data(0).toInt() >= 100 && checkqgi->data(0).toInt() < 1000)
 	{
-		qWarning() << "isLand = true";
+		OHDebug("isLand = true");
 	      return true;
 	}
 	else return false;
@@ -1102,6 +1107,6 @@ void hauptfenster::rotateItem(QGraphicsItem *item, double angle)
 
 void hauptfenster::schuss()
 {
-konsolenwidget->debug(QString("void hauptfenster::schuss()"));
+TERMINAL->debug(QString("void hauptfenster::schuss()"));
 
 }

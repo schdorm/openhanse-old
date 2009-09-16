@@ -40,7 +40,7 @@
 #include "hauptfenster.h"
 #include "handelsfenster.h"
 #include "tabpanel.h"
-#include "konsole.h"
+// #include "konsole.h"
 
 // #include "settings.h"
 // #include "dataclass.h"
@@ -108,7 +108,7 @@ int schwierigkeitsgrad;
 hauptfenster *gameview;
 handelsfenster *tradingwindow;
 SeaTabPanel *menupanel;
-konsole *konsolenwidget;
+// konsole *konsolenwidget;
 
 // QFrame *rahmen;
 // QLabel *ware[const_warenanzahl];

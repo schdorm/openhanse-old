@@ -19,6 +19,10 @@
  ***************************************************************************/
 
 #include "stadtklasse.h"
+#include "konsole.h"
+// #include <QtDebug>
+#include "datamanager.h"
+#include "dataclass.h"
 
 	void CityClass::init()
 	{
@@ -57,6 +61,16 @@ void CityClass::setGoods(const Warenstruct &param_storage)
 m_goods = param_storage;
 }
 
+
+void CityClass::printGoods()
+{
+// 	QString dbg;
+	for(int i = 0; i<const_warenanzahl; i++)
+	{
+// 		dbg = ;
+		OHDebug(QString("%1 ").arg(m_goods.ware[i]).append(GAMEDATA->GoodLabelHash().value(i)));
+	}
+}
 
 void CityClass::reset()
 {

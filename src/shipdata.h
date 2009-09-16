@@ -59,6 +59,8 @@ ShipData(const QString &);
 
 // control: set - fct.
 
+void printPosition() const;
+
 
 void set_ToSettedSails(double);
 void set_SailDir(double);

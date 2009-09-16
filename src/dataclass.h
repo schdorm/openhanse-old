@@ -25,12 +25,15 @@
 #include <QtCore/QThread>
 #include <QtCore/QTimer>
 
+// #include <QtCore/QHash>
+
+
 // #include "stadtklasse.h"
 // #include "kontordata.h"
 // #include "shipdata.h"
 #include "wind.h"
 #include "zeit.h"
-#include "buildingclass.h"
+// #include "buildingdata.h"
 // #include "person.h"
 #include "map.h"
  #include "landing.h"
@@ -40,7 +43,7 @@ class CityClass;
 class KontorData;
 class ShipData;
 class Person;
-class BuildingClass;
+class BuildingData;
 // class Map;
 
 class DataClass : public QThread
@@ -51,7 +54,7 @@ DataClass();
 ~DataClass();
 
 
-void addBuilding(const BuildingClass &);		// add a Building .... to the Building .... List
+void addBuilding(const BuildingData &);		// add a Building .... to the Building .... List
 void addShip(const ShipData &);
 void addKontor(const KontorData &);
 void addCity(const CityClass &);
@@ -64,7 +67,7 @@ void setCurrentCity(CityClass *);
 
 void pause();
 
-
+const QHash<int, QString> &GoodLabelHash()const	{	return m_GoodLabelHash;	}
 
 // QList<CityClass> ret_CityList() const;
 // QList<ShipData> ret_ShipList() const;
@@ -76,7 +79,7 @@ const QList <ShipData> * shipList ()	const	{	return &m_ShipList;	}
 const QList <Person> * personList ()	const	{	return &m_PersonList;	}
 const QList <CityClass> * cityList()	const	{	return &m_CityList;	}
 const QList <KontorData> * kontorList()	const	{	return &m_KontorList;	}
-const QList <BuildingClass> * buildingList() const{	return &m_BuildingList;	}
+const QList <BuildingData> * buildingList() const{	return &m_BuildingList;	}
 
 const QList <Map> * MapList()		const	{	return &m_MapList;	}
 
@@ -135,7 +138,7 @@ Wind m_wind;
 
 QList <CityClass> m_CityList;
 QList <ShipData> m_ShipList;
-QList <BuildingClass> m_BuildingList;
+QList <BuildingData> m_BuildingList;
 QList <KontorData> m_KontorList;
 QList <Person> m_PersonList;
 
@@ -151,6 +154,9 @@ ShipData *m_ActiveShip;
 Person *m_ActiveChar;
 
 Map *m_CurrentMap;
+
+QHash<int, QString> m_GoodLabelHash;
+
 
 };
 

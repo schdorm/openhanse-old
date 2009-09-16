@@ -20,6 +20,7 @@
 
 #include "shipdata.h"
 #include "datamanager.h"
+#include "konsole.h"
 
 #include <math.h>
 
@@ -65,6 +66,16 @@ ShipData::ShipData(const QString &param_name) : m_name (param_name)				///== RES
 
 ShipData::~ShipData()
 {
+}
+
+void ShipData::printPosition() const
+{
+OHDebug(QString("Generic Position: \tX: %1 \tY: %2")
+.arg(m_currentPosition.generic_position.x())
+.arg(m_currentPosition.generic_position.y())); 
+OHDebug(QString("M Position: \tX: %1 \tY: %2")
+.arg(m_currentPosition.m_position.x())
+.arg(m_currentPosition.m_position.y())); 
 }
 
 void ShipData::setName(const QString &param_name)

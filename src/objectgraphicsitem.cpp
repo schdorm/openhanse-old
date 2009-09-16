@@ -23,6 +23,8 @@
 #include "objectgraphicsitem.h"
 #include "shipdata.h"
 
+#include <QtDebug>
+
 ObjectGraphicsItem::ObjectGraphicsItem(ShipData *param_shipdata)
 {/*
 	shipdata = 0;
@@ -50,7 +52,8 @@ ObjectGraphicsItem::~ObjectGraphicsItem()
 
 void ObjectGraphicsItem::addMemberItem(QGraphicsItem *param_MemberItem, const QPointF &param_DestinationCoords)	// adds a graphicsItem to itself --> e.g. adds the body of the ship / the sails of the ship to the "Ship-Item"
 {
-param_MemberItem->setParentItem(this);
+// ->setParentItem(this);
+addToGroup(param_MemberItem);
 param_MemberItem->setPos(param_DestinationCoords);
 if(m_type == ShipGraphics)
 {
@@ -64,6 +67,7 @@ m_shipdata->g_height = boundingRect().height();
 
 bool ObjectGraphicsItem::setShipPos()
 {
+qWarning() << "bool ObjectGraphicsItem::setShipPos()";
 rotateItem();
 QPointF destinationpoint = m_shipdata->currentPosition().generic_position;	// Position in the data-struct
 if(destinationpoint != pos())				//if data-position != graphicsposition (this->pos())

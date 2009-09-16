@@ -81,6 +81,9 @@ void reset();
 // inhabitants = 0;
 // // stadtwaren.kapazitaet = 0;
 // }
+
+void printGoods();
+
 void production(int);
 void setGoods(const Warenstruct &);
 

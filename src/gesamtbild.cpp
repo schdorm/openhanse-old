@@ -37,14 +37,16 @@
 //  #include "udbutton.h"
 
 #include <QtCore/QDateTime>
+#include "konsole.h"
 
 gesamtbild::gesamtbild()
 {
 tradingwindow = 0;
 gameview = 0;
 menupanel = 0;
-konsolenwidget = 0;
 schwierigkeitsauswahl = 0;
+connect(TERMINAL, SIGNAL(destroyed(QObject)), this, SLOT(deleteLater()));
+
 	QDir dir = QDir().current();
 // 	qWarning() << dir.absolutePath();
 {
@@ -92,15 +94,14 @@ schwierigkeitsauswahl = 0;
 	Error->showMessage(tr("Installation files corrupted. Please reinstall and/or contact any developer."));
 	connect(Error,SIGNAL(accepted()),this, SLOT(close()));
 	connect(Error,SIGNAL(rejected()),this, SLOT(close()));
-
 }
+
 gesamtbild::~gesamtbild()
 {
 delete gameview;
 delete tradingwindow;
 delete schwierigkeitsauswahl;
 delete menupanel;
-delete konsolenwidget;
 }
 
 
