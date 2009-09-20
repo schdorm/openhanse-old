@@ -20,17 +20,20 @@
 
 #include "hauptfenster.h"
 #include "dataclass.h"
+#include "shipdata.h"
 #include "landing.h"
 
+#include "konsole.h"
 #include <QtCore/QtDebug>
 
 #include <math.h>
 
  void hauptfenster::landgang()
  {
- 
+ OHDebug( "void hauptfenster::landgang()");
  GAMEDATA->landingProcess()->setStatus(Landing::AtLand);
- 
+
+GAMEDATA->activeShip()->anchor();
 // GAMEDATA->active_ship->brake(1);
 // emit SIGgeschwindigkeit(0);
 // GAMEDATA->anbord=false;
@@ -51,7 +54,12 @@ m_status = param_state;
 
 
 void hauptfenster::landing()
-{/*
+{
+OHDebug("void hauptfenster::landing()");
+GAMEDATA->activeShip()->anchor();
+ GAMEDATA->landingProcess()->setStatus(Landing::AtLand);
+
+/*
 GAMEDATA->anbord() = false;
 // bool directLanding;
 QGraphicsItem *it;

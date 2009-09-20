@@ -73,6 +73,8 @@ bool ObjectGraphicsItem::setShipPos()
 #ifdef _DEBUG_REFRESH_
 // qWarning() << "bool ObjectGraphicsItem::setShipPos()";
 #endif
+if(m_type == ShipGraphics)
+{
 rotateItem();
 QPointF destinationpoint = m_shipdata->currentPosition().generic_position;	// Position in the data-struct
 if(destinationpoint != pos())				//if data-position != graphicsposition (this->pos())
@@ -81,6 +83,8 @@ setPos(destinationpoint);
 return true;
 }
 else return false;
+}
+return false;
 }
 
 void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
@@ -101,6 +105,7 @@ qWarning() << "void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent
  				GAMEDATA->castOff(m_shipdata);
 				qWarning() << "Onbord = true";
 				GAMEDATA->landingProcess()->setStatus(Landing::OnBoard);
+// 				m_shipdata->set_ToSettedSails(0);
 			}
 			break;
 		}
@@ -114,12 +119,14 @@ void ObjectGraphicsItem::rotateItem()
 //   static float lastdir;
 	if(m_shipdata != 0 && m_lastdir != m_shipdata->dir())
 	{
+		int t_x = boundingRect().width()/2;
+		int t_y = boundingRect().height()/2;
 		m_lastdir = m_shipdata->dir();
 		resetTransform();
 		QTransform t;
-		t.translate( boundingRect().width(), boundingRect().height() );
+		t.translate(t_x, t_y);
 		t.rotateRadians(- m_lastdir);
-		t.translate( - boundingRect().width(), - boundingRect().height() );
+		t.translate( - t_x, - t_y);
 		setTransform( t );
 	}
 }

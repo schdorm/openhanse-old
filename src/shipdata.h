@@ -72,6 +72,7 @@ void setName(const QString &);
 bool setCargo(const Goods &);
 
 void brake(const double &);
+void anchor();
 
 void setMouseControl(bool);
 void setControlDifficulty(int);
@@ -136,6 +137,7 @@ double m_toRudderDir;	// 	''
 double m_sailDir;
 // double toSailDir;
 
+bool m_anchored;
 
 PositioningStruct m_currentPosition;
 // UI6L

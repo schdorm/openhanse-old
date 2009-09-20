@@ -87,7 +87,7 @@ const int WINDVERAENDERUNG = 30;
 
 const float const_max_rudder_deflection = 0.04;
 
-const int const_calc_data_delay = 200;
+const int const_calc_data_delay = 250;
 
 const int _oh_version = 35;
 

@@ -828,6 +828,12 @@ if(GAMEDATA->wind().v() > 0)
  qWarning() << "Ende Wolkenzeugs";
 
 #endif
+// m_activeModel->setShipPos();		// ObjectGraphicsItemList
+bool m_AM_sSP = m_activeModel->setShipPos();	// ActiveModel->setShipPos
+for(QList<ObjectGraphicsItem*>::iterator modelit = modellist.begin(); modelit !=modellist.end(); ++modelit)
+{
+(*modelit)->setShipPos();
+}
 // #define _DEBUG_REFRESH_
 ///////SCHIFF////////////////////////////////////////
 //falls v>0 / geplant: v>0
@@ -863,7 +869,10 @@ else*/ if(GAMEDATA->landingState().status() == Landing::OnBoard)
 // qWarning() << "Schiffbar?";
 
 // if(0==1)
-if(m_activeModel->setShipPos())
+
+
+
+if(m_AM_sSP)
  {
 #ifdef _DEBUG_REFRESH_
 	qWarning() << "End moveGraphics()";

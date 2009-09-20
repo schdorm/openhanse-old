@@ -106,6 +106,7 @@ qWarning() << "DataClass::calcData()";
 	}
 }
 
+
 void DataClass::pause()
 {
 qWarning() << "void DataClass::pause()";

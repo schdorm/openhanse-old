@@ -162,7 +162,7 @@ void ShipData::calcMovement(int windv, const double &winddir)
 	
 	if(m_MouseControl)
 	{
-		if(m_dir != m_toDir)
+		/*if(m_dir != m_toDir)
 		{
 			if(m_toDir > m_dir - 0.01 && m_toDir < m_dir + 0.01)
 			{
@@ -172,11 +172,11 @@ void ShipData::calcMovement(int windv, const double &winddir)
 	
 			if((m_dir < m_toDir && m_dir + M_PI > m_toDir) || (m_dir > m_toDir && m_dir - M_PI > m_toDir))
 			{
-				m_dir = m_dir + 0.0006 * ((m_v/4) + 2) * m_controlVelocity;
+				m_dir = m_dir + 0.001 * ((m_v/2) + 3) * m_controlVelocity;
 			}
 			else
 			{
-				m_dir = m_dir - 0.0006 * ((m_v/4) + 2) * m_controlVelocity;
+				m_dir = m_dir - 0.001 * ((m_v/2) + 3) * m_controlVelocity;
 			}
 			
 			if(m_dir < 0)
@@ -187,7 +187,7 @@ void ShipData::calcMovement(int windv, const double &winddir)
 			{
 				m_dir = 0;
 			}
-		}
+		}*/
 	}
 	else		//keyboard-control
 	{
@@ -231,7 +231,30 @@ void ShipData::calcMovement(int windv, const double &winddir)
 			}
 		}
 	}
+	if(m_anchored)
+	{
+	
+		if(m_v < 3)
+		{
+			m_v = m_v / 2;
+// 			m_toDir = m_dir + 1;
+		}
+		else
+		{
+			m_v = 4 * m_v/5;
+// 			m_toDir = m_dir + 1;
 
+		}
+		
+	}
+
+}
+
+
+void ShipData::anchor()
+{
+m_anchored = true;
+set_ToSettedSails(0);
 }
 
 void ShipData::brake(const double &param_brakefactor)
@@ -290,6 +313,36 @@ void ShipData::set_ToDir(double param_dir)
 
 void ShipData::calcPos()
 {
+	
+	if(m_MouseControl)
+	{
+		if(m_dir != m_toDir)
+		{
+			if(m_toDir > m_dir - 0.01 && m_toDir < m_dir + 0.01)
+			{
+				m_dir = m_toDir;
+			}
+	
+			else if((m_dir < m_toDir && m_dir + M_PI > m_toDir) || (m_dir > m_toDir && m_dir - M_PI > m_toDir))
+			{
+				m_dir = m_dir + 0.0005 * ((m_v/2) + 2) * m_controlVelocity;
+			}
+			else
+			{
+				m_dir = m_dir - 0.0005 * ((m_v/2) + 2) * m_controlVelocity;
+			}
+			
+			if(m_dir < 0)
+			{
+				m_dir = 2*M_PI-0.0000001;
+			}
+			else if(m_dir > 2*M_PI)
+			{
+				m_dir = 0;
+			}
+		}
+	}
+
 	m_currentPosition.generic_position.setX(m_currentPosition.generic_position.x() - (m_v * sin(m_dir))/10);
 	m_currentPosition.generic_position.setY(m_currentPosition.generic_position.y()  - (m_v * cos(m_dir))/10);
 	m_currentPosition.m_position.setX(m_currentPosition.generic_position.x() + g_width2);
