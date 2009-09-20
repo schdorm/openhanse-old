@@ -6,3 +6,6 @@
 # cd src
 cp -rvu maps/ ../bin/
 make
+echo "Updating Translations:"
+lupdate src.pro
+echo "Updating Translations finished"

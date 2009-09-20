@@ -630,10 +630,10 @@ QGraphicsPixmapItem *testschiff;
 	testschiff = szene->addPixmap(QPixmap(":img/schiffe/schiff_gerade_skaliert2.png"));
 	testschiff->setZValue(0.1);
 	
-	activeship_model = new ObjectGraphicsItem(GAMEDATA->activeShip());
-	activeship_model->addMemberItem(testschiff,QPointF(0,0));
-	activeship_model->rotateItem();
-	szene->addItem(activeship_model);
+	m_activeModel = new ObjectGraphicsItem(GAMEDATA->activeShip());
+	m_activeModel->addMemberItem(testschiff,QPointF(0,0));
+	m_activeModel->rotateItem();
+	szene->addItem(m_activeModel);
 	
 	PositioningStruct destination_pos;
 	destination_pos.mapcoords = GAMEDATA->currentMap()->coordinates();
@@ -666,7 +666,10 @@ QGraphicsPixmapItem *testschiff;
 		}
 	}
 	GAMEDATA->activeShip()->setPos(destination_pos);
-	centerOn(activeship_model);
+	
+	m_activeModel->setPos(200,200);
+	
+	centerOn(m_activeModel);
 
 // 	ShipData blah2;
 // 	ObjectGraphicsItem blah = new QGraphicsItem();

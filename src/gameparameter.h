@@ -17,41 +17,33 @@
  *   Free Software Foundation, Inc.,                                       *
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
+#ifndef _gameparameter_h
+#define _gameparameter_h
 
-#include "datamanager.h"
-#include "dataclass.h"
-#include "settings.h"
-#include "gameparameter.h"
+#include <QtCore/QHash>
 
-dataManager::dataManager()		// Konstruktor: erzeugt neue Instanzen fuer private Pointer 
+class GameParameter : public QObject
 {
-	m_gamedata = new DataClass();
-	m_globalSettings = new Settings();
-	m_gameParameter = new GameParameter();
-}
 
-/*static dataManager* dataManager::instance()
-	// statische Funktion: erzeugt neue Instanz dieser Klasse, falls keine besteht und gibt diese zurück
-{
-	if( m_instance == NULL )
-	{
-		m_instance = new dataManager();
-	}
-	return m_instance;
-}*/
-	
-void dataManager::recreateGamedata()		// loescht alte Spieldaten und erzeugt neue Instanz der Spieldaten
-{
-	delete m_gamedata;
-	m_gamedata = new DataClass();
-}
-	
-// Settings *dataManager::settings()		// gibt die Settings zurueck
-// {
-// 	return m_globalSettings;
-// }
-// 
-// DataClass *dataManager::gamedata()		// gibt die Spieldaten zurueck
-// {
-// 	return m_gamedata;
-// }
+public:
+GameParameter();
+const QHash <int, QString> &GoodLabelHash  () const {	return m_GoodLabelHash;		}
+const QHash <int, int> &GoodBasicPriceHash () const {	return m_GoodBasicPriceHash;	}
+
+QString GoodName 	(int key) const {	return m_GoodLabelHash[key];		}
+int BasicPrice 		(int key) const {	return m_GoodBasicPriceHash[key];	}
+
+const QString &firstName () const	{	return m_FirstName;	}
+const QString &lastName  () const	{	return m_LastName;	}
+
+private:
+QString m_FirstName;
+QString m_LastName;
+
+QHash<int, QString> m_GoodLabelHash;
+QHash<int, int> m_GoodBasicPriceHash;
+
+
+};
+
+#endif

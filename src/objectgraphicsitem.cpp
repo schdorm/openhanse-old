@@ -23,8 +23,11 @@
 #include "objectgraphicsitem.h"
 #include "shipdata.h"
 
-#include <QtDebug>
+#define _DEBUG_REFRESH_
 
+#ifdef _DEBUG_REFRESH_
+#include <QtDebug>
+#endif
 ObjectGraphicsItem::ObjectGraphicsItem(ShipData *param_shipdata)
 {/*
 	shipdata = 0;
@@ -67,7 +70,9 @@ m_shipdata->g_height = boundingRect().height();
 
 bool ObjectGraphicsItem::setShipPos()
 {
-qWarning() << "bool ObjectGraphicsItem::setShipPos()";
+#ifdef _DEBUG_REFRESH_
+// qWarning() << "bool ObjectGraphicsItem::setShipPos()";
+#endif
 rotateItem();
 QPointF destinationpoint = m_shipdata->currentPosition().generic_position;	// Position in the data-struct
 if(destinationpoint != pos())				//if data-position != graphicsposition (this->pos())
@@ -80,18 +85,22 @@ else return false;
 
 void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+#ifdef _DEBUG_REFRESH_
+qWarning() << "void ObjectGraphicsItem::mousePressEvent(QGraphicsSceneMouseEvent *event)";
+#endif
 	switch(m_type)
 	{
 		case ShipGraphics:
 		{
-			if(GAMEDATA->anbord())
+			if(GAMEDATA->landingState().status() == Landing::OnBoard)
 			{
 			
 			}
-			else
+			else if(GAMEDATA->landingState().status() == Landing::AtLand)
 			{
-// 				GAMEDATA->anbord()
-				GAMEDATA->landingProcess()->setStatus(Landing::AtLand);
+ 				GAMEDATA->castOff(m_shipdata);
+				qWarning() << "Onbord = true";
+				GAMEDATA->landingProcess()->setStatus(Landing::OnBoard);
 			}
 			break;
 		}

@@ -70,28 +70,20 @@ CityClass(const QString &, const QList<int> &,  const QList<int> &, const QList<
 // 	}
 
 void reset();
-// {
-// for(int i = 0; i<5; i++)
-// {
-// hproduction[i]=-1;
-// mproduction[i]=-1;
-// lproduction[i]=-1;
-// }
-// cityname = QString();
-// inhabitants = 0;
-// // stadtwaren.kapazitaet = 0;
-// }
 
-void printGoods();
+
+void printGoods() const;
 
 void production(int);
-void setGoods(const Warenstruct &);
+// void setGoods(const Warenstruct &);
+void setStorage(const Goods &);
 
 
 int id() const	{		return m_id;		}
 int inhabitants()  const	{	return m_inhabitants;	}
 QString cityname() const	{	return m_cityname;	}
-Warenstruct goods() const	{	return m_goods;		}
+// Warenstruct goods() const	{	return m_goods;		}
+const Goods &storage() const	{	return m_storage;	}
 
 bool hasKontor() const	{		return m_hasKontor;	}
 
@@ -104,7 +96,9 @@ int m_inhabitants;
 int m_lifequality;
 int m_luxuryrate;
 
-Warenstruct m_goods;
+// Warenstruct m_goods;
+
+Goods m_storage;
 
 
 bool m_hasKontor;		//Kontor built in this town.

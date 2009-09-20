@@ -23,6 +23,7 @@
 
 #include "definitions.h"
 // #include "map.h"
+#include <QtCore/QObject>
 
 class ShipData
 {
@@ -68,7 +69,7 @@ void set_ToRudderDir(double);
 void set_ToDir(double);
 void setName(const QString &);
 
-bool setCargo(const Warenstruct&);
+bool setCargo(const Goods &);
 
 void brake(const double &);
 
@@ -77,7 +78,8 @@ void setControlDifficulty(int);
 
 // control: Return - fct.
 
-QString name()		const	{	return m_name;		}
+int id()		const	{	return m_id;		}
+const QString &name()	const	{	return m_name;		}
 
 double v()		const	{	return m_v;		}
 double settedSails()	const	{	return m_settedSails;	}
@@ -88,8 +90,9 @@ double toDir()		const	{	return m_toDir;		}
 double rudderDir()	const	{	return m_rudderDir;	}
 double toRudderDir()	const	{	return m_toRudderDir;	}
 
-Warenstruct cargo()	const	{	return m_cargo;		}
+const Goods &cargo()	const	{	return m_cargo;		}
 PositioningStruct currentPosition() const {return m_currentPosition;			}
+const PositioningStruct &pos() const {	return m_currentPosition;			}
 
 int mPosX()		const	{	return m_currentPosition.m_position.x();	}
 int mPosY()		const	{	return m_currentPosition.m_position.y();	}
@@ -111,7 +114,7 @@ bool m_MouseControl;
 
 protected:
 
-Warenstruct m_cargo;			//Ladung
+Goods m_cargo;			//Ladung
 
 int m_id;
 ShipTypes m_type;

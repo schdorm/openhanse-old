@@ -48,6 +48,7 @@ void gesamtbild::initGameData()
 }*/
 
 #include "konsole.h"
+#include "tabpanel.h"
 
 
 void gesamtbild::startNewGame()
@@ -140,7 +141,7 @@ void gesamtbild::startNewGame()
 
 			case QXmlStreamReader::Characters:
 			{
-				qWarning() << "\n\tChars:" <<reader.text().toString() << "\n";
+				qWarning() << "\tChars:" <<reader.text().toString();
 				//Tags ohne Inhalt - nur mit Unterkategorien
 				if(reader.text().toString().simplified().isEmpty()){break;};
 				switch(status)
@@ -183,7 +184,7 @@ void gesamtbild::startNewGame()
 			case QXmlStreamReader::EndElement:
 			{
 				qWarning() << "Ende :"<< reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() == "stadt" && !cityname.isEmpty())
+				if(reader.qualifiedName().toString() == "city" && !cityname.isEmpty())
 				{
  				CityClass activeCity(cityname, hproductionlist, mproductionlist, lproductionlist);
 				activeCity.init();
@@ -215,11 +216,17 @@ void gesamtbild::startNewGame()
 	schwierigkeitsauswahl = 0;
 // 	}
 
+	PositioningStruct destination_pos = GAMEDATA->activeShip()->pos();
+	destination_pos.generic_position = QPoint(1500, 800);
+	GAMEDATA->activeShip()->setPos(destination_pos);
+	
 
 	OHDebug("vor Spielfenster aufgebaut");
 
  	gameview = new hauptfenster(/*GAMEDATA, currentSettings*/);
+	
 
+	GAMEDATA->activeShip()->setName(tr("Seeadler"));
 	spielfensteraufbau();
 	qWarning() << "Spielfenster aufgebaut";
 // 	gameview->setDataClass(GAMEDATA);
@@ -242,7 +249,8 @@ void gesamtbild::startNewGame()
 /// 	GAMEDATA->active_ship->graphicsitem->setPos(1500, 900);
 /// 	gameview->centerOn(GAMEDATA->active_ship->graphicsitem);
 //  	qWarning() << "StartTimer";
-	PositioningStruct destination_pos;
+
+	destination_pos = GAMEDATA->activeShip()->pos();
 	destination_pos.mapcoords = GAMEDATA->currentMap()->coordinates();
 	destination_pos.generic_position = QPoint(1500, 800);
 	GAMEDATA->activeShip()->setPos(destination_pos);
@@ -253,6 +261,24 @@ void gesamtbild::startNewGame()
 // 	gameview->show();
 	aktiv=true;
 	GAMEDATA->startTimer();
+	GAMEDATA->landingProcess()->setStatus(Landing::OnBoard);
+	connect(GAMEDATA, SIGNAL(sig_castOff()), this, SLOT(seemenu()));
+/*	sleep(5);				// Memory-Test
+	for(int i=0; i < 10; i++)
+	{
+	hauptfenster *hf = new hauptfenster();
+	sleep(1);
+	delete hf;
+	}
+	qWarning() << "Hauptfenster geschafft";
+	sleep(5);
+	for(int i=0; i < 10; i++)
+	{
+	SeaTabPanel *in = new SeaTabPanel();
+	sleep(1);
+	delete in;
+	}
+	qWarning()<<"SeaTabPanel geschafft";*/
 }
 
 void gesamtbild::spielfensteraufbau()
@@ -290,18 +316,18 @@ void gesamtbild::spielfensteraufbau()
 
 // // 	qWarning() << "Vor Ladungszeugs";
 
-	for(int i = 0; i < const_warenanzahl; i++)
- 	{
-		menupanel->ware[i]->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().ware[i]));
- 	}
+// 	for(int i = 0; i < const_warenanzahl; i++)
+//  	{
+// 		menupanel->ware[i]->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().ware[i]));
+//  	}
 
 // // 	fuellung->setText(QString("Belegt: %1 von %2").arg(GAMEDATA->active_ship->cargo.gesamtladung, GAMEDATA->active_ship->ladekapazitaet));
-	{
- 	menupanel->taler->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().taler).prepend(tr("Money: ")));
-	QString flstring = QString("%1").arg(GAMEDATA->activeShip()->cargo().fuellung);
-	flstring.append(QString("/%1 belegt").arg(GAMEDATA->activeShip()->cargo().kapazitaet));
-	menupanel->fuellung->setText(flstring);
-	}
+// 	{
+//  	menupanel->taler->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().taler).prepend(tr("Money: ")));
+// 	QString flstring = QString("%1").arg(GAMEDATA->activeShip()->cargo().fuellung);
+// 	flstring.append(QString("/%1 belegt").arg(GAMEDATA->activeShip()->cargo().kapazitaet));
+// 	menupanel->fuellung->setText(flstring);
+// 	}
 // 	menupanel->setGameData(GAMEDATA);
 	menupanel->show();
 
@@ -310,20 +336,18 @@ void gesamtbild::spielfensteraufbau()
 
 	connect(gameview,SIGNAL(destroyed()),this,SLOT(close()));
 
-	connect(gameview,SIGNAL(handel()),this,SLOT(handel()));
+	connect(gameview, SIGNAL(sig_trade()), this, SLOT(handel()));
 // 	connect(gameview,SIGNAL(handel()),gameview,SLOT(hide()));
 
 	connect(gameview, SIGNAL(sig_anlegbar(bool)), menupanel->anlegen,SLOT(setEnabled(bool)));
 
-// 	connect(GAMEDATA, SIGNAL(sig_newDay(int)), this, SLOT(produktion(int)));
-
 	connect(gameview, SIGNAL(SIGgeschwindigkeit(int)), menupanel->geschwindigkeitsanzeige,SLOT(setValue(int)));
 
-	connect(gameview, SIGNAL(zeitsig()),this,SLOT(zeitanzeige()));
+	connect(gameview, SIGNAL(sig_time()),this,SLOT(zeitanzeige()));
 
-	connect(gameview, SIGNAL(savesig()),this,SLOT(speicherndialog()));
+	connect(gameview, SIGNAL(sig_save()),this,SLOT(speicherndialog()));
 
-	connect(gameview, SIGNAL(menusig()), this, SLOT(spielmenu()));
+	connect(gameview, SIGNAL(sig_menu()), this, SLOT(spielmenu()));
 
 	connect(menupanel->anlegen, SIGNAL(clicked()), this, SLOT(landmenu()));
 	connect(menupanel->schuss, SIGNAL(clicked()), gameview, SLOT(schuss()));
@@ -436,6 +460,8 @@ gameview->endePause();
 
 void gesamtbild::seemenu()
 {
+qWarning() << "void gesamtbild::seemenu(ShipData *activeShip)";
+execCommand(QString("show sidemenu"));
 // 	tab[3]->hide();
 // 	tab[4]->hide();
 // 	tab[5]->hide();

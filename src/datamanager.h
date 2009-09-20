@@ -23,14 +23,17 @@
 #define DMP dataManager::instance()			// Data-Manager-Pointer
 #define GAMEDATA dataManager::instance()->gamedata()	// Game-Data-Pointer
 #define SETTINGS dataManager::instance()->settings()	// Settings-Pointer
+#define GAMEPARAMETER dataManager::instance()->gameParameter()	//Game-Parameter-Pointer
 
 #include <QtCore/QObject>
 
 // #include "dataclass.h"
 // #include "settings.h"
+//  #include "gameparameter.h"
 
 class DataClass;
 class Settings;
+class GameParameter;
 
 class dataManager
 {
@@ -66,10 +69,16 @@ public:
 	DataClass *gamedata()		// gibt die Spieldaten zurueck
 	{
 		return m_gamedata;
-	};
+	}
+	
+	GameParameter *gameParameter()
+	{
+		return m_gameParameter;
+	}
 
 private:
 
+	GameParameter *m_gameParameter;
 	DataClass *m_gamedata;
 	Settings *m_globalSettings;
 	static dataManager * m_instance;

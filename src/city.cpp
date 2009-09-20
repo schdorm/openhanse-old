@@ -23,6 +23,7 @@
 // #include <QtDebug>
 #include "datamanager.h"
 #include "dataclass.h"
+#include "gameparameter.h"
 
 	void CityClass::init()
 	{
@@ -36,7 +37,7 @@
 			int r=rand()%20;
 			int s=rand()%20;
 			int p = rand()%10;
-			m_goods.ware[i] = s + r + p;
+			m_storage.setGood(i, s + r + p);
 
 		}
 		// else
@@ -56,19 +57,23 @@ CityClass::CityClass(const QString &param_cityname, const QList <int> &param_hpr
 	id_counter++;
 }
 
-void CityClass::setGoods(const Warenstruct &param_storage)
+// void CityClass::setGoods(const Warenstruct &param_storage)
+// {
+// m_goods = param_storage;
+// }
+
+void CityClass::setStorage(const Goods &param_storage)
 {
-m_goods = param_storage;
+m_storage = param_storage;
 }
 
-
-void CityClass::printGoods()
+void CityClass::printGoods() const
 {
 // 	QString dbg;
 	for(int i = 0; i<const_warenanzahl; i++)
 	{
 // 		dbg = ;
-		OHDebug(QString("%1 ").arg(m_goods.ware[i]).append(GAMEDATA->GoodLabelHash().value(i)));
+		OHDebug(QString("%1 ").arg(m_storage.good(i)).append(GAMEPARAMETER->GoodName(i)));
 	}
 }
 

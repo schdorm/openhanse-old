@@ -20,7 +20,9 @@ SOURCES += main.cpp \
  settings.cpp \
  map.cpp \
 datamanager.cpp \
- city.cpp
+ city.cpp \
+ gameparameter.cpp \
+ goods.cpp
 
 TEMPLATE = app
 CONFIG += warn_on \
@@ -58,7 +60,9 @@ HEADERS += shipdata.h \
  settings.h \
  mapobject.h \
 datamanager.h \
- landing.h
+ landing.h \
+ gameparameter.h
 
 QMAKE_CXXFLAGS_RELEASE += -Wall
 
+TRANSLATIONS += oh_de-ge.ts

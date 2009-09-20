@@ -29,6 +29,9 @@
 #include <QtDebug>
 #endif
 
+#ifdef _DEBUG_DESTRUCTORS
+#include <QtDebug>
+#endif
 
 
 ShipData::ShipData(const QString &param_name) : m_name (param_name)				///== RESET
@@ -39,13 +42,13 @@ ShipData::ShipData(const QString &param_name) : m_name (param_name)				///== RES
 
 	m_setPosAllowed = true;
 	
-	m_cargo.taler = 5000;
+	m_cargo.setTaler(5000);
 
 	for(int i = 0; i<const_warenanzahl; i++)
 	{
-		m_cargo.ware[i]=5;
+		m_cargo.setGood(i, 5);
 	}
-	m_cargo.fuellung=0;
+	m_cargo.setFilling(0);
 
 	m_condition = 100;		// ehemals: "zustand"
 	m_type = Kogge;
@@ -61,11 +64,14 @@ ShipData::ShipData(const QString &param_name) : m_name (param_name)				///== RES
 	
 	m_ControlDifficulty = 0;
 // 	filename = ":img/schiffe/schiff_gerade_skaliert2.png";
-	m_cargo.kapazitaet = rand()%2001;
+	m_cargo.setCapacity(rand()%2001);
 }
 
 ShipData::~ShipData()
 {
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing Ship" <<m_name;
+#endif
 }
 
 void ShipData::printPosition() const
@@ -183,7 +189,7 @@ void ShipData::calcMovement(int windv, const double &winddir)
 			}
 		}
 	}
-	else
+	else		//keyboard-control
 	{
 		if(m_rudderDir != 0 || m_toRudderDir != 0)
 		{
@@ -293,13 +299,15 @@ void ShipData::calcPos()
 
 void ShipData::setPos(const PositioningStruct &param_destinationposition)
 {
-if(m_setPosAllowed || ((param_destinationposition.mapcoords.x() + 1 == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() - 1 == m_currentPosition.mapcoords.x()) && (param_destinationposition.mapcoords.y() + 1 == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() - 1 == m_currentPosition.mapcoords.y())))
-m_currentPosition = param_destinationposition;
-m_setPosAllowed = false;
+// if(m_setPosAllowed || ((param_destinationposition.mapcoords.x() + 1 == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() == m_currentPosition.mapcoords.x() || param_destinationposition.mapcoords.x() - 1 == m_currentPosition.mapcoords.x()) && (param_destinationposition.mapcoords.y() + 1 == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() == m_currentPosition.mapcoords.y() || param_destinationposition.mapcoords.y() - 1 == m_currentPosition.mapcoords.y())))
+{
+	m_currentPosition = param_destinationposition;
+// 	m_setPosAllowed = false;
+}
 }
 
 
-bool ShipData::setCargo(const Warenstruct &param_newcargo)
+bool ShipData::setCargo(const Goods &param_newcargo)
 {
 m_cargo = param_newcargo;
 return true;

@@ -18,7 +18,7 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-
+//  #define _DEBUG_REFRESH_
 
 // #define _RELEASE_
 // #define _NO_CONTROL_LABEL_
@@ -83,7 +83,6 @@ hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*
 // 	centerOn(testschiff);
 // 	GAMEDATA->activeShip()->schiffbreite = testschiff->boundingRect().width();
 // 	GAMEDATA->activeShip()->schifflange = testschiff->boundingRect().height();
-//   	GAMEDATA->activeShip()->setName(tr("Seeadler"));
 
 #ifndef _NO_CONTROL_LABEL_
 
@@ -153,7 +152,7 @@ hauptfenster::hauptfenster(/*DataClass *param_GAMEDATA, Settings *paramsettings*
 	status->setParent(this,Qt::Tool);
 	status->move(1100,400);
 	status->show();
-	connect(this, SIGNAL(destroyed(QObject)), status, SIGNAL(deleteLater()));
+	connect(this, SIGNAL(destroyed(QObject*)), status, SLOT(deleteLater()));
 #endif
 connect(&refreshGraphicsTimer, SIGNAL(timeout()), this, SLOT(aktualisieren()));
 
@@ -162,13 +161,22 @@ connect(&refreshGraphicsTimer, SIGNAL(timeout()), this, SLOT(aktualisieren()));
 
 hauptfenster::~hauptfenster()
 {
-QList<QGraphicsItem*> dellist = scene()->items();
-foreach(graphicsitem_it, dellist)
-{
-delete graphicsitem_it;
-}
-scene()->clear();
-delete scene();
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing GraphicsView(Hauptfenster)";
+#endif
+
+// QList<QGraphicsItem*> dellist = scene()->items();
+// foreach(graphicsitem_it, dellist)
+// {
+// delete graphicsitem_it;
+// }
+// scene()->clear();
+// delete scene();
+
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "End of Destructing GraphicsView(Hauptfenster)";
+#endif
+
 }
 
 
@@ -222,7 +230,7 @@ if(!pause)
 	
 	
 	}*/
-	if(!GAMEDATA->anbord() && GAMEDATA->landingState().status() == Landing::AtLand)
+	if(GAMEDATA->landingState().status() == Landing::AtLand)
 	{
 //	if(QLine(clickpoint, active_person->ortblah).lenght < 100)
 		QGraphicsItem *ort = scene()->itemAt(clickpoint);
@@ -252,7 +260,7 @@ if(!pause)
 #ifndef _RELEASE_
 					OHDebug("Man begibt sich auf den Markt ...");
 #endif
-					emit handel();
+					emit sig_trade();
 					break;
 				}
 				case ObjectType::Townhall:
@@ -278,7 +286,7 @@ if(!pause)
 				}
 				case ObjectType::Tavern:
 				{
-					emit enterBuilding(ObjectType::Tavern);
+					emit sig_enterBuilding(ObjectType::Tavern);
 					break;
 				}
 			}
@@ -306,7 +314,7 @@ if(!pause)
 // #endif
 		}
 	}
-	else if(GAMEDATA->anbord())
+	else if(GAMEDATA->landingState().status() == Landing::OnBoard)
 	{
 // 	GAMEDATA->activeShip()->mouse_control = true;
 	int x = (event->x() + horizontalScrollBar()->value())/scale;
@@ -404,7 +412,7 @@ switch (event->key())
 {
 	case Qt::Key_W:
 	{
-		if(GAMEDATA->anbord())
+		if(GAMEDATA->landingState().status() == Landing::OnBoard)
 		{
 // 		if(GAMEDATA->activeShip()->attribute.sollprozentgesetzteSegel < 1)
 // 		{
@@ -425,7 +433,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 					GAMEDATA->activeShip()->set_ToSettedSails(GAMEDATA->activeShip()->toSettedSails() - 0.2);
 // 					GAMEDATA->activeShip()->mouse_control = false;
@@ -437,7 +445,7 @@ switch (event->key())
 			}
 			case Qt::ControlModifier:
 			{
-				emit savesig();
+				emit sig_save();
 				break;
 			}
 			case Qt::ShiftModifier:
@@ -457,7 +465,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 					GAMEDATA->activeShip()->set_ToRudderDir(GAMEDATA->activeShip()->toRudderDir() + 0.0002);
 // 					tastatur = true;
@@ -472,7 +480,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 				GAMEDATA->activeShip()->set_SailDir(GAMEDATA->activeShip()->sailDir() + 0.02);
 
@@ -493,7 +501,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 					GAMEDATA->activeShip()->set_ToRudderDir(GAMEDATA->activeShip()->toRudderDir() - 0.0002);
 // 					GAMEDATA->activeShip()->mouse_control = false;
@@ -506,7 +514,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 					
 				}
@@ -528,7 +536,6 @@ switch (event->key())
 		slotpause();
 		break;
 	}
-// 		static int zoomlvl;
 	case Qt::Key_Minus:		/*&& zoomlvl <2)*/
 	{
 		scale(0.8,0.8);
@@ -551,8 +558,8 @@ switch (event->key())
 	}
 	case Qt::Key_Escape:
 	{
-		emit menusig();
-		OHDebug("Menusig");
+		emit sig_menu();
+		OHDebug("Menusignal");
 		break;
 	}
 	
@@ -562,7 +569,7 @@ switch (event->key())
 		{
 			case Qt::NoModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 				}
 				else
@@ -573,7 +580,7 @@ switch (event->key())
 			}
 			case Qt::ShiftModifier:
 			{
-				if(GAMEDATA->anbord())
+				if(GAMEDATA->landingState().status() == Landing::OnBoard)
 				{
 					
 				}
@@ -586,8 +593,8 @@ switch (event->key())
 			case Qt::ControlModifier:
 			{
 #ifndef _RELEASE_
-				Warenstruct tempware = GAMEDATA->activeShip()->cargo();
-				tempware.taler += 1000;
+				Goods tempware = GAMEDATA->activeShip()->cargo();
+				tempware.setTaler( tempware.taler() + 1000);
 				GAMEDATA->activeShip()->setCargo(tempware);
 #endif
 				break;
@@ -599,7 +606,7 @@ switch (event->key())
 #ifndef _RELEASE_
 	case Qt::Key_C:
 	{
-// 		centerOn(GAMEDATA->activeShip()->graphicsitem);
+		centerOn(m_activeModel);
 		break;
 	}
 	case Qt::Key_L:
@@ -638,14 +645,14 @@ switch (event->key())
 	}
 	case Qt::Key_Up:
 	{
-		if(GAMEDATA->anbord())
+		if(GAMEDATA->landingState().status() == Landing::OnBoard)
 // 		GAMEDATA->activeShip()->attribute.geschwindigkeit ++;
 		break;
 	}
 
 	case Qt::Key_Down:
 	{
-		if(GAMEDATA->anbord())
+		if(GAMEDATA->landingState().status() == Landing::OnBoard)
 // 		GAMEDATA->activeShip()->attribute.geschwindigkeit--;
 		break;
 	}
@@ -723,7 +730,7 @@ qWarning() << "sollgesetzteSegel:" << GAMEDATA->activeShip()->toSettedSails();
 }
 
 
-// #define _DEBUG_REFRESH_
+//  #define _DEBUG_REFRESH_
 
 void hauptfenster::aktualisieren()
 {
@@ -816,9 +823,11 @@ if(GAMEDATA->wind().v() > 0)
 	}
 
 }
+#ifdef _DEBUG_REFRESH_
 
-//  qWarning() << "Ende Wolkenzeugs";
+ qWarning() << "Ende Wolkenzeugs";
 
+#endif
 // #define _DEBUG_REFRESH_
 ///////SCHIFF////////////////////////////////////////
 //falls v>0 / geplant: v>0
@@ -829,10 +838,10 @@ if(GAMEDATA->wind().v() > 0)
 qWarning() << "Landing";
 #endif
 activeLanding();
-}*/
+}
 
 
-else if(GAMEDATA->anbord())
+else*/ if(GAMEDATA->landingState().status() == Landing::OnBoard)
 {
 
 // qWarning() << "Beginn Schiffszeug";
@@ -854,7 +863,7 @@ else if(GAMEDATA->anbord())
 // qWarning() << "Schiffbar?";
 
 // if(0==1)
-if(activeship_model->setShipPos())
+if(m_activeModel->setShipPos())
  {
 #ifdef _DEBUG_REFRESH_
 	qWarning() << "End moveGraphics()";

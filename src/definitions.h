@@ -25,6 +25,7 @@
 #include <QtCore/QPoint>
 #include <QtGui/QGraphicsPixmapItem>
 
+#define _DEBUG_DESTRUCTORS
 namespace ObjectType
 {
 	enum object_types_def

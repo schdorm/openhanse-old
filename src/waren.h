@@ -21,51 +21,49 @@
 #ifndef _waren_h
 #define _waren_h
 
+#include <QtCore/QHash>
 
 const int const_warenanzahl = 30;
 const int const_waffen = 15;
 
 const int const_grundpreis[const_warenanzahl] = {50, 95, 84, 67, 10000, 350, 950, 168, 270, 400, 107, 60, 130, 210, 30, 50, 300, 190, 3800, 5100, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30};
 
-struct Warenstruct{
-int taler;
-int ware[const_warenanzahl];
-int waffe[const_waffen];
-int kapazitaet;
-int fuellung;
+#define GOODLABEL(x) 
 
-int mengenbilanz;				//Fuer Handel
-};
+
+class Goods
+{
+public:
 
 enum Ware
 {
-W_Baumstamme,
-W_Holzbretter,
-W_Holzkohle,
-W_Pech,
-W_Steine,
-W_Eisenerz,
-W_Schmiedeeisen,
-W_Werkzeuge,
-W_Leder,
-W_Wolle,
-W_Stoffe,
-W_Hanf,
+Trunks,
+Shelves,
+Charcoal,
+Pitch,
+Bricks,
+IronOre,
+MalleableIron,
+Tools,
+Leather,
+Wool,
+Cloth,
+Hemp,
 _platzhalter12_,
 _platzhalter13_,
 _platzhalter14_,
 
-W_Bier,
-W_Getreide,
-W_Brot,
-W_Salz,
-W_Fleisch,
-W_Fisch,
-W_Kase,
-W_Wein,
-W_Gewurze,
-W_Gold,
-W_Schmuck,
+Beer,
+Cereal,
+Bread,
+Salt,
+Meat,
+Fish,
+Cheese,
+Wine,
+Spicery,
+Gold,
+Jewellery,
 _platzhalter26_gold_,
 _platzhalter27_gold_,
 _platzhalter28_gold_,
@@ -91,6 +89,52 @@ wp_l_armor,
 wp_h_armor,
 
 };
+
+
+void setGood(int, int);
+void addGood(int, int);
+void setWeapon(int, int);
+void setFilling(int);
+void setCapacity(int);
+void setTaler(int);
+void setExchangeVolume(int);
+
+const QHash <int, int> &goods() const	{	return m_GoodHash;	}
+int good (int key) 		const	{	return m_GoodHash[key];	}
+// int &good (int key)			{	return m_GoodHash[key];	}
+
+const QHash <int, int> &weapons() const	{	return m_WeaponHash;	}
+int weapon (int key) const	{	return m_WeaponHash[key];}
+
+int taler	() const	{	return m_taler;			}
+int capacity	() const	{	return m_capacity;		}
+int filling	() const	{	return m_filling;		}
+int exchangeVolume() const	{	return m_exchange_volume;	}
+int &exchangeVolume()		{	return m_exchange_volume;	}
+
+
+private:
+QHash<int, int> m_GoodHash;
+QHash<int, int> m_WeaponHash;
+int m_taler;
+int m_capacity;
+int m_filling;
+
+int m_exchange_volume;
+};
+
+
+struct Warenstruct{
+int taler;
+int ware[const_warenanzahl];
+int waffe[const_waffen];
+int kapazitaet;
+int fuellung;
+
+int mengenbilanz;				//Fuer Handel
+};
+
+
 
 
 

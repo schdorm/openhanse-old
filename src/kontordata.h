@@ -36,15 +36,15 @@ static int idzaehler;
 
 	for(int i=0; i< const_warenanzahl; i++)
 	{
-		m_storage.ware[i] = 0;
-		m_production.ware[i] = 0;
+		m_storage.setGood(i, 0);
+		m_production.setGood(i, 0);
 	}
 
-	m_storage.kapazitaet = 800;
-	m_storage.fuellung = 0;
-	m_storage.taler = 0;
-	m_storage.mengenbilanz = 0;
-	m_production.taler = 0;
+	m_storage.setCapacity(800);
+	m_storage.setFilling(0);
+	m_storage.setTaler (0);
+	m_storage.setExchangeVolume(0);
+	m_production.setTaler(0);
 	}
 
 
@@ -53,11 +53,13 @@ int getCityID()	const	{	return m_CityID;		}
 // int cityid;
 // QString stadt; --> inherited from BuildingClass --> cityname + cityID
 
-const Warenstruct &storage ()	const	{	return m_storage;	}
+// const Warenstruct &storage ()	const	{	return m_storage;	}
+
+const Goods &storage	()	const 	{	return m_storage;	}
 
 ///
 void productGoods();
-void setStorage(const Warenstruct &param_storage)
+void setStorage(const Goods &param_storage)
 {
 m_storage = param_storage;
 }
@@ -71,8 +73,10 @@ void build(const QString &param_cityname, int param_cityid)
 }
 
 private:
-Warenstruct m_storage;
-Warenstruct m_production;
+// Warenstruct m_storage;
+// Warenstruct m_production;
+Goods m_storage;
+Goods m_production;
 int m_kontorid;
 };
 

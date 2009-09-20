@@ -2,6 +2,8 @@
 <mapbackground>img/wasser04.png</mapbackground>
 <mapwidth>5000</mapwidth>
 <mapheight>4000</mapheight>
+<maptype>4</maptype>
+<cityname>Tharumoth</cityname>
 <objekt>
 <objektfunktion>101</objektfunktion>
 <objektdatei>img/land_halbtransparent_gross_bearbeitet+++.png</objektdatei>

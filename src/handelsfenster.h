@@ -49,24 +49,11 @@ handelsfenster();
 ~handelsfenster();
 void setGameData(/*DataClass **/);
 
-void setStorage(const Warenstruct &, int);
+void setStorage(const Goods &, int);
 
 // DataClass *gamedata;
 
-QButtonGroup *htypgroup;
-QRadioButton *htyp[3];		//Handelstyp: Schiff mit Stadt, Kontor mit Stadt, Transfer Kontor->Schiff
 
-QLabel *warenmenge[const_warenanzahl];		//Angebot || city-> goods
-QLabel *preis[const_warenanzahl];		// price
-QLabel *vorrat[const_warenanzahl];		// eigene Waren (Lager 0) || goods <- storage 0
-QLabel *erloes[const_warenanzahl];		//
-
-QLabel /* *gesamtpreis, *gesamterloes,*/ *handelsbilanz, *umsatz;
-
-quint8 typ;			//Letzter Handelstyp fuer Aktualisierung: -> Resourcensparend
-
-QSpinBox *kaufmenge[const_warenanzahl];
-QSpinBox *verkaufsmenge[const_warenanzahl];
 QPushButton *handelsbutton;
 QPushButton *exit;
 
@@ -82,13 +69,39 @@ void handelsaktion();
 void updateWidget();
 
 private:
-Warenstruct storage[2];			// Storage1 -> city/city/kontor; storage0 -> ship / Kontor/ship;
+Goods storage[2];			// Storage1 -> city/city/kontor; storage0 -> ship / Kontor/ship;
 // Warenstruct storage2;
 
 
+QButtonGroup *htypgroup;
+QRadioButton *htyp[3];		//Handelstyp: Schiff mit Stadt, Kontor mit Stadt, Transfer Kontor->Schiff
+
+QList<QLabel *> Storage0LabelList;
+
+QList<QLabel *> Storage1LabelList;
+
+QList<QLabel *> PriceLabelList;
+
+QList< QLabel *> ProceedsLabelList;
 
 
+QList<QSpinBox *> BuySpinboxList;
 
+QList<QSpinBox *> SellSpinboxList;
+
+
+// QLabel *warenmenge[const_warenanzahl];		//Angebot || city-> goods
+// QLabel *preis[const_warenanzahl];		// price
+// QLabel *vorrat[const_warenanzahl];		// eigene Waren (Lager 0) || goods <- storage 0
+// QLabel *erloes[const_warenanzahl];		//
+
+QLabel  *m_TradeProceedsTextLabel, *m_TradeProceedsLabel;
+/* *gesamtpreis, *gesamterloes,*/
+
+quint8 typ;			//Letzter Handelstyp fuer Aktualisierung: -> Resourcensparend
+
+// QSpinBox *kaufmenge[const_warenanzahl];
+// QSpinBox *verkaufsmenge[const_warenanzahl];
 
 };
 

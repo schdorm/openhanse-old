@@ -156,7 +156,7 @@ public slots:
 private:
 
 
-ObjectGraphicsItem *activeship_model;
+ObjectGraphicsItem *m_activeModel;
 QList <ObjectGraphicsItem *> modellist;
 
 
@@ -207,15 +207,15 @@ bool pause;
 
 
 signals:
-void enterBuilding(int);
+void sig_enterBuilding(int);
 void sig_anlegbar(bool);
 // void nichtmehranlegen();
-void handel();
+void sig_trade();
 
-void SIGgeschwindigkeit(int);
-void zeitsig();
-void savesig();
-void menusig();
+void sig_velocity(int);
+void sig_time();
+void sig_save();
+void sig_menu();
 
 void sig_konsole();
 

@@ -53,6 +53,7 @@ public:
 DataClass();
 ~DataClass();
 
+void castOff(ShipData *);
 
 void addBuilding(const BuildingData &);		// add a Building .... to the Building .... List
 void addShip(const ShipData &);
@@ -67,7 +68,6 @@ void setCurrentCity(CityClass *);
 
 void pause();
 
-const QHash<int, QString> &GoodLabelHash()const	{	return m_GoodLabelHash;	}
 
 // QList<CityClass> ret_CityList() const;
 // QList<ShipData> ret_ShipList() const;
@@ -79,7 +79,7 @@ const QList <ShipData> * shipList ()	const	{	return &m_ShipList;	}
 const QList <Person> * personList ()	const	{	return &m_PersonList;	}
 const QList <CityClass> * cityList()	const	{	return &m_CityList;	}
 const QList <KontorData> * kontorList()	const	{	return &m_KontorList;	}
-const QList <BuildingData> * buildingList() const{	return &m_BuildingList;	}
+const QList <BuildingData> * buildingList()const{	return &m_BuildingList;	}
 
 const QList <Map> * MapList()		const	{	return &m_MapList;	}
 
@@ -116,6 +116,7 @@ void calcShipMovement();
 
 signals:
 void sig_newDay(int);
+void sig_castOff();
 
 private:
 QTimer calc_data_timer;
@@ -154,9 +155,6 @@ ShipData *m_ActiveShip;
 Person *m_ActiveChar;
 
 Map *m_CurrentMap;
-
-QHash<int, QString> m_GoodLabelHash;
-
 
 };
 

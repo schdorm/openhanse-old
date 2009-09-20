@@ -31,6 +31,7 @@ class Landing
 public:
 	enum statuses
 	{
+		OnBoard,
 		NotActive,
 		WaitingForDestination,
 		ActiveLanding,

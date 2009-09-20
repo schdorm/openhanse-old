@@ -39,7 +39,7 @@
 
 #include "hauptfenster.h"
 #include "handelsfenster.h"
-#include "tabpanel.h"
+// #include "tabpanel.h"
 // #include "konsole.h"
 
 // #include "settings.h"
@@ -55,6 +55,10 @@
 
 
 #define _NO_SAVE__
+
+class SeaTabPanel;
+class ShipData;
+
 
 class gesamtbild : public QWidget
 {

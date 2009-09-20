@@ -72,11 +72,17 @@ Map::Map()
 
 Map::~Map()
 {
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing Map";
+#endif
 MapObject *mapobjectit = 0;	//Map-Object-Iterator
 foreach(mapobjectit, m_ObjectList)
 {
 delete mapobjectit;
 }
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "End of Destructing Map";
+#endif
 
 }
 
@@ -159,7 +165,7 @@ bool Map::loadMap(QString param_mapname)
 		qWarning() << "Mapfile is existing";
 		
 		enum stati	{
-				null,			// nothing
+				e_null,			// nothing
 				e_object_null,			// Objectproperties
 				e_object_role,			// Object-role
 				e_object_tooltip,		// Object-Tooltip
@@ -177,7 +183,7 @@ bool Map::loadMap(QString param_mapname)
 				e_map_width,		//breite			width
 				e_map_height,		//hoehe				height
 				e_map_typ,
-				} status = null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
+				} status = e_null;	// status als dieses enum: zeigt an, was fuer ein Wert als naechstes ausgelesen wird
 
 		m_cityname = QString();		m_isCity = false;
 		int object_role = -1;				//Funktion des Objektes /// objectrole
@@ -310,7 +316,7 @@ bool Map::loadMap(QString param_mapname)
 				}
 				else
 				{
-				status = null;
+				status = e_null;
 				}
 				break;
 			}
@@ -323,7 +329,8 @@ bool Map::loadMap(QString param_mapname)
 
 			case QXmlStreamReader::Characters:
 			{
- 				qWarning() << "Chars:" <<reader.text().toString();
+ 				if(status != e_null)
+				{qWarning() << "Chars:" <<reader.text().toString();}
 				//Tags ohne Inhalt - nur mit Unterkategorien
 				switch(status)
 				{
@@ -476,7 +483,7 @@ bool Map::loadMap(QString param_mapname)
 					object_posy = 0;
 					object_zvalue = 0;
 				}
-				status=null;
+				status = e_null;
 				break;
 
 			}

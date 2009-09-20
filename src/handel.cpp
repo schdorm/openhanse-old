@@ -24,8 +24,10 @@
 #include "handelsfenster.h"
 #include "waren.h"
 
+
 #include "datamanager.h"
 #include "dataclass.h"
+#include "gameparameter.h"
 
 #include "stadtklasse.h"
 #include "shipdata.h"
@@ -37,6 +39,7 @@
 #include <QtGui/QVBoxLayout>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QTabWidget>
+
 
 // #define WARENANZAHL 20
 // const int const_warenanzahl = 30;
@@ -56,9 +59,9 @@ htypgroup = new QButtonGroup(this);		//Gruppe der Radio-Buttons
 
 htypgroup->setExclusive(true);
 
-htyp[0] = new QRadioButton(tr("Schiffshandel"),buttonwidget);
-htyp[1] = new QRadioButton(tr("Kontorhandel"),buttonwidget);
-htyp[2] = new QRadioButton(tr("Lagertransfer"),buttonwidget);
+htyp[0] = new QRadioButton(tr("ship trade"),buttonwidget);
+htyp[1] = new QRadioButton(tr("kontor trade"),buttonwidget);
+htyp[2] = new QRadioButton(tr("storage transfer"),buttonwidget);
 // htyp[0]->setChecked(true);
 for(int i = 0; i < 3; i++)
 {
@@ -77,15 +80,15 @@ QSpacerItem *hsp = new QSpacerItem(20,25);
 // hsp->setParent(this);
 buttonlayout->addSpacerItem(hsp);
 
-handelsbilanz = new QLabel(buttonwidget);
-handelsbilanz->setText(tr("Handelsbilanz"));
-buttonlayout->addWidget(handelsbilanz);
+m_TradeProceedsTextLabel = new QLabel(buttonwidget);
+m_TradeProceedsTextLabel->setText(tr("trade balance"));	// Handelsbilanz
+buttonlayout->addWidget(m_TradeProceedsTextLabel);
 
-umsatz = new QLabel(this);
-umsatz->setText(tr("(Umsatz)"));
-buttonlayout->addWidget(umsatz);
+m_TradeProceedsLabel = new QLabel(this);
+m_TradeProceedsLabel->setText(tr("(volume)"));		//(Umsatz)
+buttonlayout->addWidget(m_TradeProceedsLabel);
 
-handelsbutton = new QPushButton(tr("Handeln"),buttonwidget);
+handelsbutton = new QPushButton(tr("Trade"),buttonwidget);	// Handeln
 buttonlayout->addWidget(handelsbutton);
 
 exit = new QPushButton(buttonwidget);
@@ -119,7 +122,7 @@ QLabel *header2[7];
 QSpacerItem *spacer[7];
 QSpacerItem *spacer2[7];
 
-QLabel *ware[const_warenanzahl];
+// QLabel *goodname[const_warenanzahl];
 
 
 for(int i = 0; i<7; i++)
@@ -138,88 +141,136 @@ spacer2[i] = new QSpacerItem(25, 20, QSizePolicy::Fixed, QSizePolicy::Minimum);
 layout2->addItem(spacer2[i], 0 , (2*i + 1) ,1,1);
 }
 
-header[0]->setText(tr("Ware"));
-header[1]->setText(tr("angebotene\nWarenmenge"));
-header[2]->setText(tr("Kauf"));
-header[3]->setText(tr("Preis"));
-header[4]->setText(tr("Verkauf"));
-header[5]->setText(tr("Erloes"));
-header[6]->setText(tr("Vorrat"));
+header[0]->setText(tr("Product"));				// Ware
+header[1]->setText(tr("Offered\nAmount"));	// angebotene Warenmenge
+header[2]->setText(tr("Buy"));
+header[3]->setText(tr("Price"));
+header[4]->setText(tr("Sell"));
+header[5]->setText(tr("Proceeds"));		//Erloes
+header[6]->setText(tr("Store"));		// Vorrat
 
-header2[0]->setText(tr("Ware"));
-header2[1]->setText(tr("angebotene\nWarenmenge"));
-header2[2]->setText(tr("Kauf"));
-header2[3]->setText(tr("Preis"));
-header2[4]->setText(tr("Verkauf"));
-header2[5]->setText(tr("Erloes"));
-header2[6]->setText(tr("Vorrat"));
+for(int i = 0; i< 7; i++)
+{
+header2[i]->setText(header[i]->text());
+
+}
+// header2[1]->setText(tr("angebotene\nWarenmenge"));
+// header2[2]->setText(tr("Kauf"));
+// header2[3]->setText(tr("Preis"));
+// header2[4]->setText(tr("Verkauf"));
+// header2[5]->setText(tr("Erloes"));
+// header2[6]->setText(tr("Vorrat"));
+///
 
 for(int i=0; i < (const_warenanzahl/2); i++)
 {
-ware[i] = new QLabel(wtab[0]);
-ware[i]->setAlignment(Qt::AlignCenter);
-
-warenmenge[i] = new QLabel(wtab[0]);
-warenmenge[i]->setAlignment(Qt::AlignCenter);
-
-preis[i] = new QLabel(wtab[0]);
-preis[i]->setAlignment(Qt::AlignCenter);
-
-vorrat[i] = new QLabel(wtab[0]);
-vorrat[i]->setAlignment(Qt::AlignCenter);
-
-erloes[i] = new QLabel(wtab[0]);
-erloes[i]->setAlignment(Qt::AlignCenter);
+QLabel *goodname = new QLabel(wtab[0]);
+goodname->setAlignment(Qt::AlignCenter);
+goodname->setText(GAMEPARAMETER->GoodLabelHash().value(i));
 
 
-kaufmenge[i] = new QSpinBox(wtab[0]);
-verkaufsmenge[i] = new QSpinBox(wtab[0]);
+QLabel *goodamount = new QLabel(wtab[0]);
+goodamount->setAlignment(Qt::AlignCenter);
+Storage0LabelList << goodamount;
 
-layout->addWidget(ware[i],i+1,0);
-layout->addWidget(warenmenge[i],i+1,2);
-layout->addWidget(kaufmenge[i],i+1,4);
-layout->addWidget(preis[i],i+1,6);
-layout->addWidget(verkaufsmenge[i],i+1,8);
-layout->addWidget(erloes[i],i+1,10);
-layout->addWidget(vorrat[i],i+1,12);
-layout->setColumnStretch(0,2);
+// warenmenge[i] = new QLabel(wtab[0]);
+// warenmenge[i]->setAlignment(Qt::AlignCenter);
 
-ware[i+15] = new QLabel(wtab[1]);
-ware[i+15]->setAlignment(Qt::AlignCenter);
+QLabel *price = new QLabel(wtab[0]);
+price->setText(tr("(price)"));
+price->setAlignment(Qt::AlignCenter);
+PriceLabelList << price;
 
-warenmenge[i+15] = new QLabel(wtab[1]);
-warenmenge[i+15]->setAlignment(Qt::AlignCenter);
+QLabel *stored = new QLabel(wtab[0]);
+stored->setAlignment(Qt::AlignCenter);
+Storage1LabelList << stored;
 
-preis[i+15] = new QLabel(wtab[1]);
-preis[i+15]->setAlignment(Qt::AlignCenter);
+QLabel *proceeds = new QLabel(wtab[0]);
+proceeds->setText(tr("(proceeds)"));
+proceeds->setAlignment(Qt::AlignCenter);
+ProceedsLabelList << proceeds;
 
-vorrat[i+15] = new QLabel(wtab[1]);
-vorrat[i+15]->setAlignment(Qt::AlignCenter);
+QSpinBox *buyamount = new QSpinBox(wtab[0]);
+BuySpinboxList << buyamount;
+buyamount->setRange(0,999);
 
-erloes[i+15] = new QLabel(wtab[1]);
-erloes[i+15]->setAlignment(Qt::AlignCenter);
+QSpinBox *sellamount = new QSpinBox(wtab[0]);
+SellSpinboxList << sellamount;
+sellamount->setRange(0,999);
 
 
-kaufmenge[i+15] = new QSpinBox(wtab[1]);
-verkaufsmenge[i+15] = new QSpinBox(wtab[1]);
+connect(buyamount, SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
+connect(sellamount, SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
 
-layout2->addWidget(ware[i+15],i+1,0);
-layout2->addWidget(warenmenge[i+15],i+1,2);
-layout2->addWidget(kaufmenge[i+15],i+1,4);
-layout2->addWidget(preis[i+15],i+1,6);
-layout2->addWidget(verkaufsmenge[i+15],i+1,8);
-layout2->addWidget(erloes[i+15],i+1,10);
-layout2->addWidget(vorrat[i+15],i+1,12);
+layout->addWidget(goodname, i+1, 0);
+layout->addWidget(goodamount,i+1, 2);
+layout->addWidget(buyamount, i+1, 4);
+layout->addWidget(price, i+1, 6);
+layout->addWidget(sellamount, i+1, 8);
+layout->addWidget(proceeds, i+1, 10);
+layout->addWidget(stored, i+1, 12);
+layout->setColumnStretch(0, 2);
+
+
+goodname = new QLabel(wtab[1]);
+goodname->setAlignment(Qt::AlignCenter);
+goodname->setText(GAMEPARAMETER->GoodLabelHash().value(i + const_warenanzahl/2));
+
+goodamount = new QLabel(wtab[1]);
+goodamount->setAlignment(Qt::AlignCenter);
+Storage0LabelList << goodamount;
+
+price = new QLabel(wtab[1]);
+price->setAlignment(Qt::AlignCenter);
+price->setText(tr("(price)"));
+PriceLabelList << price;
+
+
+stored = new QLabel(wtab[1]);
+stored->setAlignment(Qt::AlignCenter);
+Storage1LabelList << stored;
+
+proceeds = new QLabel(wtab[1]);
+proceeds->setText(tr("(proceeds)"));
+proceeds->setAlignment(Qt::AlignCenter);
+ProceedsLabelList << proceeds;
+
+
+buyamount = new QSpinBox(wtab[1]);
+buyamount->setRange(0,999);
+BuySpinboxList << buyamount;
+
+sellamount = new QSpinBox(wtab[1]);
+sellamount->setRange(0,999);
+SellSpinboxList << sellamount;
+
+layout2->addWidget(goodname, i+1, 0);
+layout2->addWidget(goodamount, i+1, 2);
+layout2->addWidget(buyamount, i+1, 4);
+layout2->addWidget(price, i+1, 6);
+layout2->addWidget(sellamount, i+1, 8);
+layout2->addWidget(proceeds, i+1, 10);
+layout2->addWidget(stored, i+1, 12);
 layout2->setColumnStretch(0,2);
 
-connect(kaufmenge[i],SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
-connect(verkaufsmenge[i],SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
+connect(buyamount, SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
+connect(sellamount, SIGNAL(valueChanged(int)), this, SLOT(updateWidget()));
 
+// for(int i =0; i < const_warenanzahl; i++)
+// {
+// // tradingwindow->vorrat[i]->setText(QString("%1").arg(lager.ware[i]));
+// // tradingwindow->warenmenge[i]->setText(QString("%1").arg(lager2.ware[i]));
+// tradingwindow->preis[i]->setText(QString("(price)"));
+// tradingwindow->ProceedsLabelList[i]->setText(QString("(proceeds)"));
+// tradingwindow->BuySpinboxList[i]->setRange(0,999);
+// tradingwindow->SellSpinboxList[i]->setRange(0,999);
+// 
+// }
 }
-for(int i=0; i< const_warenanzahl; i ++)
-{
-ware[i]->setText(GAMEDATA->GoodLabelHash().value(i));
-}
+// for(int i=0; i< const_warenanzahl; i ++)
+// {
+// ware[i]->setText(GAMEPARAMETER->GoodLabelHash().value(i));
+// }
 /*
 ware[]->setText(tr("Baumstaemme"));
 ware[1]->setText(tr("Holzbrett"));
@@ -262,7 +313,7 @@ ware[25]->setText(tr("Schmuck"));*/
 // layout->addWidget(handelsbilanz,6,17,1,1);
 // 
 // umsatz = new QLabel(this);
-// umsatz->setText(tr("(Umsatz)"));
+// m_TradeProceedsLabel->setText(tr("(Umsatz)"));
 // layout->addWidget(umsatz,7,17,1,1);
 // 
 // handelsbutton = new QPushButton(tr("Handeln"),this);
@@ -285,9 +336,11 @@ wtab[1]->setLayout(layout2);
 setLayout(gesamtlayout);
 typ = -1;
 connect(handelsbutton, SIGNAL(clicked()), this, SLOT(handelsaktion()));
+connect(handelsbutton, SIGNAL(clicked()), this, SLOT(updateWidget()));
 connect(htypgroup,SIGNAL(buttonClicked(int)), this, SLOT(buttonHandler(int)));
 
-
+connect(exit, SIGNAL(clicked()), this, SLOT(close()));
+connect(exit, SIGNAL(clicked()), this, SLOT(deleteLater()));
 }
 
 ///******************************************************************************************************
@@ -319,17 +372,6 @@ rahmen->move(gameview->x() + (gameview->width() - rahmen->width())/2, gameview->
 
 
 
-for(int i =0; i < const_warenanzahl; i++)
-{
-// tradingwindow->vorrat[i]->setText(QString("%1").arg(lager.ware[i]));
-// tradingwindow->warenmenge[i]->setText(QString("%1").arg(lager2.ware[i]));
-tradingwindow->preis[i]->setText(QString("(Preis)"));
-tradingwindow->erloes[i]->setText(QString("(Erloes)"));
-tradingwindow->kaufmenge[i]->setRange(0,999);
-tradingwindow->verkaufsmenge[i]->setRange(0,999);
-
-}
-
 // tradingwindow->updateWidget();
 qWarning() << "Nach HU";
 
@@ -339,7 +381,9 @@ connect(tradingwindow->exit,SIGNAL(clicked()),rahmen,SLOT(deleteLater()));
 connect(tradingwindow->exit,SIGNAL(clicked()),gameview,SLOT(show()));
 connect(tradingwindow->exit,SIGNAL(clicked()),gameview,SLOT(slotpause()));
 
-connect(tradingwindow->handelsbutton, SIGNAL(clicked()), this, SLOT(tradingFinished()));
+// connect(tradingwindow->handelsbutton, SIGNAL(clicked()), this, SLOT(tradingFinished()));
+
+
 // connect(tradingwindow,SIGNAL(hmoeglich(bool)), tradingwindow->handelsbutton,SLOT(setEnabled(bool)));
 
 // connect(tradingwindow->htypgroup,SIGNAL(buttonClicked(int)), tradingwindow, SLOT(buttonHandler(int)));
@@ -374,6 +418,10 @@ tradingwindow->setGameData(/*GAMEDATA*/);
 
 void handelsfenster::setGameData(/*DataClass *param_data*/)
 {
+
+qWarning() << "void handelsfenster::setGameData(/*DataClass *param_data*/)";
+
+
 // GAMEDATA = param_data;
 for(int i = 0; i < 3; i++)
 {
@@ -397,6 +445,7 @@ if(htyp[1]->isEnabled() && htyp[0]->isEnabled() )
 htyp [2]->setEnabled(true);
 }
 
+qWarning() << "End of: void handelsfenster::setGameData(/*DataClass *param_data*/)";
 
 }
 
@@ -406,20 +455,20 @@ switch(id)
 {
 	case 0:
 	{
-		setStorage(GAMEDATA->activeShip()->cargo(), 0);
-		setStorage(GAMEDATA->activeCity()->goods(), 1);
+		setStorage(GAMEDATA->activeShip()->cargo(), 1);
+		setStorage(GAMEDATA->activeCity()->storage(), 0);
 		break;
 	}
 	case 1:
 	{
-		setStorage(GAMEDATA->activeKontor()->storage(), 0);
-		setStorage(GAMEDATA->activeCity()->goods(), 1);
+		setStorage(GAMEDATA->activeKontor()->storage(), 1);
+		setStorage(GAMEDATA->activeCity()->storage(), 0);
 		break;
 	}
 	case 2:
 	{
-		setStorage(GAMEDATA->activeShip()->cargo(), 0);
-		setStorage(GAMEDATA->activeKontor()->storage(), 1);
+		setStorage(GAMEDATA->activeShip()->cargo(), 1);
+		setStorage(GAMEDATA->activeKontor()->storage(), 0);
 		break;
 	}
 }
@@ -427,9 +476,9 @@ updateWidget();
 
 }
 
-void handelsfenster::setStorage(const Warenstruct &param_stor, int i)
+void handelsfenster::setStorage(const Goods &param_stor, int i)
 {
-	if(i>=0 && i <= 1)
+	if(i == 0 || i == 1)
 	{
 		storage[i] = param_stor;
 	}
@@ -437,39 +486,8 @@ void handelsfenster::setStorage(const Warenstruct &param_stor, int i)
 
 void handelsfenster::updateWidget()
 {
-// for(int i = 0; i < const_warenanzahl; i++)
-// {
-// vorrat[i]->setText(QString("%1").arg(storage[0].ware[i]));
-// warenmenge[i]->setText(QString("%1").arg(storage[1].ware[i]));
-// }
-// }
 
-// void gesamtbild::handelsupdate()
-// {
-// static quint8 typ;
-qWarning() << "Handelsupdate";
-// tradingwindow->handelsbutton->setEnabled(false);
-// tradingwindow->handelsbutton->repaint();
-/*
-if(tradingwindow->htyp[0]->isChecked() && tradingwindow->typ !=0)
-{*/
-// for (QList<stadtklasse>::iterator it = stadtliste.begin();
-// it != stadtliste.end();
-// ++it)
-// 	{
-// 		if(it->stadtname == gameview->mapprops.stadtname)
-// 		{
-// 			qWarning() << it->stadtname << gameview->mapprops.stadtname ;
-// 			stadt = *it;
-// 			lager2 = stadt.stadtwaren;
-// 			break;
-// 		}
-// 	}
-// 
-// lager = gameview->activeship.Ladung;
-
-// tradingwindow->typ = 0;
-// }
+// qWarning() << "Handelsupdate";
 
 
 // if(tradingwindow->htyp[1]->isChecked() && tradingwindow->typ != 1)
@@ -510,139 +528,160 @@ if(tradingwindow->htyp[0]->isChecked() && tradingwindow->typ !=0)
 // }
 
 
-int mengev[const_warenanzahl];
-int mengek[const_warenanzahl];
+	int sellamount_int[const_warenanzahl];
+	int buyamount_int[const_warenanzahl];
 
-int preis_int[const_warenanzahl];		//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren - Menge + 3)
+	int price_int[const_warenanzahl];
+//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren - Menge + 3)
 
-int erloes_int[const_warenanzahl]; 	//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren + Menge + 3)
+	int proceeds_int[const_warenanzahl]; 
+//allgemeine Formel: Preis = Grundpreis * Menge + (10 * Grundpreis * Menge) / ( Stadtwaren + Menge + 3)
 
-int stueckerloes[const_warenanzahl];
-int stueckpreis[const_warenanzahl];
-int gesamterloes = 0;
-int gesamtpreis = 0;
+	int singleproceeds_int[const_warenanzahl];
+	int singleprice_int[const_warenanzahl];
+	int totalproceeds_int = 0;
+	int totalprice_int = 0;
 
-int mengenbilanz = 0;
+	int mengenbilanz = 0;
 
-if(htyp[0]->isChecked() || htyp[1]->isChecked())
-{
-// qWarning() << "0 oder 1 gecheckt";
-for (int i = 0; i<const_warenanzahl; i++)
-{
-	if(kaufmenge[i]->value() <= storage[1].ware[i])
+	if(htyp[0]->isChecked() || htyp[1]->isChecked())
 	{
-// 	kaufmenge[i]->setValue(kaufmenge[i]->value());
-	}
-	else
-	{
-	kaufmenge[i]->setValue(storage[1].ware[i]);
-	}
-
-	if(verkaufsmenge[i]->value() <= storage[0].ware[i])
-	{
-// 	verkaufsmenge[i]->setValue(verkaufsmenge[i]->value());
-	}
-	else
-	{
-	verkaufsmenge[i]->setValue(storage[0].ware[i]);
-	}
-
-	mengek[i] = kaufmenge[i]->value();
-	mengev[i] = verkaufsmenge[i]->value();
-	mengenbilanz = mengenbilanz - mengev[i] + mengek[i];
-
-	stueckpreis[i] = const_grundpreis[i]  + int(ceil((10 * const_grundpreis[i]) / (storage[1].ware[i] + 2 )));
-
-	preis_int[i] = mengek[i] * const_grundpreis[i]  + int(ceil((10 * mengek[i] * const_grundpreis[i]) / (storage[1].ware[i] - mengek[i] + 3 )));
-
-	erloes_int[i] = mengev[i] * const_grundpreis[i]  + int(floor((10 * mengev[i] * const_grundpreis[i]) / (storage[1].ware[i] + mengev[i] + 3 )));
-
-	stueckerloes[i] = const_grundpreis[i]  + int(floor((10 * const_grundpreis[i]) / (storage[1].ware[i] + 4 )));
-
-	gesamtpreis += preis_int[i];
-	gesamterloes += erloes_int[i];
-
-	{
-// 	qWarning() << mengev[i] << erloes[i] << stueckerloes[i];
-
-		if(erloes[i]>0)
+qWarning() << "0 oder 1 gecheckt";
+		for (int i = 0; i < const_warenanzahl; i++)
 		{
-// 	tradingwindow->erloes[i]->setText(QString("%1 (%2)").arg(erloes[i], int(erloes[i]/mengev[i])));
-		erloes[i]->setText( QString("%1").arg(erloes_int[i]).append(QString("(%1)").arg(int(erloes_int[i]/mengev[i]))));
+			if(BuySpinboxList[i]->value() > storage[0].good(i))
+			{
+				BuySpinboxList[i]->setValue(storage[0].good(i));
+			}
+			
+			if(SellSpinboxList[i]->value() > storage[1].good(i))
+			{
+				SellSpinboxList[i]->setValue(storage[1].good(i));
+			}
+
+			buyamount_int[i] = BuySpinboxList[i]->value();
+			sellamount_int[i] = SellSpinboxList[i]->value();
+			mengenbilanz = mengenbilanz - sellamount_int[i] + buyamount_int[i];
+
+/*
+
+PREISFORMELN:
+
+Nachfrage = Stueckzahl an zu kaufenden Einheiten pro Ware
+
+
+GESAMTPREIS = HaendlerNachfrage * Grundpreis +
+aufrunden(10 * Grundpreis * HaendlerNachfrage / (StadtAngebot - HaendlerNachfrage + 3))
+
+
+Erloes = Haendlerangebot * grundpreis +
+abrunden( 10 * Grundpreis * HaendlerAngebot / (StadtAngebot + HaendlerAngebot + 3))
+
+*/
+			singleprice_int[i] = GAMEPARAMETER->BasicPrice(i) + int(ceil((10 * GAMEPARAMETER->BasicPrice(i)) / (storage[1].good(i) + 2 )));
+
+			price_int[i] = buyamount_int[i] * GAMEPARAMETER->BasicPrice(i)  + int(ceil((10 * buyamount_int[i] * GAMEPARAMETER->BasicPrice(i)) / (storage[1].good(i) - buyamount_int[i] + 3 )));
+
+			proceeds_int[i] = sellamount_int[i] * GAMEPARAMETER->BasicPrice(i)  + int(floor((10 * sellamount_int[i] * GAMEPARAMETER->BasicPrice(i)) / (storage[1].good(i) + sellamount_int[i] + 3 )));
+
+			singleproceeds_int[i] = GAMEPARAMETER->BasicPrice(i)  + int(floor((10 * GAMEPARAMETER->BasicPrice(i)) / (storage[1].good(i) + 4 )));
+
+			totalprice_int += price_int[i];
+			totalproceeds_int += proceeds_int[i];
+
+// 	qWarning() << sellamount_int[i] << ProceedsLabelList[i] << singleproceeds_int[i];
+
+			if(proceeds_int[i] > 0 )
+			{
+// 	tradingwindow->ProceedsLabelList[i]->setText(QString("%1 (%2)").arg(ProceedsLabelList[i], int(ProceedsLabelList[i]/sellamount_int[i])));
+				ProceedsLabelList[i]->setText( QString("%1").arg(proceeds_int[i]).append(QString("(%1)").arg(int(proceeds_int[i]/sellamount_int[i]))));
+			}
+			else
+			{
+				ProceedsLabelList[i]->setText(QString("%1").arg(singleproceeds_int[i]));
+			}
+
+			if(price_int[i] > 0)
+			{
+// 		qWarning() << buyamount_int[i];
+				PriceLabelList[i]->setText(QString("%1").arg( price_int[i] ).append( QString("(%1)").arg( int(price_int[i]/buyamount_int[i]))));
+			}
+			else
+			{
+				PriceLabelList[i]->setText(QString("%1").arg(singleprice_int[i]));
+			}
+			Storage0LabelList[i]->setText(QString("%1").arg(storage[0].good(i)));
+			Storage1LabelList[i]->setText(QString("%1").arg(storage[1].good(i)));
 		}
-		else
+
+		int bilanz = totalproceeds_int - totalprice_int;
+
+// qWarning() << "Nach Schleife" << totalproceeds_int << totalprice_int << bilanz << mengenbilanz;
+
+
+		m_TradeProceedsLabel->setText(QString("%1").arg(bilanz));
+
+		qWarning() << storage[0].taler() << storage[0].taler() + bilanz;
+
+		handelsbutton->setEnabled(false);
+		show();
+
+		bool hb_e_geld = true;		// Handelsbutton enabled << Money
+		bool hb_e_lager = true;		// Handelsbutton enabled << Capacity
+		if(qint32(storage[0].taler() + bilanz) < 0)
 		{
-		erloes[i]->setText(QString("%1").arg(stueckerloes[i]));
-		}
-	}
-	{
-		if(preis[i]>0)
-		{
-// 		qWarning() << mengek[i];
-		preis[i]->setText( QString("%1").arg(preis_int[i]).append(QString("(%1)").arg(int(preis_int[i]/mengek[i]))));
-		}
-		else
-		{
-		preis[i]->setText(QString("%1").arg(stueckpreis[i]));
-		}
-	}
-}
-
-int bilanz = gesamterloes - gesamtpreis;
-
-// qWarning() << "Nach Schleife" << gesamterloes << gesamtpreis << bilanz << mengenbilanz;
- for(int i = 0; i < const_warenanzahl; i++)
- {
- vorrat[i]->setText(QString("%1").arg(storage[0].ware[i]));
- warenmenge[i]->setText(QString("%1").arg(storage[1].ware[i]));
- }
-
-umsatz->setText(QString("%1").arg(bilanz));
-
-qWarning() << storage[0].taler << storage[0].taler + bilanz; handelsbutton->setEnabled(false); show();
-bool hb_e_geld = true;
-bool hb_e_lager = true;
-if(qint32(storage[0].taler + bilanz) < 0)
-	{
-	hb_e_geld = false;	
+			hb_e_geld = false;	
 // 	tradingwindow->handelsbutton->setEnabled(hb_enabled);
 // 	tradingwindow->sethandelsbutton(false);
-	}
+		}
 
 // if((lager.taler + bilanz) > 0 && !tradingwindow->handelsbutton->isEnabled())
 // 	{	tradingwindow->handelsbutton->setEnabled(true);	}
 
-if(storage[0].kapazitaet < storage[0].fuellung + mengenbilanz )
-	{
+		if(storage[0].capacity() < storage[0].filling() + mengenbilanz )
+		{
 // 	tradingwindow->handelsbutton->setEnabled(false);
-	hb_e_lager = false;
-	}
+			hb_e_lager = false;
+		}
 
-if((!hb_e_lager || !hb_e_geld ) && handelsbutton->isEnabled())
-{
-	handelsbutton->setEnabled(false);
-}
-if((hb_e_lager && hb_e_geld ) && !handelsbutton->isEnabled())
-{
-	handelsbutton->setEnabled(true);
-}
+		if((!hb_e_lager || !hb_e_geld ) && handelsbutton->isEnabled())
+		{
+			handelsbutton->setEnabled(false);
+		}
+		if((hb_e_lager && hb_e_geld ) && !handelsbutton->isEnabled())
+		{
+			handelsbutton->setEnabled(true);
+		}
 // if(lager.kapazitaet > lager.fuellung + mengenbilanz && tradingwindow->handelsbutton->isEnabled() == false && hb_enabled)
 // 	{	tradingwindow->handelsbutton->setEnabled(true);	}
+	storage[0].exchangeVolume() += mengenbilanz;
+	}
 
-// qWarning() << "Button-Zeugs";
-}
-storage[0].mengenbilanz += mengenbilanz;
+	else if(htyp[2]->isEnabled())
+	{
+		for(int i = 0; i < const_warenanzahl; i++)
+		{
+			PriceLabelList[i]->setText(QString());
+			ProceedsLabelList[i]->setText(QString());
+			
+			Storage0LabelList[i]->setText(QString("%1").arg(storage[0].good(i)));
+			Storage1LabelList[i]->setText(QString("%1").arg(storage[1].good(i)));
+			
+			if(BuySpinboxList[i]->value() > storage[0].good(i))
+			{
+				BuySpinboxList[i]->setValue(storage[0].good(i));
+			}
+			
+			if(SellSpinboxList[i]->value() > storage[1].good(i))
+			{
+				SellSpinboxList[i]->setValue(storage[1].good(i));
+			}
+			handelsbutton->setEnabled(true);
 
-if(htyp[2]->isEnabled())
-{
-for(int i = 0; i < const_warenanzahl; i++)
-{
-preis[i]->setText(QString());
-erloes[i]->setText(QString());
-
-}
-
-}
+		}
+	}
+	
+// 	qWarning() << "Ende Handelsupdate";
 }
 
 void handelsfenster::handelsaktion()
@@ -651,34 +690,34 @@ void handelsfenster::handelsaktion()
 	int warek[const_warenanzahl];
 	int warev[const_warenanzahl];
 // 	qWarning() << "Lager.taler" << lager.taler;
-	storage[0].taler += umsatz->text().toInt();
+	storage[0].setTaler(storage[0].taler() + m_TradeProceedsLabel->text().toInt());
 // 	qWarning() << "Lager.taler" << lager.taler;
 
 	for(int i=0; i<const_warenanzahl; i++)
 	{
-		warek[i] = kaufmenge[i]->text().toInt();
-		warev[i] = verkaufsmenge[i]->text().toInt();
-		storage[1].ware[i] += warev[i] - warek[i];
+		warek[i] = BuySpinboxList[i]->text().toInt();
+		warev[i] = SellSpinboxList[i]->text().toInt();
+		storage[1].addGood(i, warek[i] - warev[i]);
 	
-		storage[0].ware[i] += warek[i] - warev[i];
+		storage[0].addGood(i, warev[i] - warek[i]);
 		// gameview->activeship.Ladung.ware[i] = lager.ware[i] ;
 	}
 	
 
-	if(htyp[0]->isEnabled())
+	if(htyp[0]->isChecked())
 	{
-		GAMEDATA->activeCity()->setGoods(storage[1]);
-		GAMEDATA->activeShip()->setCargo(storage[0]);
+		GAMEDATA->activeCity()->setStorage(storage[0]);
+		GAMEDATA->activeShip()->setCargo(storage[1]);
 	}
-	else if(htyp[1]->isEnabled())
+	else if(htyp[1]->isChecked())
 	{
-		GAMEDATA->activeCity()->setGoods(storage[1]);
-		GAMEDATA->activeKontor()->setStorage(storage[0]);
-	}
-	else if(htyp[2]->isEnabled())
-	{
+		GAMEDATA->activeCity()->setStorage(storage[0]);
 		GAMEDATA->activeKontor()->setStorage(storage[1]);
-		GAMEDATA->activeShip()->setCargo(storage[0]);
+	}
+	else if(htyp[2]->isChecked())
+	{
+		GAMEDATA->activeKontor()->setStorage(storage[0]);
+		GAMEDATA->activeShip()->setCargo(storage[1]);
 	}
 /// 	gameview->activeship.Ladung = lager;
 // 	qWarning() << "gameview->ASL.taler" << gameview->activeship.Ladung.taler;
@@ -696,7 +735,7 @@ void handelsfenster::handelsaktion()
 
 // 	qWarning() << gameview->activeship.Ladung.fuellung << gameview->activeship.Ladung.kapazitaet;
 
-// gameview->activeship.Ladung.taler += tradingwindow->umsatz->text().toInt();
+// gameview->activeship.Ladung.taler += tradingwindow->m_TradeProceedsLabel->text().toInt();
 
 // 	taler->setText(QString("Geladenes Geld: %1 Taler").arg(gameview->activeship.Ladung.taler));
 // 	menupanel->taler->setText(QString("%1").arg(gameview->activeship.Ladung.taler).prepend(tr("Geladenes Geld: ")).append(tr("Taler")));
@@ -720,23 +759,23 @@ void handelsfenster::handelsaktion()
 }
 handelsfenster::~handelsfenster()
 {
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing Trading Window";
+#endif
 delete htypgroup;
 delete handelsbutton;
 delete exit;
-delete handelsbilanz;
-delete umsatz;
-for(int i = 0; i < const_warenanzahl; i++)
-{
-delete preis[i];
-delete erloes[i];
-delete vorrat[i];
-delete warenmenge[i];
-}
+delete m_TradeProceedsTextLabel;
+delete m_TradeProceedsLabel;
+
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "End of Destructing Trading Window";
+#endif
 }
 
 void gesamtbild::tradingFinished()
 {
-delete tradingwindow;
+	tradingwindow->hide();
 	gameview->show();
 	gameview->slotpause();
 }

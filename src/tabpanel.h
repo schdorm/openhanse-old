@@ -42,7 +42,7 @@ public:
 SeaTabPanel();
 ~SeaTabPanel();
 // void create();
-void landmenu();
+// void landmenu();
 
 #ifdef __test_
 bool sub;
@@ -51,9 +51,10 @@ int tempint;
 int tempint2;
 #endif
 
-QLabel *ware[const_warenanzahl];
+QLabel *shipname;
+// QLabel *ware[const_warenanzahl];
 QLabel *fuellung;
-QLabel *taler;
+QLabel *talerlabel;
 // QTabWidget *menutabs;
 QWidget *tab[3];
 
@@ -70,12 +71,15 @@ QProgressBar *geschwindigkeitsanzeige;
 QLabel *stat_color;
 QLabel *stat_icon;
 
+QList <QLabel*> m_GoodLabelList;
+
 // void setGameData(DataClass*);
 private:
 // DataClass *gamedata;
 
 public slots:
 void update();
+void updateGoodLabels();
 };
 
 #endif

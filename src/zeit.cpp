@@ -150,7 +150,6 @@ for(QList <QGraphicsItem*>::iterator it = sliste.begin(); it < sliste.end(); ++i
 QGraphicsItem *handler = *it;
 if(handler->toolTip() == "grosser Zeiger")
 {
-// 	static int minute; minute ++;
 	handler->resetTransform();
 	QTransform t;
 	const int w = ((handler->boundingRect().width()/2));
@@ -164,8 +163,6 @@ if(handler->toolTip() == "grosser Zeiger")
 }
 if(handler->toolTip() == "kleiner Zeiger")
 {
-// 	static int minute;
-
 	handler->resetTransform();
 	QTransform t;
 	const int w = int((handler->boundingRect().width()/2));

@@ -40,6 +40,7 @@
 void Landing::setStatus(Landing::statuses param_state)
 {
 m_status = param_state;
+
 }
 
 // void hauptfenster::einschiffen()

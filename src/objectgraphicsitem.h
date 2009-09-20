@@ -30,9 +30,11 @@
 #include "kontordata.h"
 // #include ""
 class ShipData;
+class Person;
 
 class ObjectGraphicsItem : public QGraphicsItemGroup
 {
+
 
 
 public:
@@ -73,6 +75,7 @@ protected:
 void mousePressEvent(QGraphicsSceneMouseEvent *event);
 ShipData *m_shipdata;
 BuildingData *m_buildingdata;
+Person *m_person;
 };
 
 #endif

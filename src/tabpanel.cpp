@@ -24,6 +24,7 @@
 
 #include "datamanager.h"
 #include "dataclass.h"
+#include "gameparameter.h"
 
 #include "tabpanel.h"
 
@@ -40,9 +41,6 @@ SeaTabPanel::SeaTabPanel()
 {
 	qWarning() << "Create";
 // 	QVBoxLayout tablayout[3];
-
-
-
 
 	for(int i = 0; i < 3; i++)
 	{
@@ -143,17 +141,25 @@ SeaTabPanel::SeaTabPanel()
 // 		ladungslayout.addWidget(ware[i]);
 // 	}
 	fuellung = new QLabel(ladung/*sanzeige*/);
-	ladungslayout->addWidget(fuellung,0,0,1,2);
-	taler = new QLabel(ladung);
-	ladungslayout->addWidget(taler,1,0,1,2);
+	ladungslayout->addWidget(fuellung, 0, 0, 1, 2);
+	talerlabel = new QLabel(ladung);
+	ladungslayout->addWidget(talerlabel, 1, 0, 1, 2);
 
-
+	QLabel *goodlabel;
 	for(int i = 0; i < const_warenanzahl; i++)
 	{
-		ware[i] = new QLabel(ladung);
+		goodlabel = new QLabel(ladung);
 // 		ware[i]->setText(QString("%1").arg(hf->activeship.Ladung.ware[i]));
-		ladungslayout->addWidget(ware[i],i/2+2,i%2);
+		ladungslayout->addWidget(goodlabel, i/2+2, i%2);
+// 		goodlabel->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().good(i)));
+		m_GoodLabelList << goodlabel;
 	}
+	
+	
+// 	talerlabel->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().taler()).prepend(tr("Money: ")));
+// 	QString flstring = QString("%1").arg(GAMEDATA->activeShip()->cargo().filling());
+// 	flstring.append(QString("/%1 belegt").arg(GAMEDATA->activeShip()->cargo().capacity()));
+// 	fuellung->setText(flstring);
 
 
 // 	qWarning() << "Nach Ladungszeugs";
@@ -188,14 +194,14 @@ SeaTabPanel::SeaTabPanel()
 // 	gridlayout->setColumnStretch(1,2);
 
 QTimer *timer = new QTimer();
-timer->start(500);
+timer->start(2000);
 connect(timer, SIGNAL(timeout()), this, SLOT(update()));
  #ifdef __test_
 tempint = 100;
 sub = true;
  #endif
 
-
+updateGoodLabels();
 }
 
 void SeaTabPanel::update()
@@ -248,34 +254,70 @@ stat_color->setPixmap(stat_color_pm);
 
 }
 
+void SeaTabPanel::updateGoodLabels()
+{
+for(int i = 0; i < m_GoodLabelList.size(); i++)
+{
+m_GoodLabelList[i]->setText(QString("%1 ").arg(GAMEDATA->activeShip()->cargo().good(i)).append(GAMEPARAMETER->GoodName(i)));
+}
+
+	talerlabel->setText(QString("%1").arg(GAMEDATA->activeShip()->cargo().taler()).prepend(tr("Money: ")));
+	QString flstring = QString("%1").arg(GAMEDATA->activeShip()->cargo().filling());
+	flstring.append(QString("/%1 belegt").arg(GAMEDATA->activeShip()->cargo().capacity()));
+	fuellung->setText(flstring);
+
+}
+
 // void SeaTabPanel::setGameData(DataClass *param_dc)
 // {
 // GAMEDATA = param_dc;
 // }
 
-void SeaTabPanel::landmenu()
-{
-steuerung->hide();
-ladung->hide();
-}
+// void SeaTabPanel::landmenu()
+// {
+// steuerung->hide();
+// ladung->hide();
+// }
 
 
 SeaTabPanel::~SeaTabPanel()
 {
-	for(int i = 0; i < const_warenanzahl; i++)
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing SeaTabPanel(Sidebar)";
+#endif
+/*	for(int i = 0; i < const_warenanzahl; i++)
 	{
 		delete ware[i];
 	}
-	delete fuellung;
-	delete taler;
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "For-Destructing SeaTabPanel(Sidebar)";
+#endif*/
+
+// 	delete fuellung;
+// 	delete taler;
+
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "For-Destructing 2 SeaTabPanel(Sidebar)";
+#endif
 	for(int i = 0; i<3; i++)
 		delete tab[i];
+/*#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "For-Destructing 2 SeaTabPanel(Sidebar)";
+#endif
 	delete ladung;
+
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Control-Destructing SeaTabPanel(Sidebar)";
+#endif
+	
 	delete steuerung;
 	delete anlegen;
 	delete schuss;
 	delete geschwindigkeitsregler;
 	delete geschwindigkeitsanzeige;
 	delete stat_color;
-	delete stat_icon;
+	delete stat_icon;*/
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "End of Destructing SeaTabPanel(Sidebar)";
+#endif
 }

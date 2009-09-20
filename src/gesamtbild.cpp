@@ -38,6 +38,7 @@
 
 #include <QtCore/QDateTime>
 #include "konsole.h"
+#include "tabpanel.h"
 
 gesamtbild::gesamtbild()
 {
@@ -45,7 +46,7 @@ tradingwindow = 0;
 gameview = 0;
 menupanel = 0;
 schwierigkeitsauswahl = 0;
-connect(TERMINAL, SIGNAL(destroyed(QObject)), this, SLOT(deleteLater()));
+connect(TERMINAL, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()));
 
 	QDir dir = QDir().current();
 // 	qWarning() << dir.absolutePath();
@@ -98,10 +99,15 @@ connect(TERMINAL, SIGNAL(destroyed(QObject)), this, SLOT(deleteLater()));
 
 gesamtbild::~gesamtbild()
 {
-delete gameview;
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing MainFrame(Gesamtbild)";
+#endif
 delete tradingwindow;
 delete schwierigkeitsauswahl;
 delete menupanel;
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "End of Destructing MainFrame(Gesamtbild)";
+#endif
 }
 
 
@@ -143,6 +149,28 @@ void gesamtbild::mainmenu()
 
 void gesamtbild::keyPressEvent(QKeyEvent *event)
 {
+
+switch(event->key())
+{
+	case Qt::Key_Q:
+	{
+		switch(event->modifiers())
+		{
+			case Qt::ControlModifier:
+			{
+			close();
+			break;
+			}
+			default:
+			break;
+		
+		}
+		break;
+	}
+	default:
+		break;
+
+}
 // if(event->key() !=
 //  Qt::Key_Escape && spielbool)
 //  {

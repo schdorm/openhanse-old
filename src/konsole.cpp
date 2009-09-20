@@ -21,11 +21,14 @@
 
 #include "konsole.h"
 #include "gesamtbild.h"
+#include "tabpanel.h"
 
 #include "dataclass.h"
 #include "datamanager.h"
 
 #include "shipdata.h"
+
+#include "stadtklasse.h"
 
 #include <QtGui/QVBoxLayout>
 #include <QtCore/QFile>
@@ -54,8 +57,17 @@ konsole::konsole()
 konsole::~konsole()
 {
 // 	lc_iterator = (lastcommands);
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Destructing Konsole";
+#endif
 	delete output;
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Output deleted";
+#endif
 	delete input;
+#ifdef _DEBUG_DESTRUCTORS
+qWarning() << "Input deleted. End of Destructing Konsole.";
+#endif
 }
 
 // void konsole::operator<<(const char *param_char[]) const
@@ -208,6 +220,34 @@ else if(inputstring == "test a")
 else if(inputstring == "print Shipposition")
 {
 GAMEDATA->activeShip()->printPosition();
+return;
+}
+
+else if(inputstring.startsWith("print Citygoods"))
+{
+bool printed = false;
+QList<CityClass> citylist = *GAMEDATA->cityList();
+QString cityname = QString(inputstring).remove("print Citygoods ");
+qWarning() << "Cityname:" << cityname << "Inputstring:" << inputstring ;
+
+if(!cityname.isEmpty())
+{
+	for(QList<CityClass>::iterator it = citylist.begin();
+	it != citylist.end();
+	++it)
+	{
+	qWarning() << "It->cityname():" << it->cityname();
+		if(it->cityname() == cityname)
+		{
+			it->printGoods();
+			printed = true;
+		}
+	}
+}
+if(!printed)
+{
+OHDebug(QString(cityname).prepend("City \"").append("\" not found!"));
+}
 return;
 }
 

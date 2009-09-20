@@ -18,40 +18,39 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#include "datamanager.h"
-#include "dataclass.h"
-#include "settings.h"
-#include "gameparameter.h"
+#include "waren.h"
 
-dataManager::dataManager()		// Konstruktor: erzeugt neue Instanzen fuer private Pointer 
+void Goods::setGood(int key, int value)
 {
-	m_gamedata = new DataClass();
-	m_globalSettings = new Settings();
-	m_gameParameter = new GameParameter();
+	m_GoodHash[key] = value;
 }
 
-/*static dataManager* dataManager::instance()
-	// statische Funktion: erzeugt neue Instanz dieser Klasse, falls keine besteht und gibt diese zurück
+void Goods::addGood(int key, int value)
 {
-	if( m_instance == NULL )
-	{
-		m_instance = new dataManager();
-	}
-	return m_instance;
-}*/
-	
-void dataManager::recreateGamedata()		// loescht alte Spieldaten und erzeugt neue Instanz der Spieldaten
-{
-	delete m_gamedata;
-	m_gamedata = new DataClass();
+	m_GoodHash[key] += value;
 }
-	
-// Settings *dataManager::settings()		// gibt die Settings zurueck
-// {
-// 	return m_globalSettings;
-// }
-// 
-// DataClass *dataManager::gamedata()		// gibt die Spieldaten zurueck
-// {
-// 	return m_gamedata;
-// }
+void Goods::setWeapon(int key, int value)
+{
+	m_WeaponHash[key] = value;
+}
+
+void Goods::setFilling(int param_filling)
+{
+	m_filling = param_filling;
+}
+
+void Goods::setCapacity(int param_capacity)
+{
+	m_capacity = param_capacity;
+}
+
+void Goods::setTaler(int param_taler)
+{
+	m_taler = param_taler;
+}
+
+void Goods::setExchangeVolume(int param_volume)
+{
+	m_exchange_volume = param_volume;
+}
+
