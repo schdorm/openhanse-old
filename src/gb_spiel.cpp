@@ -25,6 +25,8 @@
 
 #include "stadtklasse.h"
 
+#include "ingamemenu.h"
+
 #include <QtCore/QFile>
 #include <QtCore/QXmlStreamReader>
 // #include <QtCore/QDir>
@@ -404,6 +406,7 @@ void gesamtbild::zeitanzeige(/*int dora, int hin, int may*/)
 
 void gesamtbild::spielmenu()
 {
+
 gameview->startPause();
 gameview->setEnabled(false);
 menupanel->setEnabled(false);
@@ -412,7 +415,19 @@ aktiv = false;
 OHDebug("Spielmenu");
 // gameview->hide();
 
-QWidget *menuw = new QWidget(this);
+IngameMenu *menu = new IngameMenu(this);
+
+connect(menu, SIGNAL(exit()), this, SLOT(close()));
+connect(menu, SIGNAL(save()), this, SLOT(aktivieren()));
+connect(menu, SIGNAL(save()), this, SLOT(speicherndialog()));
+connect(menu, SIGNAL(save()), menu, SLOT(close()));
+connect(menu, SIGNAL(options()), &OptionWin, SLOT(show()));
+connect(menu, SIGNAL(options()), &OptionWin, SLOT(raise()));
+
+connect(menu, SIGNAL(resume()), menu, SLOT(close()));
+connect(menu, SIGNAL(resume()), this, SLOT(aktivieren()));
+
+/*QWidget *menuw = new QWidget(this);
 QVBoxLayout layout;
 QGroupBox *gb = new QGroupBox(menuw);
 QPushButton *fortfahren = new QPushButton(tr("Resume"),menuw);
@@ -440,12 +455,12 @@ connect(verlassen, SIGNAL(clicked()), this, SLOT(close()));
 // connect(fortfahren, SIGNAL(clicked()), this, SLOT(setEnabled(bool)));
 // connect(sigm, SIGNAL(mapped(int)), gameview, SLOT(setEnabled(int)));
 // connect(sigm, SIGNAL(mapped(int)), menupanel, SLOT(setEnabled(int)));
+*/
 
-
-gb->setLayout(&layout);
-menuw->setGeometry(width()/2-200,height()/2-200,200,400);
-menuw->show();
-menuw->raise();
+// gb->setLayout(&layout);
+menu->setGeometry(width()/2-width()/5,height()/2-height()/5,200,400);
+// menuw->show();
+// menuw->raise();
 }
 
 

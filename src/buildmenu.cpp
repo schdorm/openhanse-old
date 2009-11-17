@@ -18,39 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _SETTINGS_H
-#define _SETTINGS_H
-#include <QtCore/QSize>
-class Settings
+#include "buildmenu.h"
+#include "buildingdata.h"
+#include <QtGui/QWidget>
+#include <QtCore/QSignalMapper>
+
+BuildMenu::BuildMenu()
 {
-public:
-Settings();
-void readConfigs (const QString&);
-bool openGL()			const	{	return m_opengl;	}
-bool opengl()			const	{	return m_opengl;	}
-bool fullscreen()		const	{	return m_fullscreen;	}
-const QSize &resolution()	const	{	return m_resolution;	}
-int fps()			const	{	return m_fps;		}
+QWidget *basictab = new QWidget(this);
+tabwidget->addTab(basictab, tr("Basicbuildings"));
 
-const QString &mapdirectory()	const	{	return m_mapdirectory;	}
+QWidget *citytab = new QWidget(this);
+tabwidget->addTab(citytab, tr("Factories"));
 
-float miscVolume()		const	{	return m_misc_volume;	}
-float musicVolume()		const	{	return m_music_volume;	}
+QWidget *factorytab = new QWidget(this);
+tabwidget->addTab(factorytab, tr("Factories"));
 
-bool cacheMaps()		const	{	return m_cacheMaps;	}
+QWidget *misctab = new QWidget(this);
+tabwidget->addTab(misctab, tr("Misc"));
 
-private:
-QSize m_resolution;
-bool m_fullscreen;
-bool m_opengl;
-int m_fps;
+QPushButton *buildKontor = new QPushButton(tr("Kontor"), basictab);
+QSignalMapper *kontormap = new QSignalMapper(buildkontor);
+kontormap->setMaping(buildKontor, BuildingData::Kontor);
+connect(buildKontor, SIGNAL(clicked()), kontormap, SLOT(map());
+connect(kontormap, SIGNAL(mapped(int)), this, SIGNAL(build(int))); 
 
-QString m_mapdirectory;		//member - mapdirectory
-
-float m_misc_volume;		//miscellaneous
-float m_music_volume;
-
-bool m_cacheMaps;
-};
-
-#endif
+buttonlist << buildKontor;
+}

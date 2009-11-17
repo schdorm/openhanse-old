@@ -66,6 +66,6 @@ int main(int argc, char *argv[])
 	gb.show();
 	gb.resize(SETTINGS->resolution());
 	}
-    return app.exec();
+    return app.exec();				// end of main-event-loop
 }
 

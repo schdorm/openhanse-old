@@ -204,8 +204,9 @@ bool Map::loadMap(QString param_mapname)
 		{
 			case QXmlStreamReader::StartElement:
 			{
+			QString qualName = reader.qualifiedName().toString();
 			qWarning() << "\nStart:\t" << reader.qualifiedName().toString();
-				if(reader.qualifiedName().toString() =="mapproperties")
+				if(qualName =="mapproperties")
 				{
 // 				qWarning() << "Start: gamedata->currentMap";
 				status = e_map_null;

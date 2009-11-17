@@ -47,6 +47,10 @@ gameview = 0;
 menupanel = 0;
 schwierigkeitsauswahl = 0;
 connect(TERMINAL, SIGNAL(destroyed(QObject*)), this, SLOT(deleteLater()));
+// OptionWin = new OptionWindow();
+OptionWin.setParent(this);
+OptionWin.hide();
+
 
 	QDir dir = QDir().current();
 // 	qWarning() << dir.absolutePath();

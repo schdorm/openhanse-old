@@ -22,7 +22,10 @@ SOURCES += main.cpp \
 datamanager.cpp \
  city.cpp \
  gameparameter.cpp \
- goods.cpp
+ goods.cpp \
+ mainscene.cpp \
+ optionwindow.cpp \
+ ingamemenu.cpp
 
 TEMPLATE = app
 CONFIG += warn_on \
@@ -52,7 +55,7 @@ HEADERS += shipdata.h \
  questhandler.h \
   definitions.h \
  dataclass.h \
- build_menu.h \
+ buildmenu.h \
  buildingdata.h \
  map.h \
  person.h \
@@ -61,7 +64,11 @@ HEADERS += shipdata.h \
  mapobject.h \
 datamanager.h \
  landing.h \
- gameparameter.h
+ gameparameter.h \
+ mainscene.h \
+ optionwindow.h \
+ ingamemenu.h \
+
 
 QMAKE_CXXFLAGS_RELEASE += -Wall
 

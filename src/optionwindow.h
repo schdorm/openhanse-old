@@ -18,22 +18,63 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _BUILDMENU_H
-#define _BUILDMENU_H
+#ifndef _OptionWindow_H
+#define _OptionWindow_H
 
-#include <QtCore/QObject>
-#include <QtGui/QWidget>
-#include <QtGui/QTabWidget>
+#include <QtGui/QDialog>
+#include <QtGui/QCheckBox>
+#include <QtGui/QSpinBox>
+#include <QtGui/QSlider>
+#include <QtGui/QGridLayout>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QPushButton>
+// class QPushButton;
+// class QCheckBox;
+// class QSpinBox;
+// class QSlider;
+// class QGridLayout;
 
-class BuildMenu : public QWidget
+
+class OptionWindow : public QDialog
 {
 Q_OBJECT
 public:
+// OptionWindow();
+OptionWindow(QWidget * = 0);
+~OptionWindow();
+
+public slots:
+
+void writeSettings();
+void takeSettings();
+
+signals:
 
 private:
-QPushButton building[1];
 
+
+protected:
+QGridLayout layout;
+QHBoxLayout HBoxLayout;
+
+
+QCheckBox FullScreenCheck;
+QCheckBox OpenGLCheck;
+
+QSlider FPSSlider;
+
+QSpinBox XResolutionBox;
+QSpinBox YResolutionBox;
+
+QSlider MusicVolumeSlider;
+QSlider MiscVolumeSlider;
+
+QPushButton AcceptButton;
+QPushButton AbortButton;
+
+
+// void writeSettings();
+// void takeSettings();
 
 };
 

@@ -18,39 +18,30 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _SETTINGS_H
-#define _SETTINGS_H
-#include <QtCore/QSize>
-class Settings
+#ifndef _BUILDMENU_H
+#define _BUILDMENU_H
+
+#include <QtCore/QObject>
+#include <QtGui/QWidget>
+#include <QtGui/QTabWidget>
+#include <QtGui/QPushButton>
+
+class BuildMenu : public QWidget
 {
+Q_OBJECT
 public:
-Settings();
-void readConfigs (const QString&);
-bool openGL()			const	{	return m_opengl;	}
-bool opengl()			const	{	return m_opengl;	}
-bool fullscreen()		const	{	return m_fullscreen;	}
-const QSize &resolution()	const	{	return m_resolution;	}
-int fps()			const	{	return m_fps;		}
-
-const QString &mapdirectory()	const	{	return m_mapdirectory;	}
-
-float miscVolume()		const	{	return m_misc_volume;	}
-float musicVolume()		const	{	return m_music_volume;	}
-
-bool cacheMaps()		const	{	return m_cacheMaps;	}
+BuildMenu();
 
 private:
-QSize m_resolution;
-bool m_fullscreen;
-bool m_opengl;
-int m_fps;
+QTabWidget tabwidget;
+// QList<QWidget *> tabs;
+QList<QPushButton*> buttonlist;
+// QPushButton building;
 
-QString m_mapdirectory;		//member - mapdirectory
+signals:
+void build(int);
 
-float m_misc_volume;		//miscellaneous
-float m_music_volume;
 
-bool m_cacheMaps;
 };
 
 #endif

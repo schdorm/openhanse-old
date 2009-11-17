@@ -53,6 +53,8 @@
 
 #include <QtGui/QComboBox>
 
+#include "optionwindow.h"
+
 
 #define _NO_SAVE__
 
@@ -64,7 +66,6 @@ class gesamtbild : public QWidget
 {
 Q_OBJECT
 public:
-//  QString binfilepath;
 gesamtbild();
 ~gesamtbild();
 // void init(QString);
@@ -75,6 +76,8 @@ public slots:
 // void mmenuslot();
 void mainmenu();
 void spielmenu();
+
+
 
 void execCommand(const QString&);
 
@@ -113,16 +116,9 @@ hauptfenster *gameview;
 handelsfenster *tradingwindow;
 SeaTabPanel *menupanel;
 // konsole *konsolenwidget;
-
-// QFrame *rahmen;
-// QLabel *ware[const_warenanzahl];
-// QLabel *fuellung;
-// QLabel *taler;
-// QTabWidget *menutabs;
-// QWidget *tab[3];
 QComboBox *schwierigkeitsauswahl;
-// QPushButton *okbutton;
 QString filename;			// fuer Savegame 
+OptionWindow OptionWin;
 
 /*struct gebaudeklasse{			//Zusaetzliche, Nicht-Map-Standard-Gebaude, kommen in Liste
 int id;
@@ -164,18 +160,4 @@ protected:
 	void keyPressEvent(QKeyEvent *event);
 };
 
-// #include <QDebug>
-// QString binFileName(QString filename_param)
-// {
-// 
-// 	static QString binfilename;
-// 	if(!filename_param.isEmpty())
-// 	{
-// 		binfilename = filename_param;
-// 		qWarning() << "FN set to: " << filename_param;
-// 		return 0;
-// 	}
-// 	else
-// 		return binfilename;
-// }
 #endif

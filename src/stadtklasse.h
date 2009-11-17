@@ -25,6 +25,7 @@
 
 #include "waren.h"
 #include "definitions.h"
+#include "buildingdata.h"
 // #include <math.h>
 class CityClass /*: public QObject*/
 {
@@ -95,6 +96,8 @@ int m_inhabitants;
 
 int m_lifequality;
 int m_luxuryrate;
+
+QList <BuildingData *> buildings;
 
 // Warenstruct m_goods;
 

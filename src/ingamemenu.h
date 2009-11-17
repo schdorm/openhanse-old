@@ -18,39 +18,43 @@
  *   59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.             *
  ***************************************************************************/
 
-#ifndef _SETTINGS_H
-#define _SETTINGS_H
-#include <QtCore/QSize>
-class Settings
+#ifndef _IngameMenu_H
+#define _IngameMenu_H
+
+#include <QtGui/QWidget>
+#include <QtGui/QPushButton>
+#include <QtGui/QVBoxLayout>
+#include <QtGui/QGroupBox>
+
+class IngameMenu : public QWidget
 {
+Q_OBJECT
 public:
-Settings();
-void readConfigs (const QString&);
-bool openGL()			const	{	return m_opengl;	}
-bool opengl()			const	{	return m_opengl;	}
-bool fullscreen()		const	{	return m_fullscreen;	}
-const QSize &resolution()	const	{	return m_resolution;	}
-int fps()			const	{	return m_fps;		}
+// IngameMenu();
+IngameMenu(QWidget * = 0);
 
-const QString &mapdirectory()	const	{	return m_mapdirectory;	}
+public slots:
 
-float miscVolume()		const	{	return m_misc_volume;	}
-float musicVolume()		const	{	return m_music_volume;	}
-
-bool cacheMaps()		const	{	return m_cacheMaps;	}
+signals:
+void load();
+void save();
+void exit();
+void options();
+void resume();
 
 private:
-QSize m_resolution;
-bool m_fullscreen;
-bool m_opengl;
-int m_fps;
 
-QString m_mapdirectory;		//member - mapdirectory
 
-float m_misc_volume;		//miscellaneous
-float m_music_volume;
+protected:
+QGroupBox GroupBox;
+QPushButton ResumeButton;
+QPushButton QuitButton;
+QPushButton SaveButton;
+QPushButton LoadButton;
+QPushButton OptionsButton;
+QVBoxLayout MenuLayout;
 
-bool m_cacheMaps;
+
 };
 
 #endif

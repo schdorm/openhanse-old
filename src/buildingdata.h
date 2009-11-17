@@ -25,6 +25,23 @@
 class BuildingData		//Gebaudeklasse
 {
 public:
+
+	enum buildings
+	{
+		null,
+		Townhall,
+		Market,
+		Church,
+		Port,
+		Kontor,
+		Bank,
+		Tavern,
+		namespacexyz,
+		Factories,			// Werkstaetten
+		Building_lot			// Baustelle
+	};
+
+
 // QString name;
 
 // void set_GraphicsItem(QGraphicsItem *);
